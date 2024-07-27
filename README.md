@@ -30,7 +30,7 @@
 <br>
 <h2 align="center"> 🔰 Auto Setup Vps! 🔰 </h2>
 
-<pre><code>wget -q https://raw.githubusercontent.com/diah082/newbiebot/main/setup.sh && chmod +x setup.sh && screen -S install ./setup.sh</code></pre>
+<pre><code>wget -q https://raw.githubusercontent.com/diah082/nebot/main/setup.sh && chmod +x setup.sh && ./setup.sh</code></pre>
 
 <br>
 <br>
