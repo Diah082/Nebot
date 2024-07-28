@@ -3784,7 +3784,7 @@ Terimakasih`,
                     ...(await prepareWAMessageMedia({ video: { url: 'https://telegra.ph/file/ae16bc14d33d7d520cd7d.mp4' } }, { upload: A17.waUploadToServer })),
 
 
-                    title: "                      exit Server",
+                    title: "                      Menu Server",
                     subtitle: "Browse through the available commands",
                     hasMediaAttachment: false
                   }),
