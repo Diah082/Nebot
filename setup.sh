@@ -82,7 +82,7 @@ echo -e "${YELLOW}----------------------------------------------------------${NC
 echo ""
 sleep 2
 echo ""
-read -p "$( echo -e "Press ${GRAY}[ ${NC}${green}Enter${NC} ${GRAY}]${NC} For Starting Installation") "
+read -p " Masukan Nomor Wa Untuk Bot Di Awali 62     : " Login
 echo ""
 clear
     ########
@@ -102,7 +102,10 @@ echo -e "\033[96m━━━━━━━━━━━━━━━━━━━━━
 echo -e " \e[1;971m                MEMASANG NEWBIEBOT WHATSAPP               \e[0m"
 echo -e "\033[96m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 git clone https://github.com/diah082/Nebot
+sed -i "s/XXXX/$Login/" /root/Nebot/config.js
 cd Nebot
+clear
+echo -e "Mohon Tunggu Jangan Tutup Koneksi Anda Dengan Server"
 npm i
 pm2 start index.js
 clear

@@ -973,7 +973,7 @@ Terimakasih`,
                     subtitle: "Download Gratis",
                     hasMediaAttachment: false
                   }),
-                              nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
                     buttons: [
                       {
                         "name": "cta_url",
@@ -1090,6 +1090,42 @@ Terimakasih`,
       }
         break;
 
+      case 'shutdown': case 'sleep':
+        if (!isCreator) return reply(mess.owner)
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.owner)
+        await A17.sendMessage(from, { react: { text: "⚠️", key: m.key } })
+
+        reply(`Okey bye time to sleep!`)
+        await sleep(5000)
+        process.exit()
+        break;
+
+
+      case 'public': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+
+        A17.public = true
+        reply('I am now Publicly accessable!')
+        A17.setStatus(`Mode : Public`)
+      }
+        break;
+
+
+      case 'self': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        A17.public = false
+        reply('Only Owner can use me now!')
+        A17.setStatus(`Mode : Self`)
+      }
+        break;
 
       case "link": {
         if (isBan) return reply(mess.banned);
@@ -3065,8 +3101,343 @@ Terimakasih`,
         }
       }
         break;
+		//MENU SHOW AKUN
+      case 'memberssh': case 'check': {
+		if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+
+        m.reply(`Plz Wait ${pushname} Show All Member SSH... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        try {
+          o = await exec('member-ssh')
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+       
+      case 'membervmess': case 'check': {
+		if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+
+        m.reply(`Plz Wait ${pushname} Show All Member Vmess... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        try {
+          o = await exec('member-vme')
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+			//MENU AKUN SSH
+      case 'addssh': case 'addakun': {
+		if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Create Account... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA,PW,LIMITIP,LIMITBW,MASAAKTIF*`)
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        const pckpw = swn.split(".")[1];
+        const pckip = swn.split(".")[2];
+        const pckbw = swn.split(".")[3];
+        const pckex = swn.split(".")[4];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-ssh`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+
+      case 'delssh': case 'delakun': {
+		if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Delete Account... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA AKUN*`)
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | del-ssh`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+      case 'renewssh': case 'renewakun': {
+		if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Renew Account... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA,MASA AKTIF*`)
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        const pckex = swn.split(".")[1];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" "${pckex}" | renew-ssh`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+      case 'cekssh': case 'cekakun': {
+		if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Cek Detail Account... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | addssh`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+				
+      case 'trialssh': case 'trialakun': {
+        if (!isCreator) return reply(mess.owner)
+		A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Create Account Trial... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
+        const swn = args.join(" ")
+        const pckex = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pckex}" | trial-ssh`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		//MENU VMESS
+      case 'addvmess': {
+		if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Create Account... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA,LIMITBW,LIMITIP,MASAAKTIF*`)
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        const pckpw = swn.split(".")[1];
+        const pckip = swn.split(".")[2];
+        const pckbw = swn.split(".")[3];
+        const pckex = swn.split(".")[4];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vme`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+      case 'trialvmess': {
+        if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Create Account Trial... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | trial-vme`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+
+      case 'delvmess': {
+        if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Delete Account... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | del-vme`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+		//Menu Panel server
+      case 'menuserver': case 'panelserver': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        try {
+          await A17.sendMessage(from, { react: { text: "✨", key: m.key } });
 
 
+          const helpMenuText = `\nHello ${pushname} Dear...!! ${nowtime} ,
+          
+          
+             ⌯  Date : ${kaidate}
+          
+          
+            〢━ 〄 Bot Info 〄 ━〢
+          
+   ⌯  My prefix is :  ${prefix}
+   ⌯  Bot usr name : ${pushname} 
+   ⌯  Owner name : ${global.OwnerName} 
+   ⌯  Runtime : ${runtime(process.uptime())} 
+   ⌯  RAM: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
+   ⌯  Total CPU Usage: ${totalCpuUsage}%
+   ⌯  Platform : Linux
+
+┏ ┅ ━━〔〄 *MENU CREATE AKUN* 〄 〕━ ┅ 
+┃
+┃   ⌯     ${prefix}addssh
+┃   ⌯     ${prefix}trialssh
+┃   ⌯     ${prefix}addvmess
+┃   ⌯     ${prefix}trialvmess
+┃
+┏ ┅ ━━〔〄 *MENU AKUN* 〄 〕━ ┅ 
+┃
+┃   ⌯     ${prefix}delssh
+┃   ⌯     ${prefix}delvmess
+┃   ⌯     ${prefix}renewssh
+┃   ⌯     ${prefix}memberssh
+┃   ⌯     ${prefix}membervmess
+┃   ⌯     ${prefix}cekssh
+┃
+┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
+
+┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ ━━━〢
+┃⌯ALLAH SWT
+┃⌯NEWBIE STORE
+┃⌯MY BROTHER :)
+┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ`
+          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+            viewOnceMessage: {
+              message: {
+                "messageContextInfo": {
+                  "deviceListMetadata": {},
+                  "deviceListMetadataVersion": 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.create({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                    text: helpMenuText
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                    text: "            Powered by Newbie BOT 2024"
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                    ...(await prepareWAMessageMedia({ video: { url: 'https://telegra.ph/file/ae16bc14d33d7d520cd7d.mp4' } }, { upload: A17.waUploadToServer })),
+
+
+                    title: "                      Menu Server",
+                    subtitle: "Browse through the available commands",
+                    hasMediaAttachment: false
+                  }),
+                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: [
+                      {
+                        "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"OWNER","url":"https://wa.me/6282326322300"}`
+                      }
+                    ]
+                  })
+                })
+              }
+            }
+          }, {});
+
+
+          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
+            const errorMessage = 'Error: Invalid message key.';
+            console.error(errorMessage);
+            return reply(errorMessage);
+          }
+
+          await A17.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+          });
+        } catch (error) {
+          console.error('Error generating and relaying message:', error);
+          return reply('Error generating and relaying message.');
+        }
+
+        break;
+      }
+
+		
       case 'status': case 'post': {
         if (!isCreator) return reply(mess.owner)
         if (!quoted) return reply(`Send/reply Image With Caption ${prefix}status`)
@@ -7855,7 +8226,7 @@ Ketik :
           }
         }
 
-        if (budy.includes('SSH')) {
+        if (budy.startsWith('SSH')) {
         try {
 
           let { data } = await axios.get('https://api.github.com/repos/Kai0071/A17');
@@ -7910,7 +8281,6 @@ Ketik :
             console.error(errorMessage);
             return reply(errorMessage);
           }
-
           await A17.relayMessage(msg.key.remoteJid, msg.message, {
             messageId: msg.key.id
           });
@@ -7925,7 +8295,7 @@ Ketik :
           if (!isCreator) return reply(mess.botowner)
           exec(budy.slice(2), (err, stdout) => {
             if (err) return A17.sendMessage(from, { image: ErrorPic, caption: String(err) }, { quoted: m })
-            if (stdout) return replyH(stdout)
+            if (stdout) return reply(stdout)
           })
         }
 
