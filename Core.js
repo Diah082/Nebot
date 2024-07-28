@@ -3696,7 +3696,7 @@ Terimakasih`,
         break;
 		
 		//MENU Panel server
-      case 'exitserver': case 'panelserver': {
+      case 'menuserver': case 'panelserver': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         try {
@@ -7732,7 +7732,7 @@ _Click the button below to download_`
 
       case 'help':
       case 'h':
-      case 'exit':
+      case 'menu':
       case 'allexit':
       case 'listexit': {
         if (isBan) return reply(mess.banned);
