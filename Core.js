@@ -3719,7 +3719,7 @@ Terimakasih`,
    ⌯  Total CPU Usage: ${totalCpuUsage}%
    ⌯  Platform : Linux
 
-┏ ┅ ━━〔〄 *MENU CREATE AKUN* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *CREATE AKUN* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}addssh
 ┃   ⌯     ${prefix}trialssh
@@ -3730,28 +3730,28 @@ Terimakasih`,
 ┃   ⌯     ${prefix}addtrojan
 ┃   ⌯     ${prefix}trialtrojan
 ┃
-┏ ┅ ━━〔〄 *MENU DELETE AKUN* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *DELETE AKUN* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}delssh
 ┃   ⌯     ${prefix}delvmess
 ┃   ⌯     ${prefix}delvless
 ┃   ⌯     ${prefix}deltrojan
 ┃
-┏ ┅ ━━〔〄 *MENU RENEW AKUN* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *RENEW AKUN* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}renewssh
 ┃   ⌯     ${prefix}renewvmess
 ┃   ⌯     ${prefix}renewvless
 ┃   ⌯     ${prefix}renewtrojan
 ┃
-┏ ┅ ━━〔〄 *MENU DETAIL AKUN* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *DETAIL AKUN* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}cekssh
 ┃   ⌯     ${prefix}cekvmess
 ┃   ⌯     ${prefix}cekvless
 ┃   ⌯     ${prefix}cektrojan
 ┃
-┏ ┅ ━━〔〄 *MENU OTHER* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *OTHER* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}memberssh
 ┃   ⌯     ${prefix}memberxray
@@ -3819,7 +3819,66 @@ Terimakasih`,
         break;
       }
 
-		
+      case 'addmod':
+      case 'addowner':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (!args[0]) return reply(`Use ${prefix + command} number\nExample ${prefix + command} ${OwnerNumber}`)
+        bnnd = q.split("|")[0].replace(/[^0-9]/g, '')
+        let ceknye = await A17.onWhatsApp(bnnd)
+        if (ceknye.length == 0) return reply(`Enter A Valid And Registered Number On WhatsApp!!!`)
+        Owner.push(bnnd)
+        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
+        reply(`Number ${bnnd} Has Become An Owner!!!`)
+        break;
+
+
+      case 'delowner':
+      case 'delmod':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (!args[0]) return reply(`Use ${prefix + command} nomor\nExample ${prefix + command} 916297175943`)
+        ya = q.split("|")[0].replace(/[^0-9]/g, '')
+        unp = Owner.indexOf(ya)
+        Owner.splice(unp, 1)
+        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
+        reply(`The Numbrr ${ya} Has been deleted from owner list by the owner!!!`)
+        break;
+
+
+      case 'modlist':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner);
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        try {
+          const modData = fs.readFileSync('./database/mod.json', 'utf8');
+          const mods = JSON.parse(modData);
+
+          if (mods.length === 0) {
+            reply('There are no mods in the list.');
+          } else {
+            let modList = '';
+
+            mods.forEach((mod, index) => {
+              modList += `(${index + 1}) ${A17.getName(mod)}\n`;
+            });
+
+            reply(`List of List of Moderators:\n\n${modList}`);
+          }
+        } catch (error) {
+          console.error(error);
+          reply('Failed to fetch mod list.');
+        }
+        break;
+        
       case 'status': case 'post': {
         if (!isCreator) return reply(mess.owner)
         if (!quoted) return reply(`Send/reply Image With Caption ${prefix}status`)
