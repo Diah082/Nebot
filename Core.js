@@ -3101,7 +3101,141 @@ Terimakasih`,
         }
       }
         break;
+		//MOD NEWBIE
+      case 'setpromo': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (!args[0]) return reply(`Use ${prefix + command} number\nExample ${prefix + command} ${OwnerNumber}`)
+        const swn = args.join(" ")
+        fs.writeFileSync('./database/promo.json', JSON.stringify(swn))
+		await sleep(500)
+        reply(`Berhalis Set Text Promo \n\n${swn}`)
+        break;
+		
+	  case 'promo': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner);
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        try {
+          const promData = fs.readFileSync('./database/promo.json', 'utf8');
+          const mods = JSON.parse(promData);
+
+          if (mods.length === 0) {
+            reply('harap input promo anda ${prefix}setpromo (text)');
+          } else {
+			  let message = 
+			await sleep(5000)
+			reply(`${mods}`);
+          }
+        } catch (error) {
+          console.error(error);
+          reply('Failed to fetch mod list.');
+        }
+        break;
+		
+      case 'addmod': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (!args[0]) return reply(`Use ${prefix + command} number\nExample ${prefix + command} ${OwnerNumber}`)
+        bnnd = q.split("|")[0].replace(/[^0-9]/g, '')
+        let ceknye = await A17.onWhatsApp(bnnd)
+        if (ceknye.length == 0) return reply(`Enter A Valid And Registered Number On WhatsApp!!!`)
+        Owner.push(bnnd)
+        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
+        reply(`Number ${bnnd} Has Become An Owner!!!`)
+        break;
+
+      case 'delmod': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (!args[0]) return reply(`Use ${prefix + command} nomor\nExample ${prefix + command} 916297175943`)
+        ya = q.split("|")[0].replace(/[^0-9]/g, '')
+        unp = Owner.indexOf(ya)
+        Owner.splice(unp, 1)
+        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
+        reply(`The Numbrr ${ya} Has been deleted from owner list by the owner!!!`)
+        break;
+
+
+      case 'modlist': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner);
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        try {
+          const modData = fs.readFileSync('./database/mod.json', 'utf8');
+          const mods = JSON.parse(modData);
+
+          if (mods.length === 0) {
+            reply('There are no mods in the list.');
+          } else {
+            let modList = '';
+
+            mods.forEach((mod, index) => {
+              modList += `(${index + 1}) ${A17.getName(mod)}\n`;
+            });
+			await sleep(2000);
+            reply(`List of List of Moderators:\n\n${modList}`);
+          }
+        } catch (error) {
+          console.error(error);
+          reply('Failed to fetch mod list.');
+        }
+        break;
+
+      case 'setprefix': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (args.length !== 1) {
+          return m.reply(`Please provide a single character as the new prefix.`);
+        } else {
+          const newPrefix = args[0];
+          try {
+            global.prefa = process.env.PREFIX ? process.env.PREFIX.split(".") : [newPrefix];
+            return m.reply(`${pushname} Successfully changed Prefix to "${newPrefix}"`);
+          } catch (error) {
+            console.error('Error changing prefix:', error);
+            return m.reply(`An error occurred while changing the prefix. Please try again later.`);
+          }
+        }
+		  break;
 		//MENU SHOW AKUN
+      case 'cekexp': {
+		if (!isCreator) return reply(mess.owner)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+
+        m.reply(`Plz Wait ${pushname} Show All Accout Expaired... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        try {
+          o = await exec('xp-wa')
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
       case 'cekservice': {
 		if (!isCreator) return reply(mess.owner)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
@@ -3719,7 +3853,7 @@ Terimakasih`,
    ⌯  Total CPU Usage: ${totalCpuUsage}%
    ⌯  Platform : Linux
 
-┏ ┅ ━━〔〄 *CREATE AKUN* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *MENU CREATE AKUN* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}addssh
 ┃   ⌯     ${prefix}trialssh
@@ -3730,34 +3864,35 @@ Terimakasih`,
 ┃   ⌯     ${prefix}addtrojan
 ┃   ⌯     ${prefix}trialtrojan
 ┃
-┏ ┅ ━━〔〄 *DELETE AKUN* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *MENU DELETE AKUN* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}delssh
 ┃   ⌯     ${prefix}delvmess
 ┃   ⌯     ${prefix}delvless
 ┃   ⌯     ${prefix}deltrojan
 ┃
-┏ ┅ ━━〔〄 *RENEW AKUN* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *MENU RENEW AKUN* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}renewssh
 ┃   ⌯     ${prefix}renewvmess
 ┃   ⌯     ${prefix}renewvless
 ┃   ⌯     ${prefix}renewtrojan
 ┃
-┏ ┅ ━━〔〄 *DETAIL AKUN* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *MENU DETAIL AKUN* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}cekssh
 ┃   ⌯     ${prefix}cekvmess
 ┃   ⌯     ${prefix}cekvless
 ┃   ⌯     ${prefix}cektrojan
 ┃
-┏ ┅ ━━〔〄 *OTHER* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *MENU OTHER* 〄 〕━ ┅ 
 ┃
 ┃   ⌯     ${prefix}memberssh
 ┃   ⌯     ${prefix}memberxray
 ┃   ⌯     ${prefix}loginssh
 ┃   ⌯     ${prefix}loginxray
 ┃   ⌯     ${prefix}cekservice
+┃   ⌯     ${prefix}cekexp
 ┃
 ┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
 
@@ -3784,7 +3919,7 @@ Terimakasih`,
                     ...(await prepareWAMessageMedia({ video: { url: 'https://telegra.ph/file/ae16bc14d33d7d520cd7d.mp4' } }, { upload: A17.waUploadToServer })),
 
 
-                    title: "                      Menu Server",
+                    title: "                      exit Server",
                     subtitle: "Browse through the available commands",
                     hasMediaAttachment: false
                   }),
@@ -3819,66 +3954,7 @@ Terimakasih`,
         break;
       }
 
-      case 'addmod':
-      case 'addowner':
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
-
-        if (!args[0]) return reply(`Use ${prefix + command} number\nExample ${prefix + command} ${OwnerNumber}`)
-        bnnd = q.split("|")[0].replace(/[^0-9]/g, '')
-        let ceknye = await A17.onWhatsApp(bnnd)
-        if (ceknye.length == 0) return reply(`Enter A Valid And Registered Number On WhatsApp!!!`)
-        Owner.push(bnnd)
-        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
-        reply(`Number ${bnnd} Has Become An Owner!!!`)
-        break;
-
-
-      case 'delowner':
-      case 'delmod':
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
-
-        if (!args[0]) return reply(`Use ${prefix + command} nomor\nExample ${prefix + command} 916297175943`)
-        ya = q.split("|")[0].replace(/[^0-9]/g, '')
-        unp = Owner.indexOf(ya)
-        Owner.splice(unp, 1)
-        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
-        reply(`The Numbrr ${ya} Has been deleted from owner list by the owner!!!`)
-        break;
-
-
-      case 'modlist':
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner);
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
-
-        try {
-          const modData = fs.readFileSync('./database/mod.json', 'utf8');
-          const mods = JSON.parse(modData);
-
-          if (mods.length === 0) {
-            reply('There are no mods in the list.');
-          } else {
-            let modList = '';
-
-            mods.forEach((mod, index) => {
-              modList += `(${index + 1}) ${A17.getName(mod)}\n`;
-            });
-
-            reply(`List of List of Moderators:\n\n${modList}`);
-          }
-        } catch (error) {
-          console.error(error);
-          reply('Failed to fetch mod list.');
-        }
-        break;
-        
+		
       case 'status': case 'post': {
         if (!isCreator) return reply(mess.owner)
         if (!quoted) return reply(`Send/reply Image With Caption ${prefix}status`)
