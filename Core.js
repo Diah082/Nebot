@@ -723,155 +723,7 @@ Typed *surrender* to surrender and admited defeat`
     if (responses.hasOwnProperty(smallinput)) {
       reply(responses[smallinput]);
     }
-
-    const respon = {
-      harga: `*NEWBIE STORE VPN PREMIUM*
-*_SERVER SGDO_* 🇸🇬
-◇━━━━━━━━━━━━━━━◇
-*List Harga*
-◇━━━━━━━━━━━━━━━◇
-*_PREMIUM_*
-◇━━━━━━━━━━━━━━━◇
-😀 *_5K  | 15 Hari | 1HP |_*
-🤩 *_10K | 30 Hari | 2HP |_*
-🔥 *_15K | 30 Hari | 4HP |_*
-◇━━━━━━━━━━━━━━━◇
-*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
-◇━━━━━━━━━━━━━━━◇
-*Pembayaran*
-DANA
-QRIS ALLPAYMENT
-◇━━━━━━━━━━━━━━━◇
-Ketik :
-*pay* untuk infomasi Pembayaran
-◇━━━━━━━━━━━━━━━◇`,
-      newbie: `*NEWBIE STORE VPN PREMIUM*
-*_SERVER SGDO_* 🇸🇬
-◇━━━━━━━━━━━━━━━◇
-*List Harga*
-◇━━━━━━━━━━━━━━━◇
-*_PREMIUM_*
-◇━━━━━━━━━━━━━━━◇
-😀 *_5K  | 15 Hari | 1HP |_*
-🤩 *_10K | 30 Hari | 2HP |_*
-🔥 *_15K | 30 Hari | 4HP |_*
-◇━━━━━━━━━━━━━━━◇
-*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
-◇━━━━━━━━━━━━━━━◇
-*Pembayaran*
-DANA
-QRIS ALLPAYMENT
-◇━━━━━━━━━━━━━━━◇
-BENEFIT:
-💎 KUALITAS TERJAMIN
-💎 FREE CONFIG
-💎 BEBAS GONTA GANTI CONFIG REQUEST KE ADMIN 
-💎 WAJIB TRIAL 
-💎 GARANSI 
-💎 SUDAH BAYAR TDK PUAS BISA REFUNDS
-💎 SUPPORT VC, CALL
-💎 GAME (SILAHKAN DICOBA LANGSUNG)
-💎 DIJAMIN AMANAH
-◇━━━━━━━━━━━━━━━◇
-*RULES*
-⛔ No Judi Online
-⛔ No Trade
-⛔ No Torrent 
-⛔ No Hacking
-⛔ No DDOS
-⛔ Multi Login Sesuai Akun!!
-
-*_Melanggar = Baned_*
-◇━━━━━━━━━━━━━━━◇
-*NEWBIE STORE JUGA SEDIA*
-◇━━━━━━━━━━━━━━━◇
-*_OPEN SOURCE SCRIPT_*
-*_SEWA SCRIPT LIFETIME_*
-*_OPEN JASA RECODE_*
-◇━━━━━━━━━━━━━━━◇
-📚Grup Newbie :
-https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
-
-https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
-📂Testi : https://t.me/TESTI_NEWBIE
-🔖Grup Tele : https://t.me/newbielearning
-Minat Hub :
-➠ ADMIN 1
-Https://wa.me/6282326322300 
-➠ *_ADMIN TELE_*
-https://t.me/Newbie_Store24 
-◇━━━━━━━━━━━━━━━◇`,
-    'izin min': `*NEWBIE STORE VPN PREMIUM*
-*_SERVER SGDO_* 🇸🇬
-◇━━━━━━━━━━━━━━━◇
-*List Harga*
-◇━━━━━━━━━━━━━━━◇
-*_PREMIUM_*
-◇━━━━━━━━━━━━━━━◇
-😀 *_5K  | 15 Hari | 1HP |_*
-🤩 *_10K | 30 Hari | 2HP |_*
-🔥 *_15K | 30 Hari | 4HP |_*
-◇━━━━━━━━━━━━━━━◇
-*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
-◇━━━━━━━━━━━━━━━◇
-*Pembayaran*
-DANA
-QRIS ALLPAYMENT
-◇━━━━━━━━━━━━━━━◇
-BENEFIT:
-💎 KUALITAS TERJAMIN
-💎 FREE CONFIG
-💎 BEBAS GONTA GANTI CONFIG REQUEST KE ADMIN 
-💎 WAJIB TRIAL 
-💎 GARANSI 
-💎 SUDAH BAYAR TDK PUAS BISA REFUNDS
-💎 SUPPORT VC, CALL
-💎 GAME (SILAHKAN DICOBA LANGSUNG)
-💎 DIJAMIN AMANAH
-◇━━━━━━━━━━━━━━━◇
-*RULES*
-⛔ No Judi Online
-⛔ No Trade
-⛔ No Torrent 
-⛔ No Hacking
-⛔ No DDOS
-⛔ Multi Login Sesuai Akun!!
-
-*_Melanggar = Baned_*
-◇━━━━━━━━━━━━━━━◇
-*NEWBIE STORE JUGA SEDIA*
-◇━━━━━━━━━━━━━━━◇
-*_OPEN SOURCE SCRIPT_*
-*_SEWA SCRIPT LIFETIME_*
-*_OPEN JASA RECODE_*
-◇━━━━━━━━━━━━━━━◇
-📚Grup Newbie2 :
-https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
-
-https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
-📂Testi : https://t.me/TESTI_NEWBIE
-🔖Grup Tele : https://t.me/newbielearning
-Minat Hub :
-➠ ADMIN 1
-Https://wa.me/6282326322300 
-➠ *_ADMIN TELE_*
-https://t.me/Newbie_Store24  
-◇━━━━━━━━━━━━━━━◇`,
-    };
-
-    const iinnput = budy.toLowerCase();
-    
-    if (respon.hasOwnProperty(iinnput)) {
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Promo.jpg'), gifPlayback: false,
-          caption: (respon[iinnput]),
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m });
-      }
-
+		
     const respons = {
       vps: `◇━━━━━━━━━━━━━━◇
        🌐 *_VPS BY_* 🌐
@@ -886,11 +738,11 @@ https://t.me/Newbie_Store24
 • Debian
 ◇━━━━━━━━━━━━━━◇
 - Spek dan Harga :
-✓ 1GB RAM, 25GB SSD : 35 IDR
-✓ 2GB RAM, 50GB SSD : 45 IDR
-✓ 4GB RAM, 80GB SSD : 80 IDR
-✓ 8GB RAM, 160GB SSD : 120 IDR
-✓ 3 Unit Ram 8,160 SSD : 250 IDR
+✓ 1GB RAM, BW 1 TB : 35 IDR
+✓ 2GB RAM, BW 3 TB : 45 IDR
+✓ 4GB RAM, BW 4 TB : 80 IDR
+✓ 8GB RAM, BW 6 TB : 120 IDR
+✓ 3 Unit Ram 8 : 250 IDR
 ◇━━━━━━━━━━━━━━◇
 ORDER ? :
 TELEGRAM : https://t.me/Newbie_Store24`,
@@ -939,12 +791,7 @@ Terimakasih`,
       }
 
     const res = { 
-    p: `simple1`,
-    bang: `simple2`,
-    bg: `simple3`,
     config: `simple3`,
-    assalamualaikum: `simple`,
-    'assalamualaikum bang': `simple`,
     };
 
     const inpu = budy.toLowerCase();
@@ -3119,8 +2966,6 @@ Terimakasih`,
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!isCreator) return reply(mess.botowner);
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
-
         try {
           const promData = fs.readFileSync('./database/promo.json', 'utf8');
           const mods = JSON.parse(promData);
@@ -3137,6 +2982,7 @@ Terimakasih`,
           reply('Failed to fetch mod list.');
         }
         break;
+		
 		
       case 'addmod': 
         if (isBan) return reply(mess.banned);
@@ -7983,95 +7829,7 @@ _Click the button below to download_`
             ⌯   ${prefix}wallpaper
             ⌯   ${prefix}image
             ⌯   ${prefix}searchgc
-            ⌯   ${prefix}wikimedia
-          
-          
-        〢━ 📈 Economy 📈 ━〢
-          
-          
-            ⌯   ${prefix}daily 
-            ⌯   ${prefix}wallet
-            ⌯   ${prefix}bank
-            ⌯   ${prefix}bankupgrade
-            ⌯   ${prefix}deposit
-            ⌯   ${prefix}withdraw 
-            ⌯   ${prefix}rob / attack
-            ⌯   ${prefix}transfer / give
-            ⌯   ${prefix}wealth / ritual
-          
-          
-        〢━ 🎮 Games 🎮 ━〢
-          
-          
-            ⌯   ${prefix}ttt / tictactoe
-            ⌯   ${prefix}truth
-            ⌯   ${prefix}dare
-            ⌯   ${prefix}spin / slot
-            ⌯   ${prefix}gamble / lottery
-           
-          
-         〢━ 🛠 Convert 🛠 ━〢
-           
-          
-            ⌯   ${prefix}sticker
-            ⌯   ${prefix}toimg
-            ⌯   ${prefix}tovideo
-            ⌯   ${prefix}togif
-            ⌯   ${prefix}tourl
-            ⌯   ${prefix}tomp3
-            ⌯   ${prefix}toaudio
-            ⌯   ${prefix}steal
-            ⌯   ${prefix}stickermeme
-            ⌯   ${prefix}emojimix
-          
-          
-        〢━ ◈ Sound Edit ◈ ━〢
-          
-          
-            ⌯   ${prefix}ringtone
-            ⌯   ${prefix}bass
-            ⌯   ${prefix}tempo
-            ⌯   ${prefix}blown
-            ⌯   ${prefix}robot
-            ⌯   ${prefix}slow
-            ⌯   ${prefix}squirrel
-            ⌯   ${prefix}deep
-            ⌯   ${prefix}earrape
-            ⌯   ${prefix}fast
-            ⌯   ${prefix}fat
-            ⌯   ${prefix}nightcore
-            ⌯   ${prefix}reverse
-          
-          
-        〢━ 📍 Reactions 📍 ━〢
-           
-          
-            ⌯   ${prefix}cuddle
-            ⌯   ${prefix}hug
-            ⌯   ${prefix}kiss
-            ⌯   ${prefix}bonk
-            ⌯   ${prefix}cry
-            ⌯   ${prefix}bully
-            ⌯   ${prefix}slap
-            ⌯   ${prefix}kill
-            ⌯   ${prefix}happy
-            ⌯   ${prefix}lick
-            ⌯   ${prefix}pat
-            ⌯   ${prefix}smug
-            ⌯   ${prefix}nom
-            ⌯   ${prefix}glomp
-            ⌯   ${prefix}bite
-            ⌯   ${prefix}yeet
-            ⌯   ${prefix}blush
-            ⌯   ${prefix}smile
-            ⌯   ${prefix}wave
-            ⌯   ${prefix}highfive
-            ⌯   ${prefix}handhold
-            ⌯   ${prefix}poke
-            ⌯   ${prefix}wink
-            ⌯   ${prefix}dance
-            ⌯   ${prefix}cringe
-          
+            ⌯   ${prefix}wikimedia          
           
       〢━ 🌌 Downloader 🌌 ━〢
            
@@ -8198,7 +7956,7 @@ _Click the button below to download_`
                     ...(await prepareWAMessageMedia({ image: { url: 'https://graph.org/file/4ca10c7029fcaee1003f7.jpg' } }, { upload: A17.waUploadToServer })),
 
 
-                    title: "                      Help exit",
+                    title: "                      MENU",
                     subtitle: "Browse through the available commands",
                     hasMediaAttachment: false
                   }),
@@ -8248,7 +8006,7 @@ _Click the button below to download_`
         break;
 
 
-      case 'bugexit': case 'bug': {
+      case 'bugmenu': case 'bug': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "✨", key: m.key } })
@@ -8308,7 +8066,7 @@ Halo , Kenalin Saya *${global.BotName}* Saya Adalah Bot Whatsapp Yang dibuat ole
       }
         break;
 
-      case 'sshexit': case 'ssh': {
+      case 'sshmenu': case 'ssh': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "✨", key: m.key } })
@@ -8742,6 +8500,105 @@ Ketik :
             await A17.sendMessage(from, { image: ErrorPic, caption: String(err) }, { quoted: m })
           }
         }
+
+        if (budy.includes('zin')) {
+       try {
+          const helpexitText = `*_SERVER SGDO_* 🇸🇬
+◇━━━━━━━━━━━━━━━◇
+*List Harga*
+◇━━━━━━━━━━━━━━━◇
+😀 *_5K  | 15 Hari | 1HP |_*
+🤩 *_10K | 30 Hari | 2HP |_*
+🔥 *_15K | 30 Hari | 4HP |_*
+◇━━━━━━━━━━━━━━━◇
+*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
+◇━━━━━━━━━━━━━━━◇
+*Pembayaran*
+DANA
+QRIS ALLPAYMENT
+◇━━━━━━━━━━━━━━━◇
+BENEFIT:
+💎 KUALITAS TERJAMIN
+💎 GARANSI 
+💎 DIJAMIN AMANAH
+◇━━━━━━━━━━━━━━━◇
+*NEWBIE STORE JUGA SEDIA*
+◇━━━━━━━━━━━━━━━◇
+*_OPEN SOURCE SCRIPT_*
+*_SEWA SCRIPT LIFETIME_*
+*_OPEN JASA RECODE_*
+◇━━━━━━━━━━━━━━━◇
+📚Grup WA :
+https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
+
+https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
+📂Testi : https://t.me/TESTI_NEWBIE
+🔖Grup Tele : https://t.me/newbielearning
+Minat Hub :
+➠ ADMIN WA
+Https://wa.me/6282326322300 
+➠ *_ADMIN TELE_*
+https://t.me/Newbie_Store24  
+◇━━━━━━━━━━━━━━━◇`;
+
+          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+            viewOnceMessage: {
+              message: {
+                "messageContextInfo": {
+                  "deviceListMetadata": {},
+                  "deviceListMetadataVersion": 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.create({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                    text: helpexitText
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                    text: " Powered by Newbie BOT 2024"
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                    ...(await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg' } }, { upload: A17.waUploadToServer })),
+
+
+                    title: "*NEWBIE STORE VPN*",
+                    subtitle: "Browse through the available commands",
+                    hasMediaAttachment: false
+                  }),
+                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: [
+					  {
+					   "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"DOWNLOAD LINK CONFIG HC","url":"https://sfile.mobi/user.php?files&user=681091"}`
+                      },
+                      {
+                        "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"ORDER CONFIG PREMIUM","url":"https://wa.me/6282326322300"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"PEMBAYARAN","id":"${prefix}qr"}`
+                      }
+                    ]
+                  })
+                })
+              }
+            }
+          }, {});
+
+
+          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
+            const errorMessage = 'Error: Invalid message key.';
+            console.error(errorMessage);
+            return reply(errorMessage);
+          }
+
+          await A17.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+          });
+        } catch (error) {
+          console.error('Error generating and relaying message:', error);
+          return reply('Error generating and relaying message.');
+        }
+	}	
 
         if (budy.startsWith('SSH')) {
         try {
