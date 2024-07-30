@@ -8590,7 +8590,7 @@ https://t.me/Newbie_Store24
             console.error(errorMessage);
             return reply(errorMessage);
           }
-
+	  await sleep(1000)
           await A17.relayMessage(msg.key.remoteJid, msg.message, {
             messageId: msg.key.id
           });
