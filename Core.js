@@ -8501,7 +8501,7 @@ Ketik :
           }
         }
 
-        if (budy.includes('zin')) {
+        if (budy.includes('izin')) {
        try {
           const helpexitText = `*_SERVER SGDO_* 🇸🇬
 ◇━━━━━━━━━━━━━━━◇
@@ -8590,7 +8590,106 @@ https://t.me/Newbie_Store24
             console.error(errorMessage);
             return reply(errorMessage);
           }
-	  await sleep(1000)
+		  await sleep(1000)
+          await A17.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+          });
+        } catch (error) {
+          console.error('Error generating and relaying message:', error);
+          return reply('Error generating and relaying message.');
+        }
+	}	
+	
+        if (budy.includes('IZIN')) {
+       try {
+          const helpexitText = `*_SERVER SGDO_* 🇸🇬
+◇━━━━━━━━━━━━━━━◇
+*List Harga*
+◇━━━━━━━━━━━━━━━◇
+😀 *_5K  | 15 Hari | 1HP |_*
+🤩 *_10K | 30 Hari | 2HP |_*
+🔥 *_15K | 30 Hari | 4HP |_*
+◇━━━━━━━━━━━━━━━◇
+*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
+◇━━━━━━━━━━━━━━━◇
+*Pembayaran*
+DANA
+QRIS ALLPAYMENT
+◇━━━━━━━━━━━━━━━◇
+BENEFIT:
+💎 KUALITAS TERJAMIN
+💎 GARANSI 
+💎 DIJAMIN AMANAH
+◇━━━━━━━━━━━━━━━◇
+*NEWBIE STORE JUGA SEDIA*
+◇━━━━━━━━━━━━━━━◇
+*_OPEN SOURCE SCRIPT_*
+*_SEWA SCRIPT LIFETIME_*
+*_OPEN JASA RECODE_*
+◇━━━━━━━━━━━━━━━◇
+📚Grup WA :
+https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
+
+https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
+📂Testi : https://t.me/TESTI_NEWBIE
+🔖Grup Tele : https://t.me/newbielearning
+Minat Hub :
+➠ ADMIN WA
+Https://wa.me/6282326322300 
+➠ *_ADMIN TELE_*
+https://t.me/Newbie_Store24  
+◇━━━━━━━━━━━━━━━◇`;
+
+          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+            viewOnceMessage: {
+              message: {
+                "messageContextInfo": {
+                  "deviceListMetadata": {},
+                  "deviceListMetadataVersion": 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.create({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                    text: helpexitText
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                    text: " Powered by Newbie BOT 2024"
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                    ...(await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg' } }, { upload: A17.waUploadToServer })),
+
+
+                    title: "*NEWBIE STORE VPN*",
+                    subtitle: "Browse through the available commands",
+                    hasMediaAttachment: false
+                  }),
+                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: [
+					  {
+					   "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"DOWNLOAD LINK CONFIG HC","url":"https://sfile.mobi/user.php?files&user=681091"}`
+                      },
+                      {
+                        "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"ORDER CONFIG PREMIUM","url":"https://wa.me/6282326322300"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"PEMBAYARAN","id":"${prefix}qr"}`
+                      }
+                    ]
+                  })
+                })
+              }
+            }
+          }, {});
+
+
+          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
+            const errorMessage = 'Error: Invalid message key.';
+            console.error(errorMessage);
+            return reply(errorMessage);
+          }
+		  await sleep(1000)
           await A17.relayMessage(msg.key.remoteJid, msg.message, {
             messageId: msg.key.id
           });
