@@ -3728,7 +3728,7 @@ Terimakasih`,
                     ...(await prepareWAMessageMedia({ video: { url: 'https://telegra.ph/file/ae16bc14d33d7d520cd7d.mp4' } }, { upload: A17.waUploadToServer })),
 
 
-                    title: "                      exit Server",
+                    title: "                      Menu Server",
                     subtitle: "Browse through the available commands",
                     hasMediaAttachment: false
                   }),
@@ -8516,7 +8516,7 @@ Penambahan Fitur SC
 Perbaikan Fitur SC
 ◇━━━━━━━━━━━━━━◇
 - Estimasi Waktu Pengerjaan
-✓ Perbaikan Fitur 30 - 1 Jam
+✓ Perbaikan Fitur 30 menit - 1 Jam
 	Tergantung Pada Kendala Yang Dialami!
 ✓ Penambahan Fitur 1 - 5 Jam
 	Tergantung Pada Fitur Yang Saling Terkait!
