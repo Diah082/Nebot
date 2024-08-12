@@ -701,7 +701,7 @@ Typed *surrender* to surrender and admited defeat`
 
     const responses = {
 
-      gcvip: `https://chat.whatsapp.com/GllWYIjeUHMKRpedQW78Qw\n\nSilahkan Join Grup Member Vip Kak`,
+      gcvip: `https://chat.whatsapp.com/DPaquwU3PBhAb50oHM39mh\n\nSilahkan Join Grup Member Vip Kak, Grup ini untuk info server, Kontak Alternatif Admin, Dan info Info penting lainnya`,
       playloaden: `GET / HTTP/1.1[crlf]Host: [host][crlf]PATCH / HTTP/1.1[crlf]Host: Bug.com[crlf]Upgrade: websocket [crlf] User-Agent: [ua][crlf][crlf]Content-Length: CONFIG BY. NEWBIE[crlf][crlf][split]200 OK [crlf]`,
       playloadws: `GET / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf]User-Agent: [ua][crlf][crlf][split]CONFIG BY. NEWBIE[crlf][crlf]`,
       hello: `Hello ${pushname}, I am ${BotName}. My current prefix is "${prefix}". How can I help you?`,
@@ -762,7 +762,7 @@ Terimakasih`,
     if (res.hasOwnProperty(inpu)) {
         try {
           let { data } = await axios.get('https://api.github.com/repos/Kai0071/A17');
-          let teks = `                      *Newbie Store*\n\n   *Total Member Aktif*: ${data.stargazers_count}⭐\n   *Total Terjual*: ${data.forks_count} Akun\n   *Grup*: https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ\n\n           Terimakasih .`;
+          let teks = `                      *Newbie Store*\n\n   *Total Member Aktif*: ${data.stargazers_count}⭐\n   *Total Terjual*: ${data.forks_count} Akun\n   *Grup*: https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v\n\n           Terimakasih .`;
 
           let msg = generateWAMessageFromContent(m.key.remoteJid, {
             viewOnceMessage: {
@@ -795,7 +795,7 @@ Terimakasih`,
                       },
                       {
                         "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"ORDER CONFIG PREMIUM","url":"https://wa.me/6282326322300"}`
+                        "buttonParamsJson": `{"display_text":"ORDER CONFIG PREMIUM","url":"https://wa.me/6285184823708"}`
                       },
 					  {
                         "name": "quick_reply",
@@ -946,7 +946,7 @@ Terimakasih`,
           await A17.sendMessage(from, { react: { text: "❤", key: m.key } });
 
           let { data } = await axios.get('https://api.github.com/repos/Kai0071/A17');
-          let teks = `                      *Newbie Store*\n\n   *Total Member Aktif*: ${data.stargazers_count}⭐\n   *Total Terjual*: ${data.forks_count} Akun\n   *Grup*: https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ\n\n           Terimakasih .`;
+          let teks = `                      *Newbie Store*\n\n   *Total Member Aktif*: ${data.stargazers_count}⭐\n   *Total Terjual*: ${data.forks_count} Akun\n   *Grup*: https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v\n\n           Terimakasih .`;
 
           let msg = generateWAMessageFromContent(m.key.remoteJid, {
             viewOnceMessage: {
@@ -979,7 +979,7 @@ Terimakasih`,
                       },
                       {
                         "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"ORDER CONFIG PREMIUM","url":"https://wa.me/6282326322300"}`
+                        "buttonParamsJson": `{"display_text":"ORDER CONFIG PREMIUM","url":"https://wa.me/6285184823708"}`
                       },
 					  {
                         "name": "quick_reply",
@@ -1281,9 +1281,9 @@ Terimakasih`,
         if (!text) return reply(`please provide a report message you want to deliver`)
         if (text.length > 300) return reply(`Are you trying to send virus!`)
         const txtmsg = `*📮 Report Message*\n\n*Sender ➛* wa.me/${m.sender.split("@")[0]}\n\n*Group Name ➛* ${groupName}\n\n*Message ➛*  ${text}`
-        for (let mod of global.Owner.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').filter(v => v != '6297175943@s.whatsapp.net'))
-          await A17.sendMessage(`${mod}`, { text: `${txtmsg}` }, { quoted: m })
-        await A17.sendMessage(`120363026915700516@g.us`, { text: `${txtmsg}`, mentions: groupAdmins }, { quoted: m })
+        for (let mod of global.Owner.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').filter(v => v != '6285184823708@s.whatsapp.net'))
+        await A17.sendMessage(`${mod}`, { text: `${txtmsg}` }, { quoted: m })
+        await A17.sendMessage(`120363280037029437@g.us`, { text: `${txtmsg}`, mentions: groupAdmins }, { quoted: m })
         reply(`*✅ Your Report has been submitted Successfully to Support group & Owner*\n\n*You will get response shortly... ♥️*`);
       }
         break;
@@ -3736,7 +3736,7 @@ Terimakasih`,
                     buttons: [
                       {
                         "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"OWNER","url":"https://wa.me/6282326322300"}`
+                        "buttonParamsJson": `{"display_text":"OWNER","url":"https://wa.me/6285184823708"}`
                       }
                     ]
                   })
@@ -7638,22 +7638,48 @@ _Click the button below to download_`
       // }
       //   break;
 
+      case 'bc': case 'broadcast': case 'bcall': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join(" ")) return reply(`Please enter some text to broadcast! \n\nExample : ${prefix + command} ${global.OwnerName}`)
+        let anu = await store.chats.all().map(v => v.id)
+        reply(`Send Broadcast To ${anu.length} Chat\nTime's up ${anu.length * 1.5} second`)
+        for (let yoi of anu) {
+          await sleep(1500)
+          let btn = [{
+            quickreplyButton: {
+              displayText: '💡 Menu 💡',
+              id: '-menu'
+            }
+          }, {
+            quickreplyButton: {
+              displayText: 'Bot Owner',
+              id: '-owner'
+            }
+          }]
+          let txt = `「 *${global.OwnerName}'s Notice* 」\n\n${text}`
+          A17.send5ButImg(yoi, txt, `${global.BotName}`, BotLogo, btn, Thumb)
+        }
+        reply('Broadcast Sent !')
+      }
+        break;
 
-
-      case 'bcgc':
+      case 'promosi':
       case 'bcgroup': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!isCreator) return reply(mess.botowner);
-        if (!args.join(" ")) return reply(`Please enter some text to broadcast! \n\nExample : ${prefix + command} ${global.OwnerName}`);
 
         let getGroups = await A17.groupFetchAllParticipating()
         let groups = Object.entries(getGroups).slice(0).map(entry => entry[1])
         let anu = groups.map(v => v.id)
+		const mods = fs.readFileSync('./database/promo.json', 'utf8');
+        const helpexitText = JSON.parse(mods);
         reply(`Sending Broadcast To ${anu.length} Group Chat, End Time ${anu.length * 1.5} seconds`)
         for (let i of anu) {
           await sleep(1500)
-          let a = `${global.OwnerName}'s Broadcast\n\n` + '' + `Message: ${text}\n\n` + ''
+          let a = `${helpexitText}` + ''
           A17.sendMessage(i, {
             text: a,
             contextInfo: {
@@ -7664,7 +7690,7 @@ _Click the button below to download_`
                 thumbnailUrl: 'https://r4.wallpaperflare.com/wallpaper/1003/376/845/makoto-shinkai-kimi-no-na-wa-wallpaper-0816ade8b0301c58302c014e48d2441a.jpg',
                 sourceUrl: global.website,
                 mediaType: 1,
-                renderLargerThumbnail: true
+                renderLargerThumbnail: false
               }
             }
           })
@@ -7672,13 +7698,44 @@ _Click the button below to download_`
         reply(`Successful in sending Broadcast To ${anu.length} Group`)
       }
         break
-
+		
+      case 'send': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner);
+		if (!args.join("")) return reply(`6282326xxxx`)
+		const swn = args.join(" ")
+        var target = swn.split(".")[0];
+		if (isNaN(target)) return m.reply("Target Tidak Valid!")
+		var org = target.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+		const mods = fs.readFileSync('./database/promo.json', 'utf8');
+        const helpexitText = JSON.parse(mods);{
+          await sleep(1500)
+          let a = `${helpexitText}` + ''
+          A17.sendMessage(org, {
+            text: a,
+            contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true,
+                title: BotName,
+                body: `Sent in ${swn}`,
+                thumbnailUrl: 'https://r4.wallpaperflare.com/wallpaper/1003/376/845/makoto-shinkai-kimi-no-na-wa-wallpaper-0816ade8b0301c58302c014e48d2441a.jpg',
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: false
+              }
+            }
+          })
+        }
+        reply(`Promosi Berhasil Dikirim`)
+      }
+        break
 
       case 'help':
       case 'h':
       case 'menu':
-      case 'allexit':
-      case 'listexit': {
+      case 'allmenu':
+      case 'listmenu': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
 
@@ -7927,7 +7984,7 @@ _Click the button below to download_`
                     buttons: [
                       {
                         "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"OWNER","url":"https://wa.me/6282326322300"}`
+                        "buttonParamsJson": `{"display_text":"OWNER","url":"https://wa.me/6285184823708"}`
                       },
                                             {
                         "name": "quick_reply",
@@ -7964,7 +8021,7 @@ _Click the button below to download_`
         if (isBanChat) return reply(mess.bangc);
 
         A17.sendMessage(from, { react: { text: "💫", key: m.key } })
-        reply(`⚙ *My developer's group:* ⚙ https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ`)
+        reply(`⚙ *My developer's group:* ⚙ https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v`)
       }
         break;
 
@@ -8331,6 +8388,34 @@ Terimakasih`
         A17.sendMessage(m.chat, buttonMessage, { quoted: m })
       }
         break;
+
+      case 'sendpay': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+		if (!args.join("")) return reply(`6282326xxxx`)
+		const swn = args.join(" ")
+        var target = swn.split(".")[0];
+		if (isNaN(target)) return m.reply("Target Tidak Valid!")
+		var org = target.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
+        const helpexit = `*Pembayaran Lewat Dana dan Qris*
+        
+Dana : 087863446310 An Diah Fitri Liani
+
+*Jangan Lupa Kirim Bukti TF Yah.*
+Terimakasih`
+        let buttonMessage = {
+          image: fs.readFileSync('./Assets/pic10.jpg'), gifPlayback: false,
+          caption: helpexit,
+
+          headerType: 4
+
+        }
+        A17.sendMessage(org, buttonMessage, { quoted: m })
+		reply(`Tagihan Pembayaran Terkirim`)
+      }
+        break;
+		
 		//HARGA VPS
       case 'vps': case 'cekvps': {
         if (isBan) return reply(mess.banned);
@@ -8348,14 +8433,22 @@ Terimakasih`
 • Ubuntu
 • Debian
 ◇━━━━━━━━━━━━━━◇
-- Spek dan Harga :
+*_Harga_*
+◇━━━━━━━━━━━━━━◇
+- SERVER SG :
 ✓ 1GB RAM, BW 1 TB : 35 IDR
 ✓ 2GB RAM, BW 3 TB : 45 IDR
 ✓ 4GB RAM, BW 4 TB : 80 IDR
 ✓ 8GB RAM, BW 6 TB : 120 IDR
 ✓ 3 Unit Ram 8 : 250 IDR
+◇━━━━━━━━━━━━━━◇
+- SERVER INDO :
+✓ 1GB RAM, BW Unli : 90  IDR
+✓ 2GB RAM, BW Unli : 200 IDR
+✓ 4GB RAM, BW Unli : 350 IDR
+✓ 8GB RAM, BW Unli : 570 IDR
 ◇━━━━━━━━━━━━━━◇`;
-          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+let msg = generateWAMessageFromContent(m.key.remoteJid, {
             viewOnceMessage: {
               message: {
                 "messageContextInfo": {
@@ -8381,7 +8474,7 @@ Terimakasih`
                     buttons: [
                       {
                         "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"ORDER VPS","url":"https://wa.me/6282326322300"}`
+                        "buttonParamsJson": `{"display_text":"ORDER VPS","url":"https://wa.me/6285184823708"}`
                       }
                     ]
                   })
@@ -8473,7 +8566,7 @@ Rekomendasi OS : Debian 10
                     buttons: [
                       {
                         "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"ORDER AUTO SCRIPT","url":"https://wa.me/6282326322300"}`
+                        "buttonParamsJson": `{"display_text":"ORDER AUTO SCRIPT","url":"https://wa.me/6285184823708"}`
                       }
                     ]
                   })
@@ -8520,7 +8613,7 @@ Perbaikan Fitur SC
 	Tergantung Pada Kendala Yang Dialami!
 ✓ Penambahan Fitur 1 - 5 Jam
 	Tergantung Pada Fitur Yang Saling Terkait!
-✓ Penambahan Fitur 1 - 3 Hari
+✓ Pembuatan Fitur 1 - 3 Hari
 	Tergantung Pada Kesulitan Pembuatan Fitur Baru!
 ◇━━━━━━━━━━━━━━◇
 - Harga Jasa
@@ -8553,7 +8646,7 @@ Perbaikan Fitur SC
                     buttons: [
                       {
                         "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"ORDER JASA RECODE","url":"https://wa.me/6282326322300"}`
+                        "buttonParamsJson": `{"display_text":"ORDER JASA RECODE","url":"https://wa.me/6285184823708"}`
                       }
                     ]
                   })
@@ -8584,7 +8677,7 @@ Perbaikan Fitur SC
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "✨", key: m.key } })
         const helpexit = `*NEWBIE STORE VPN PREMIUM*
-*_SERVER SGDO_* 🇸🇬
+*_SERVER SGDO & INDO_* 🇸🇬 🇮🇩
 ◇━━━━━━━━━━━━━━━◇
 *List Harga*
 ◇━━━━━━━━━━━━━━━◇
@@ -8711,9 +8804,458 @@ Ketik :
           }
         }
 
+	        if (budy.startsWith('SSH')) {
+       try {
+          const helpexitText = `*_SERVER SGDO & INDO_* 🇸🇬 🇮🇩
+◇━━━━━━━━━━━━━━━◇
+*List Harga*
+◇━━━━━━━━━━━━━━━◇
+😀 *_5K  | 15 Hari | 1HP |_*
+🤩 *_10K | 30 Hari | 2HP |_*
+🔥 *_15K | 30 Hari | 4HP |_*
+◇━━━━━━━━━━━━━━━◇
+*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
+◇━━━━━━━━━━━━━━━◇
+*Pembayaran*
+DANA
+QRIS ALLPAYMENT
+◇━━━━━━━━━━━━━━━◇
+BENEFIT:
+💎 KUALITAS TERJAMIN
+💎 GARANSI 
+💎 DIJAMIN AMANAH
+◇━━━━━━━━━━━━━━━◇
+*NEWBIE STORE JUGA SEDIA*
+◇━━━━━━━━━━━━━━━◇
+*_OPEN SOURCE SCRIPT_*
+*_SEWA SCRIPT LIFETIME_*
+*_OPEN JASA RECODE_*
+◇━━━━━━━━━━━━━━━◇
+📚Grup WA :
+https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v
+
+https://chat.whatsapp.com/Eoi3KqxNCc88sKyC1VGobC
+📂Testi : https://t.me/TESTI_NEWBIE
+🔖Grup Tele : https://t.me/newbielearning
+Minat Hub :
+➠ ADMIN WA
+Https://wa.me/6285184823708 
+➠ *_ADMIN TELE_*
+https://t.me/Newbie_Store24  
+◇━━━━━━━━━━━━━━━◇`;
+
+          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+            viewOnceMessage: {
+              message: {
+                "messageContextInfo": {
+                  "deviceListMetadata": {},
+                  "deviceListMetadataVersion": 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.create({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                    text: helpexitText
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                    text: " Powered by Newbie BOT 2024"
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                    ...(await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg' } }, { upload: A17.waUploadToServer })),
+
+
+                    title: "*NEWBIE STORE VPN*",
+                    subtitle: "Browse through the available commands",
+                    hasMediaAttachment: false
+                  }),
+                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: [
+					  {
+					   "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"DOWNLOAD LINK CONFIG HC","url":"https://sfile.mobi/user.php?files&user=681091"}`
+                      },
+                      {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK HARGA VPS","id":"${prefix}vps"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK HARGA AUTO SCRIPT SERVER","id":"${prefix}autosc"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK JASA RECODE","id":"${prefix}jasarecode"}`
+                      },
+					  {
+                        "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"ORDER","url":"https://wa.me/6285184823708"}`
+                      },
+					  
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"PEMBAYARAN","id":"${prefix}qr"}`
+                      }
+                    ]
+                  })
+                })
+              }
+            }
+          }, {});
+
+
+          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
+            const errorMessage = 'Error: Invalid message key.';
+            console.error(errorMessage);
+            return reply(errorMessage);
+          }
+		  await sleep(1000)
+          await A17.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+          });
+        } catch (error) {
+          console.error('Error generating and relaying message:', error);
+          return reply('Error generating and relaying message.');
+        }
+	}
+	
+        if (budy.includes('zin')) {
+       try {
+          const helpexitText = `*_SERVER SGDO & INDO_* 🇸🇬 🇮🇩
+◇━━━━━━━━━━━━━━━◇
+*List Harga*
+◇━━━━━━━━━━━━━━━◇
+😀 *_5K  | 15 Hari | 1HP |_*
+🤩 *_10K | 30 Hari | 2HP |_*
+🔥 *_15K | 30 Hari | 4HP |_*
+◇━━━━━━━━━━━━━━━◇
+*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
+◇━━━━━━━━━━━━━━━◇
+*Pembayaran*
+DANA
+QRIS ALLPAYMENT
+◇━━━━━━━━━━━━━━━◇
+BENEFIT:
+💎 KUALITAS TERJAMIN
+💎 GARANSI 
+💎 DIJAMIN AMANAH
+◇━━━━━━━━━━━━━━━◇
+*NEWBIE STORE JUGA SEDIA*
+◇━━━━━━━━━━━━━━━◇
+*_OPEN SOURCE SCRIPT_*
+*_SEWA SCRIPT LIFETIME_*
+*_OPEN JASA RECODE_*
+◇━━━━━━━━━━━━━━━◇
+📚Grup WA :
+https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v
+
+https://chat.whatsapp.com/Eoi3KqxNCc88sKyC1VGobC
+📂Testi : https://t.me/TESTI_NEWBIE
+🔖Grup Tele : https://t.me/newbielearning
+Minat Hub :
+➠ ADMIN WA
+Https://wa.me/6285184823708 
+➠ *_ADMIN TELE_*
+https://t.me/Newbie_Store24  
+◇━━━━━━━━━━━━━━━◇`;
+
+          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+            viewOnceMessage: {
+              message: {
+                "messageContextInfo": {
+                  "deviceListMetadata": {},
+                  "deviceListMetadataVersion": 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.create({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                    text: helpexitText
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                    text: " Powered by Newbie BOT 2024"
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                    ...(await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg' } }, { upload: A17.waUploadToServer })),
+
+
+                    title: "*NEWBIE STORE VPN*",
+                    subtitle: "Browse through the available commands",
+                    hasMediaAttachment: false
+                  }),
+                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: [
+					  {
+					   "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"DOWNLOAD LINK CONFIG HC","url":"https://sfile.mobi/user.php?files&user=681091"}`
+                      },
+                      {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK HARGA VPS","id":"${prefix}vps"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK HARGA AUTO SCRIPT SERVER","id":"${prefix}autosc"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK JASA RECODE","id":"${prefix}jasarecode"}`
+                      },
+					  {
+                        "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"ORDER","url":"https://wa.me/6285184823708"}`
+                      },
+					  
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"PEMBAYARAN","id":"${prefix}qr"}`
+                      }
+                    ]
+                  })
+                })
+              }
+            }
+          }, {});
+
+
+          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
+            const errorMessage = 'Error: Invalid message key.';
+            console.error(errorMessage);
+            return reply(errorMessage);
+          }
+		  await sleep(1000)
+          await A17.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+          });
+        } catch (error) {
+          console.error('Error generating and relaying message:', error);
+          return reply('Error generating and relaying message.');
+        }
+	}
+	
+	        if (budy.includes('ZIN')) {
+				
+       try {
+          const helpexitText = `*_SERVER SGDO & INDO_* 🇸🇬 🇮🇩
+◇━━━━━━━━━━━━━━━◇
+*List Harga*
+◇━━━━━━━━━━━━━━━◇
+😀 *_5K  | 15 Hari | 1HP |_*
+🤩 *_10K | 30 Hari | 2HP |_*
+🔥 *_15K | 30 Hari | 4HP |_*
+◇━━━━━━━━━━━━━━━◇
+*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
+◇━━━━━━━━━━━━━━━◇
+*Pembayaran*
+DANA
+QRIS ALLPAYMENT
+◇━━━━━━━━━━━━━━━◇
+BENEFIT:
+💎 KUALITAS TERJAMIN
+💎 GARANSI 
+💎 DIJAMIN AMANAH
+◇━━━━━━━━━━━━━━━◇
+*NEWBIE STORE JUGA SEDIA*
+◇━━━━━━━━━━━━━━━◇
+*_OPEN SOURCE SCRIPT_*
+*_SEWA SCRIPT LIFETIME_*
+*_OPEN JASA RECODE_*
+◇━━━━━━━━━━━━━━━◇
+📚Grup WA :
+https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v
+
+https://chat.whatsapp.com/Eoi3KqxNCc88sKyC1VGobC
+📂Testi : https://t.me/TESTI_NEWBIE
+🔖Grup Tele : https://t.me/newbielearning
+Minat Hub :
+➠ ADMIN WA
+Https://wa.me/6285184823708 
+➠ *_ADMIN TELE_*
+https://t.me/Newbie_Store24  
+◇━━━━━━━━━━━━━━━◇`;
+
+          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+            viewOnceMessage: {
+              message: {
+                "messageContextInfo": {
+                  "deviceListMetadata": {},
+                  "deviceListMetadataVersion": 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.create({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                    text: helpexitText
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                    text: " Powered by Newbie BOT 2024"
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                    ...(await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg' } }, { upload: A17.waUploadToServer })),
+
+
+                    title: "*NEWBIE STORE VPN*",
+                    subtitle: "Browse through the available commands",
+                    hasMediaAttachment: false
+                  }),
+                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: [
+					  {
+					   "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"DOWNLOAD LINK CONFIG HC","url":"https://sfile.mobi/user.php?files&user=681091"}`
+                      },
+                      {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK HARGA VPS","id":"${prefix}vps"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK HARGA AUTO SCRIPT SERVER","id":"${prefix}autosc"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK JASA RECODE","id":"${prefix}jasarecode"}`
+                      },
+					  {
+                        "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"ORDER","url":"https://wa.me/6285184823708"}`
+                      },
+					  
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"PEMBAYARAN","id":"${prefix}qr"}`
+                      }
+                    ]
+                  })
+                })
+              }
+            }
+          }, {});
+
+
+          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
+            const errorMessage = 'Error: Invalid message key.';
+            console.error(errorMessage);
+            return reply(errorMessage);
+          }
+		  await sleep(1000)
+          await A17.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+          });
+        } catch (error) {
+          console.error('Error generating and relaying message:', error);
+          return reply('Error generating and relaying message.');
+        }
+	}
+
+        if (budy.includes('ijin')) {
+       try {
+          const helpexitText = `*_SERVER SGDO & INDO_* 🇸🇬 🇮🇩
+◇━━━━━━━━━━━━━━━◇
+*List Harga*
+◇━━━━━━━━━━━━━━━◇
+😀 *_5K  | 15 Hari | 1HP |_*
+🤩 *_10K | 30 Hari | 2HP |_*
+🔥 *_15K | 30 Hari | 4HP |_*
+◇━━━━━━━━━━━━━━━◇
+*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
+◇━━━━━━━━━━━━━━━◇
+*Pembayaran*
+DANA
+QRIS ALLPAYMENT
+◇━━━━━━━━━━━━━━━◇
+BENEFIT:
+💎 KUALITAS TERJAMIN
+💎 GARANSI 
+💎 DIJAMIN AMANAH
+◇━━━━━━━━━━━━━━━◇
+*NEWBIE STORE JUGA SEDIA*
+◇━━━━━━━━━━━━━━━◇
+*_OPEN SOURCE SCRIPT_*
+*_SEWA SCRIPT LIFETIME_*
+*_OPEN JASA RECODE_*
+◇━━━━━━━━━━━━━━━◇
+📚Grup WA :
+https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v
+
+https://chat.whatsapp.com/Eoi3KqxNCc88sKyC1VGobC
+📂Testi : https://t.me/TESTI_NEWBIE
+🔖Grup Tele : https://t.me/newbielearning
+Minat Hub :
+➠ ADMIN WA
+Https://wa.me/6285184823708 
+➠ *_ADMIN TELE_*
+https://t.me/Newbie_Store24  
+◇━━━━━━━━━━━━━━━◇`;
+
+          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+            viewOnceMessage: {
+              message: {
+                "messageContextInfo": {
+                  "deviceListMetadata": {},
+                  "deviceListMetadataVersion": 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.create({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                    text: helpexitText
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                    text: " Powered by Newbie BOT 2024"
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                    ...(await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg' } }, { upload: A17.waUploadToServer })),
+
+
+                    title: "*NEWBIE STORE VPN*",
+                    subtitle: "Browse through the available commands",
+                    hasMediaAttachment: false
+                  }),
+                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: [
+					  {
+					   "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"DOWNLOAD LINK CONFIG HC","url":"https://sfile.mobi/user.php?files&user=681091"}`
+                      },
+                      {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK HARGA VPS","id":"${prefix}vps"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK HARGA AUTO SCRIPT SERVER","id":"${prefix}autosc"}`
+                      },
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"CEK JASA RECODE","id":"${prefix}jasarecode"}`
+                      },
+					  {
+                        "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"ORDER","url":"https://wa.me/6285184823708?text=Bang%20order%20dong%20"}`
+                      },
+					  
+					  {
+                        "name": "quick_reply",
+                        "buttonParamsJson": `{"display_text":"PEMBAYARAN","id":"${prefix}qr"}`
+                      }
+                    ]
+                  })
+                })
+              }
+            }
+          }, {});
+
+
+          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
+            const errorMessage = 'Error: Invalid message key.';
+            console.error(errorMessage);
+            return reply(errorMessage);
+          }
+		  await sleep(1000)
+          await A17.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+          });
+        } catch (error) {
+          console.error('Error generating and relaying message:', error);
+          return reply('Error generating and relaying message.');
+        }
+	}
+	
         if (budy.includes('izin')) {
        try {
-          const helpexitText = `*_SERVER SGDO_* 🇸🇬
+          const helpexitText = `*_SERVER SGDO & INDO_* 🇸🇬 🇮🇩
 ◇━━━━━━━━━━━━━━━◇
 *List Harga*
 ◇━━━━━━━━━━━━━━━◇
@@ -8739,14 +9281,14 @@ BENEFIT:
 *_OPEN JASA RECODE_*
 ◇━━━━━━━━━━━━━━━◇
 📚Grup WA :
-https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
+https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v
 
-https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
+https://chat.whatsapp.com/Eoi3KqxNCc88sKyC1VGobC
 📂Testi : https://t.me/TESTI_NEWBIE
 🔖Grup Tele : https://t.me/newbielearning
 Minat Hub :
 ➠ ADMIN WA
-Https://wa.me/6282326322300 
+Https://wa.me/6285184823708 
 ➠ *_ADMIN TELE_*
 https://t.me/Newbie_Store24  
 ◇━━━━━━━━━━━━━━━◇`;
@@ -8785,7 +9327,7 @@ https://t.me/Newbie_Store24
                       },
 					  {
                         "name": "quick_reply",
-                        "buttonParamsJson": `{"display_text":"CEK HARGA AUTO SCRIPT SERVER","id":"${prefix}autosc"}`
+                        "buttonParamsJson": `{"display_text":"CEK HARGA AUTO SC SERVER","id":"${prefix}autosc"}`
                       },
 					  {
                         "name": "quick_reply",
@@ -8793,7 +9335,7 @@ https://t.me/Newbie_Store24
                       },
 					  {
                         "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"ORDER","url":"https://wa.me/6282326322300"}`
+                        "buttonParamsJson": `{"display_text":"ORDER","url":"https://wa.me/6285184823708"}`
                       },
 					  
 					  {
@@ -8813,7 +9355,7 @@ https://t.me/Newbie_Store24
             console.error(errorMessage);
             return reply(errorMessage);
           }
-		  await sleep(1000)
+		  await sleep(1500)
           await A17.relayMessage(msg.key.remoteJid, msg.message, {
             messageId: msg.key.id
           });
@@ -8822,183 +9364,6 @@ https://t.me/Newbie_Store24
           return reply('Error generating and relaying message.');
         }
 	}	
-	
-        if (budy.includes('IZIN')) {
-       try {
-          const helpexitText = `*_SERVER SGDO_* 🇸🇬
-◇━━━━━━━━━━━━━━━◇
-*List Harga*
-◇━━━━━━━━━━━━━━━◇
-😀 *_5K  | 15 Hari | 1HP |_*
-🤩 *_10K | 30 Hari | 2HP |_*
-🔥 *_15K | 30 Hari | 4HP |_*
-◇━━━━━━━━━━━━━━━◇
-*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
-◇━━━━━━━━━━━━━━━◇
-*Pembayaran*
-DANA
-QRIS ALLPAYMENT
-◇━━━━━━━━━━━━━━━◇
-BENEFIT:
-💎 KUALITAS TERJAMIN
-💎 GARANSI 
-💎 DIJAMIN AMANAH
-◇━━━━━━━━━━━━━━━◇
-*NEWBIE STORE JUGA SEDIA*
-◇━━━━━━━━━━━━━━━◇
-*_OPEN SOURCE SCRIPT_*
-*_SEWA SCRIPT LIFETIME_*
-*_OPEN JASA RECODE_*
-◇━━━━━━━━━━━━━━━◇
-📚Grup WA :
-https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
-
-https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
-📂Testi : https://t.me/TESTI_NEWBIE
-🔖Grup Tele : https://t.me/newbielearning
-Minat Hub :
-➠ ADMIN WA
-Https://wa.me/6282326322300 
-➠ *_ADMIN TELE_*
-https://t.me/Newbie_Store24  
-◇━━━━━━━━━━━━━━━◇`;
-
-          let msg = generateWAMessageFromContent(m.key.remoteJid, {
-            viewOnceMessage: {
-              message: {
-                "messageContextInfo": {
-                  "deviceListMetadata": {},
-                  "deviceListMetadataVersion": 2
-                },
-                interactiveMessage: proto.Message.InteractiveMessage.create({
-                  body: proto.Message.InteractiveMessage.Body.create({
-                    text: helpexitText
-                  }),
-                  footer: proto.Message.InteractiveMessage.Footer.create({
-                    text: " Powered by Newbie BOT 2024"
-                  }),
-                  header: proto.Message.InteractiveMessage.Header.create({
-                    ...(await prepareWAMessageMedia({ image: { url: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg' } }, { upload: A17.waUploadToServer })),
-
-
-                    title: "*NEWBIE STORE VPN*",
-                    subtitle: "Browse through the available commands",
-                    hasMediaAttachment: false
-                  }),
-                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                    buttons: [
-					  {
-					   "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"DOWNLOAD LINK CONFIG HC","url":"https://sfile.mobi/user.php?files&user=681091"}`
-                      },
-                      {
-                        "name": "quick_reply",
-                        "buttonParamsJson": `{"display_text":"CEK HARGA VPS","id":"${prefix}vps"}`
-                      },
-					  {
-                        "name": "quick_reply",
-                        "buttonParamsJson": `{"display_text":"CEK HARGA AUTO SCRIPT SERVER","id":"${prefix}autosc"}`
-                      },
-					  {
-                        "name": "quick_reply",
-                        "buttonParamsJson": `{"display_text":"CEK JASA RECODE","id":"${prefix}jasarecode"}`
-                      },
-					  {
-                        "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"ORDER","url":"https://wa.me/6282326322300"}`
-                      },
-					  
-					  {
-                        "name": "quick_reply",
-                        "buttonParamsJson": `{"display_text":"PEMBAYARAN","id":"${prefix}qr"}`
-                      }
-                    ]
-                  })
-                })
-              }
-            }
-          }, {});
-
-
-          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
-            const errorMessage = 'Error: Invalid message key.';
-            console.error(errorMessage);
-            return reply(errorMessage);
-          }
-		  await sleep(1000)
-          await A17.relayMessage(msg.key.remoteJid, msg.message, {
-            messageId: msg.key.id
-          });
-        } catch (error) {
-          console.error('Error generating and relaying message:', error);
-          return reply('Error generating and relaying message.');
-        }
-	}	
-
-        if (budy.startsWith('SSH')) {
-        try {
-
-          let { data } = await axios.get('https://api.github.com/repos/Kai0071/A17');
-          let teks = `                      *Newbie Store*\n\n   Kualitas Terjamin! ✅ \n   Bergaransi! ✅ \n  Aman dan Terpercaya! ✅ \n\n   *Total Member Aktif*: ${data.stargazers_count}⭐\n   *Total Terjual*: ${data.forks_count} Akun\n   *Grup*: https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ\n\n           Terimakasih .`;
-
-          let msg = generateWAMessageFromContent(m.key.remoteJid, {
-            viewOnceMessage: {
-              message: {
-                "messageContextInfo": {
-                  "deviceListMetadata": {},
-                  "deviceListMetadataVersion": 2
-                },
-                interactiveMessage: proto.Message.InteractiveMessage.create({
-                  body: proto.Message.InteractiveMessage.Body.create({
-                    text: teks
-                  }),
-                  footer: proto.Message.InteractiveMessage.Footer.create({
-                    text: "                    Powered by Newbie"
-                  }),
-                  header: proto.Message.InteractiveMessage.Header.create({
-                    title: "        *Order Config Hanya Di*",
-                    subtitle: "Download Gratis",
-                    hasMediaAttachment: false
-                  }),
-                              nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                    buttons: [
-                      {
-                        "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"DOWNLOAD LINK CONFIG HC","url":"https://sfile.mobi/user.php?files&user=681091"}`
-                      },
-                      {
-                        "name": "quick_reply",
-                        "buttonParamsJson": `{"display_text":"LIST HARGA CONFIG PREMIUM","id":"${prefix}harga"}`
-                      },
-                      {
-                        "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"ORDER CONFIG PREMIUM","url":"https://wa.me/6282326322300"}`
-                      },
-					  {
-                        "name": "quick_reply",
-                        "buttonParamsJson": `{"display_text":"PEMBAYARAN","id":"${prefix}qr"}`
-                      }
-                    ]
-                  })
-                })
-              }
-            }
-          }, {});
-
-          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
-            const errorMessage = 'Error: Invalid message key.';
-            console.error(errorMessage);
-            return reply(errorMessage);
-          }
-          await A17.relayMessage(msg.key.remoteJid, msg.message, {
-            messageId: msg.key.id
-          });
-        } catch (error) {
-          console.error('Error generating and relaying message:', error);
-          return reply('Error generating and relaying message.');
-        }
-
-      }
 
         if (budy.startsWith('$')) {
           if (!isCreator) return reply(mess.botowner)
