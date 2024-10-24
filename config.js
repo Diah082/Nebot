@@ -17,12 +17,12 @@ global.autoreadgc = process.env.AUTOREADGC || true;
 
 
 // Auth information
-global.pairNumber = "XXXX";                         // Add your paining number with country code example "6282326322300"; 
+global.pairNumber = "6285184823708";                         // Add your paining number with country code example "6282326322300"; 
 global.port = process.env.PORT || "10000";
 global.auth = process.env.AUTH || "Pairing";                // Auth mode OR/Pairing.
 global.sessionFile = process.env.SESSION_FILE || "A17-SESSION";
 global.mongodb = process.env.MONGODB || "";                 // Mongodb url.
-global.website = "https://whatsapp.com/channel/0029VakxjLM4o7qQgPd9IR2k"; 
+global.website = "https://www.exenoz.tech"; 
 global.github = "https://github.com/Diah082";
 
 
