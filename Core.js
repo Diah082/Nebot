@@ -3710,58 +3710,28 @@ Terimakasih`,
 ┃⌯NEWBIE STORE
 ┃⌯MY BROTHER :)
 ┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ`
-          let msg = generateWAMessageFromContent(m.key.remoteJid, {
-            viewOnceMessage: {
-              message: {
-                "messageContextInfo": {
-                  "deviceListMetadata": {},
-                  "deviceListMetadataVersion": 2
-                },
-                interactiveMessage: proto.Message.InteractiveMessage.create({
-                  body: proto.Message.InteractiveMessage.Body.create({
-                    text: helpexitText
-                  }),
-                  footer: proto.Message.InteractiveMessage.Footer.create({
-                    text: "            Powered by Newbie BOT 2024"
-                  }),
-                  header: proto.Message.InteractiveMessage.Header.create({
-                    ...(await prepareWAMessageMedia({ video: { url: 'https://telegra.ph/file/ae16bc14d33d7d520cd7d.mp4' } }, { upload: A17.waUploadToServer })),
 
-
-                    title: "                      Menu Server",
-                    subtitle: "Browse through the available commands",
-                    hasMediaAttachment: false
-                  }),
-                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                    buttons: [
-                      {
-                        "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"OWNER","url":"https://wa.me/6285184823708"}`
-                      }
-                    ]
-                  })
-                })
-              }
+A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: `Follow Saluran Kami`,
+                    thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderMediumThumbnail: true
+                }
             }
-          }, {});
-
-
-          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
-            const errorMessage = 'Error: Invalid message key.';
-            console.error(errorMessage);
-            return reply(errorMessage);
-          }
-
-          await A17.relayMessage(msg.key.remoteJid, msg.message, {
-            messageId: msg.key.id
-          });
-        } catch (error) {
-          console.error('Error generating and relaying message:', error);
-          return reply('Error generating and relaying message.');
-        }
-
-        break;
-      }
+        });
+    } catch (err) {
+        console.error('Error sending help menu:', err);
+        reply('Oops, terjadi kesalahan saat mengirim menu bantuan.');
+    }
+    break;
+}
+          
 
 		
       case 'status': case 'post': {
@@ -7687,7 +7657,7 @@ _Click the button below to download_`
                 showAdAttribution: true,
                 title: BotName,
                 body: `Sent in ${i.length} Group`,
-                thumbnailUrl: 'https://r4.wallpaperflare.com/wallpaper/1003/376/845/makoto-shinkai-kimi-no-na-wa-wallpaper-0816ade8b0301c58302c014e48d2441a.jpg',
+                thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
                 sourceUrl: global.website,
                 mediaType: 1,
                 renderLargerThumbnail: false
@@ -7719,7 +7689,7 @@ _Click the button below to download_`
                 showAdAttribution: true,
                 title: BotName,
                 body: `Sent in ${swn}`,
-                thumbnailUrl: 'https://r4.wallpaperflare.com/wallpaper/1003/376/845/makoto-shinkai-kimi-no-na-wa-wallpaper-0816ade8b0301c58302c014e48d2441a.jpg',
+                thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
                 sourceUrl: global.website,
                 mediaType: 1,
                 renderLargerThumbnail: false
@@ -7958,62 +7928,26 @@ _Click the button below to download_`
             ┬│▸
             ╰────────────···▸`;
 
-          let msg = generateWAMessageFromContent(m.key.remoteJid, {
-            viewOnceMessage: {
-              message: {
-                "messageContextInfo": {
-                  "deviceListMetadata": {},
-                  "deviceListMetadataVersion": 2
-                },
-                interactiveMessage: proto.Message.InteractiveMessage.create({
-                  body: proto.Message.InteractiveMessage.Body.create({
-                    text: helpexitText
-                  }),
-                  footer: proto.Message.InteractiveMessage.Footer.create({
-                    text: "            Powered by Newbie BOT 2024"
-                  }),
-                  header: proto.Message.InteractiveMessage.Header.create({
-                    ...(await prepareWAMessageMedia({ image: { url: 'https://graph.org/file/4ca10c7029fcaee1003f7.jpg' } }, { upload: A17.waUploadToServer })),
-
-
-                    title: "                      MENU",
-                    subtitle: "Browse through the available commands",
-                    hasMediaAttachment: false
-                  }),
-                  nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
-                    buttons: [
-                      {
-                        "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"OWNER","url":"https://wa.me/6285184823708"}`
-                      },
-                                            {
-                        "name": "quick_reply",
-                        "buttonParamsJson": `{"display_text":"JOIN GRUP","id":"${prefix}supportgc"}`
-                      }
-                    ]
-                  })
-                })
-              }
+A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: `Follow Saluran Kami`,
+                    thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderMediumThumbnail: true
+                }
             }
-          }, {});
-
-
-          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
-            const errorMessage = 'Error: Invalid message key.';
-            console.error(errorMessage);
-            return reply(errorMessage);
-          }
-
-          await A17.relayMessage(msg.key.remoteJid, msg.message, {
-            messageId: msg.key.id
-          });
-        } catch (error) {
-          console.error('Error generating and relaying message:', error);
-          return reply('Error generating and relaying message.');
-        }
-
-        break;
-      }
+        });
+    } catch (err) {
+        console.error('Error sending help menu:', err);
+        reply('Oops, terjadi kesalahan saat mengirim menu bantuan.');
+    }
+    break;
+}
 
 
       case 'support': case 'supportgc': {

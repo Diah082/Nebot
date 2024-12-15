@@ -22,7 +22,7 @@ global.port = process.env.PORT || "10000";
 global.auth = process.env.AUTH || "Pairing";                // Auth mode OR/Pairing.
 global.sessionFile = process.env.SESSION_FILE || "A17-SESSION";
 global.mongodb = process.env.MONGODB || "";                 // Mongodb url.
-global.website = "https://www.exenoz.tech"; 
+global.website = "https://whatsapp.com/channel/0029ValMNdj3gvWficRJeQ3L"; 
 global.github = "https://github.com/Diah082";
 
 
