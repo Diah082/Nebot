@@ -113,7 +113,7 @@ const startA17  = async () => {
     if (pairingMode && !A17.authState.creds.registered) {
       phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
 
-      if (!Object.keys(v => phoneNumber.startsWith(0)) {
+      if (!Object.keys(v => phoneNumber.startsWith(0))) {
         console.log(chalk.bgBlack(chalk.redBright('Start with country code of your WhatsApp Number, Example : 916xxxx'), '\n> '));
         process.exit(0);
       }
