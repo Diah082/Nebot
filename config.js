@@ -35,7 +35,7 @@ global.Owner = process.env.OWNER ? process.env.OWNER.split(",") : ["628232632230
 global.OwnerNumber = process.env.OWNER_NUMBER ? process.env.OWNER_NUMBER.split(",") : ["6282326322300"];
 global.ownertag = process.env.OWNER_TAG ? process.env.OWNER_TAG.split(",") : ["6282326322300"];
 global.OwnerName = process.env.OWNER_NAME || "Newbie";
-global.BotName = process.env.BOT_NAME || "Newbie";
+global.BotName = process.env.BOT_NAME || "Newbie-Store";
 global.packname = process.env.PACK_NAME || "NEWBIE Bot";
 global.author = "By: Newbie";
 global.BotSourceCode = "https://github.com/Diah082/NewbieBot";
@@ -52,7 +52,7 @@ global.vidmenu = { url: process.env.VID_MENU_URL || 'https://telegra.ph/file/ae1
 
 //
 global.BotLogo = fs.readFileSync("./Assets/pic1.jpg");
-global.Thumb = fs.readFileSync("./Assets/pic9.jpg");
+global.Thumb = fs.readFileSync("./Assets/Ne.jpg");
 global.Thumb1 = fs.readFileSync("./Assets/pic5.jpg");
 global.ErrorPic = fs.readFileSync("./Assets/pic7.jpg");
 global.them = "https://r4.wallpaperflare.com/wallpaper/1003/376/845/makoto-shinkai-kimi-no-na-wa-wallpaper-0816ade8b0301c58302c014e48d2441a.jpg";

@@ -2804,20 +2804,56 @@ Terimakasih`,
       case 'listgc': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
+let getallgrub = await A17.groupFetchAllParticipating();
+async function formatGrup(index, grup) {
+    let response2 = '-';
+    let link_grouplist = '';
+try {
+response2 = await A17.groupInviteCode(grup.id);
+    link_grouplist = `https://chat.whatsapp.com/${response2}`;
+} catch{
+    link_grouplist = '-'
+}
+return `╭─「 ${index} 」 *${grup.subject}*
+│ Anggota : ${grup.participants.length}
+│ ID Grub : ${grup.id}
+│ Link    : ${link_grouplist}
+╰────────────────────────`;
+}
+const grupTerurut = Object.values(getallgrub).sort((a, b) => b.participants.length - a.participants.length);
+let nomorUrut = 0;
+const listGrupString = await Promise.all(grupTerurut.map((grup) => formatGrup(++nomorUrut, grup)));
+
+return reply(`_*Total Group : ${nomorUrut}*_ \n\n`+listGrupString.join('\n\n'));
+break;
+	  }
+	  
+	  case 'totalgc':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+    let totalGc = await A17.groupFetchAllParticipating();
+    let totalGroups = Object.keys(totalGc).length;
+
+    return reply(`_Total Group : *${totalGroups}*_`);
+break;
+
+      case 'speedtest': case 'speedcheck': {
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
 
-        let anu = await store.chats.all().filter(v => v.id.endsWith('@g.us')).map(v => v.id)
-        let teks = ` 「  A17's group user list  」\n\nTotal ${anu.length} users are using bot in Groups.`
-        for (let i of anu) {
-          let metadata = await A17.groupMetadata(i)
-          if (metadata.owner === "undefined") {
-            loldd = false
-          } else {
-            loldd = metadata.owner
-          }
-          teks += `\n\nName : ${metadata.subject ? metadata.subject : "undefined"}\nOwner : ${loldd ? '@' + loldd.split("@")[0] : "undefined"}\nID : ${metadata.id ? metadata.id : "undefined"}\nMade : ${metadata.creation ? moment(metadata.creation * 1000).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss') : "undefined"}\nMember : ${metadata.participants.length ? metadata.participants.length : "undefined"}`
+        m.reply(`Plz Wait ${pushname} Testing Speed... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        try {
+          o = await exec('python speed.py')
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
         }
-        A17.sendTextWithMentions(m.chat, teks, m)
       }
         break;
 
@@ -2841,40 +2877,158 @@ Terimakasih`,
         }
       }
         break;
-		//MOD NEWBIE
-      case 'setpromo': 
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+		//MOD NEWBIE// SET TEXT PROMO
+case 'setpromo': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
 
-        if (!args[0]) return reply(`Use ${prefix + command} number\nExample ${prefix + command} ${OwnerNumber}`)
-        const swn = args.join(" ")
-        fs.writeFileSync('./database/promo.json', JSON.stringify(swn))
-		await sleep(500)
-        reply(`Berhalis Set Text Promo \n\n${swn}`)
-        break;
+    A17.sendMessage(from, { react: { text: "🛡️", key: m.key } });
+
+    if (!args[0]) return reply(`Use ${prefix + command} <text>\nExample: ${prefix + command} Promo Terbaru`);
+    const promoText = args.join(" ");
+    fs.writeFileSync('./database/promo.json', JSON.stringify({ text: promoText }, null, 2));
+    await sleep(500);
+    reply(`✅ *Berhasil mengatur teks promo:*\n\n${promoText}`);
+    break;
+}
+
+// SET TEXT AUTOSCRIPT
+case 'setautoscript': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    A17.sendMessage(from, { react: { text: "📜", key: m.key } });
+
+    if (!args[0]) return reply(`Use ${prefix + command} <text>\nExample: ${prefix + command} Autoscript Terbaru`);
+    const autoscriptText = args.join(" ");
+    fs.writeFileSync('./database/autoscript.json', JSON.stringify({ text: autoscriptText }, null, 2));
+    await sleep(500);
+    reply(`✅ *Berhasil mengatur teks autoscript:*\n\n${autoscriptText}`);
+    break;
+}
+
+// SET TEXT JASA RECODE
+case 'setrecode': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    A17.sendMessage(from, { react: { text: "🛠️", key: m.key } });
+
+    if (!args[0]) return reply(`Use ${prefix + command} <text>\nExample: ${prefix + command} Jasa Recode Terbaru`);
+    const recodeText = args.join(" ");
+    fs.writeFileSync('./database/recode.json', JSON.stringify({ text: recodeText }, null, 2));
+    await sleep(500);
+    reply(`✅ *Berhasil mengatur teks jasa recode:*\n\n${recodeText}`);
+    break;
+}
+
+case 'setvps': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+        A17.sendMessage(from, { react: { text: "📜", key: m.key } });
+
+    if (!args[0]) return reply(`Use ${prefix + command} <text>\nExample: ${prefix + command} VPS Terbaru`);
+    const vpsText = args.join(" ");
+    fs.writeFileSync('./database/VPs.json', JSON.stringify({ text: vpsText }, null, 2));
+    await sleep(500);
+    reply(`✅ *Berhasil mengatur teks VPS:*\n\n${vpsText}`);
+    break;
+}
+
 		
-	  case 'promo': 
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner);
-        try {
-          const promData = fs.readFileSync('./database/promo.json', 'utf8');
-          const mods = JSON.parse(promData);
+case 'promo': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
 
-          if (mods.length === 0) {
-            reply('harap input promo anda ${prefix}setpromo (text)');
-          } else {
-			  let message = 
-			await sleep(5000)
-			reply(`${mods}`);
-          }
-        } catch (error) {
-          console.error(error);
-          reply('Failed to fetch mod list.');
+    try {
+        A17.sendMessage(from, { react: { text: "📝", key: m.key } }); // Reaksi awal
+        await sleep(1500); // Delay agar terlihat interaktif
+
+        // Fungsi untuk membaca file JSON
+        const readJson = (filePath) => {
+            try {
+                const data = fs.readFileSync(filePath, 'utf8');
+                return JSON.parse(data).text || "";
+            } catch (err) {
+                console.error(`Error membaca file ${filePath}:`, err);
+                return ""; // Mengembalikan string kosong jika file error
+            }
+        };
+
+        // Membaca file JSON
+        const promoText = readJson('./database/promo.json');
+        const autoscriptText = readJson('./database/autoscript.json');
+        const recodeText = readJson('./database/recode.json');
+        const vpsText = readJson('./database/VPs.json');
+
+        // Fungsi untuk mengirim pesan dengan format terpisah
+        const sendFormattedMessage = async (title, body) => {
+            if (body) {
+                let message = {
+                    text: `📢 ${body}`,
+                    contextInfo: {
+                        externalAdReply: {
+                            showAdAttribution: true,
+                            title: `${nowtime}`,
+                            body: title,
+                            thumbnail: global.Tumb,
+                            sourceUrl: global.website,
+                            mediaType: 1,
+                            renderLargerThumbnail: true
+                        }
+                    }
+                };
+                await A17.sendMessage(m.sender, message, { quoted: m });
+                await sleep(1500); // Delay antar pesan
+            }
+        };
+
+        // Kirim pesan Promo jika ada
+        await sendFormattedMessage(
+            "Promo Terbaru",
+            promoText,
+            'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg'
+        );
+
+        // Kirim pesan Autoscript jika ada
+        await sendFormattedMessage(
+            "Autoscript Tunneling",
+            autoscriptText,
+            'https://telegra.ph/file/d7c3d152d9fff8f85ee62.jpg'
+        );
+
+        // Kirim pesan Jasa Recode jika ada
+        await sendFormattedMessage(
+            "Jasa Recode",
+            recodeText,
+            'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg'
+        );
+
+        // Kirim pesan VPS jika ada
+        await sendFormattedMessage(
+            "VPS Newbie",
+            vpsText,
+            'https://telegra.ph/file/5dcae7a3d0b3c4d3f60c4.jpg'
+        );
+
+        // Cek apakah semua file kosong
+        if (!promoText && !autoscriptText && !recodeText && !vpsText) {
+            return reply(`❌ Semua pesan kosong!\nGunakan perintah:\n- *${prefix}setpromo <text>*\n- *${prefix}setautoscript <text>*\n- *${prefix}setrecode <text>*\n- *${prefix}setvps <text>*`);
         }
-        break;
+
+        reply('✅ *Preview Pesan Berhasil Dikirim!*');
+
+    } catch (error) {
+        console.error("Error saat membaca file promo/autoscript/recode/vps:", error);
+        reply('❌ Terjadi kesalahan saat menampilkan preview pesan. Pastikan format file JSON sudah benar.');
+    }
+    break;
+}
 		
 		
       case 'addmod': 
@@ -2954,72 +3108,69 @@ Terimakasih`,
         }
 		  break;
 		//MENU SHOW AKUN
-      case 'cekexp': {
-		if (!isCreator) return reply(mess.owner)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+case 'cekexp': {
+    if (!isCreator) return reply(mess.botowner)
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Akun EXP Today... ⚙️`);
 
-        m.reply(`Plz Wait ${pushname} Show All Accout Expaired... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        try {
-          o = await exec('xp-wa')
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-		
-      case 'cekservice': {
-		if (!isCreator) return reply(mess.owner)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
 
-        m.reply(`Plz Wait ${pushname} Show All Status Service... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        try {
-          o = await exec('run-wa')
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
+        const { stdout, stderr } = await exec('xp-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error checking service status:', err);
+        reply('Oops, terjadi kesalahan saat memeriksa akun expired.');
+    }
+    break;
+}
 
-      case 'memberssh': {
-		if (!isCreator) return reply(mess.owner)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+case 'cekservice': {
+    if (!isCreator) return reply(mess.botowner)
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Status Service... ⚙️`);
 
-        m.reply(`Plz Wait ${pushname} Show All Member SSH... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        try {
-          o = await exec('member-ssh-wa')
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-       
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('run-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error checking service status:', err);
+        reply('Oops, terjadi kesalahan saat memeriksa status service.');
+    }
+    break;
+}
+
+case 'memberssh': {
+    if (!isCreator) return reply(mess.botowner)
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Member SSH... ⚙️`);
+
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('member-ssh-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error showing SSH members:', err);
+        reply('Oops, terjadi kesalahan saat menampilkan member SSH.');
+    }
+    break;
+}
+
       case 'memberxray': {
-		if (!isCreator) return reply(mess.owner)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+		if (!isCreator) return reply(mess.botowner)
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
 
         m.reply(`Plz Wait ${pushname} Show All Member Xray... ⚙️`)
         let cp = require('child_process')
@@ -3038,81 +3189,85 @@ Terimakasih`,
       }
         break;
 
-		//LOGIN AKUN
-      case 'loginssh': {
-		if (!isCreator) return reply(mess.owner)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
 
-        m.reply(`Plz Wait ${pushname} Show All Login SSH... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        try {
-          o = await exec('ceklim-wa')
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-       
-      case 'loginxray': {
-		if (!isCreator) return reply(mess.owner)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+case 'loginssh': {
 
-        m.reply(`Plz Wait ${pushname} Show All Login Xray... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        try {
-          o = await exec('cek-vme-wa')
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-		
-			//MENU AKUN SSH
-			
-// Import global session jika belum ada
+    if (!isCreator) return reply(mess.botowner)
 
-      case 'addssh': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA.PASSWORD.LIMITIP.MASAAKTIF*`)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        m.reply(`Plz Wait ${pushname} Add Account SSH... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        const swn = args.join(" ")
-        const pcknm = swn.split(".")[0];
-        const pckpw = swn.split(".")[1];
-        const pckip = swn.split(".")[2];
-        const pckex = swn.split(".")[3];
-        try {
-          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-ssh-wa`)
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-        
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Member XRAY... ⚙️`);
+
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('ceklim-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error showing SSH members:', err);
+        reply('Oops, terjadi kesalahan saat menampilkan member SSH.');
+    }
+    break;
+}
+
+case 'loginxray': {
+    if (!isCreator) return reply(mess.botowner)
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Member XRAY... ⚙️`);
+
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('cek-vme-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error showing SSH members:', err);
+        reply('Oops, terjadi kesalahan saat menampilkan member SSH.');
+    }
+    break;
+}
+
+case 'addssh': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.PASSWORD.LIMITIP.MASAAKTIF*`);
+    
+    // Parsing input menjadi array berdasarkan delimiter '.'
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi jika salah satu input kosong
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.PASSWORD.LIMITIP.MASAAKTIF*.\n\nContoh: *john.doe.2.30*`);
+    }
+
+    // Memproses data jika validasi terpenuhi
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang membuat akun SSH... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-ssh-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
       case 'delssh': {
-		if (!isCreator) return reply(mess.owner)
+		if (!isCreator) return reply(mess.botowner)
         if (!args.join("")) return reply(`MOHON INPUT *NAMA AKUN*`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Delete Account... ⚙️`)
@@ -3134,33 +3289,44 @@ Terimakasih`,
       }
         break;
 		
-      case 'renewssh': case 'renewakun': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA.MASA AKTIF*`)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        m.reply(`Plz Wait ${pushname} Renew Account... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        const swn = args.join(" ")
-        const pcknm = swn.split(".")[0];
-        const pckex = swn.split(".")[1];
-        try {
-          o = await exec(`printf "%s\n" "${pcknm}" "${pckex}" | renew-ssh-wa`)
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
+case 'renewssh': 
+case 'renewakun': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.MASA AKTIF*`);
+
+    // Parsing input menjadi array berdasarkan delimiter '.'
+    const swn = args.join(" ");
+    const [pcknm, pckex] = swn.split(".");
+
+    // Validasi jika salah satu input kosong
+    if (!pcknm || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.MASA AKTIF*.\n\nContoh: *john.30*`);
+    }
+
+    // Memproses data jika validasi terpenuhi
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang memperbarui akun SSH... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckex}" | renew-ssh-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
 		
       case 'cekssh': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+		if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Cek Detail Account... ⚙️`)
         let cp = require('child_process')
@@ -3182,7 +3348,7 @@ Terimakasih`,
         break;
 				
       case 'trialssh': case 'trialakun': {
-        if (!isCreator) return reply(mess.owner)
+        if (!isCreator) return reply(mess.botowner)
         if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
 		A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Create Account Trial... ⚙️`)
@@ -3204,166 +3370,201 @@ Terimakasih`,
       }
         break;
 		//ADD XRAY
-      case 'addvmess': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        m.reply(`Plz Wait ${pushname} Create Account Vmess... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        const swn = args.join(" ")
-        const pcknm = swn.split(".")[0];
-        const pckpw = swn.split(".")[1];
-        const pckip = swn.split(".")[2];
-        const pckex = swn.split(".")[3];
-        try {
-          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vme-wa`)
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-		
-      case 'addvless': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        m.reply(`Plz Wait ${pushname} Create Account Vless... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        const swn = args.join(" ")
-        const pcknm = swn.split(".")[0];
-        const pckpw = swn.split(".")[1];
-        const pckip = swn.split(".")[2];
-        const pckex = swn.split(".")[3];
-        try {
-          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vle-wa`)
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-		
-      case 'addtrojan': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        m.reply(`Plz Wait ${pushname} Create Account Trojan... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        const swn = args.join(" ")
-        const pcknm = swn.split(".")[0];
-        const pckpw = swn.split(".")[1];
-        const pckip = swn.split(".")[2];
-        const pckex = swn.split(".")[3];
-        try {
-          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-tro-wa`)
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
+case 'addvmess': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    // Parsing input menjadi array berdasarkan delimiter '.'
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi jika salah satu input kosong
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang membuat akun Vmess... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vme-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+case 'addvless': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang membuat akun Vless... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vle-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+case 'addtrojan': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang membuat akun Trojan... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-tro-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
 		
 		//RENEW XRAY		
-      case 'renewvmess': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        m.reply(`Plz Wait ${pushname} Renew Account Vmess... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        const swn = args.join(" ")
-        const pcknm = swn.split(".")[0];
-        const pckpw = swn.split(".")[1];
-        const pckip = swn.split(".")[2];
-        const pckex = swn.split(".")[3];
-        try {
-          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-vme-wa`)
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-		
-      case 'renewvless': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        m.reply(`Plz Wait ${pushname} Renew Account Vless... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        const swn = args.join(" ")
-        const pcknm = swn.split(".")[0];
-        const pckpw = swn.split(".")[1];
-        const pckip = swn.split(".")[2];
-        const pckex = swn.split(".")[3];
-        try {
-          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-vle-wa`)
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
-		
-      case 'renewtrojan': {
-		if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        m.reply(`Plz Wait ${pushname} Renew Account Trojan... ⚙️`)
-        let cp = require('child_process')
-        let { promisify } = require('util')
-        let exec = promisify(cp.exec).bind(cp)
-        let o
-        const swn = args.join(" ")
-        const pcknm = swn.split(".")[0];
-        const pckpw = swn.split(".")[1];
-        const pckip = swn.split(".")[2];
-        const pckex = swn.split(".")[3];
-        try {
-          o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-tro-wa`)
-        } catch (e) {
-          o = e
-        } finally {
-          let { stdout, stderr } = o
-          if (stdout.trim()) m.reply(stdout)
-          if (stderr.trim()) m.reply(stderr)
-        }
-      }
-        break;
+case 'renewvmess': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi input
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang memperbarui akun Vmess... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-vme-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+case 'renewvless': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi input
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang memperbarui akun Vless... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-vle-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+case 'renewtrojan': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi input
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang memperbarui akun Trojan... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-tro-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
 
 			//TRIAL XRAY
       case 'trialvmess': {
-        if (!isCreator) return reply(mess.owner)
+        if (!isCreator) return reply(mess.botowner)
         if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Create Account Trial Vmess... ⚙️`)
@@ -3386,7 +3587,7 @@ Terimakasih`,
         break;
 
 	  case 'trialvless': {
-        if (!isCreator) return reply(mess.owner)
+        if (!isCreator) return reply(mess.botowner)
         if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Create Account Trial Vless... ⚙️`)
@@ -3409,7 +3610,7 @@ Terimakasih`,
         break;
 		
 	  case 'trialtrojan': {
-        if (!isCreator) return reply(mess.owner)
+        if (!isCreator) return reply(mess.botowner)
         if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Create Account Trial Trojan... ⚙️`)
@@ -3433,8 +3634,8 @@ Terimakasih`,
 		
 		//DELETE XRAY
       case 'delvmess': {
-        if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Delete Account Vmess... ⚙️`)
         let cp = require('child_process')
@@ -3456,8 +3657,8 @@ Terimakasih`,
         break;
 		
       case 'delvless': {
-        if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Delete Account Vless... ⚙️`)
         let cp = require('child_process')
@@ -3479,8 +3680,8 @@ Terimakasih`,
         break;
 		
       case 'deltrojan': {
-        if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Delete Account Trojan... ⚙️`)
         let cp = require('child_process')
@@ -3503,8 +3704,8 @@ Terimakasih`,
 		
 		//CEK DETAIL XRAY
       case 'cekvmess': {
-        if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Detail Account Vmess... ⚙️`)
         let cp = require('child_process')
@@ -3526,8 +3727,8 @@ Terimakasih`,
         break;
 		
       case 'cekvless': {
-        if (!isCreator) return reply(mess.owner)
-        if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Detail Account Vless... ⚙️`)
         let cp = require('child_process')
@@ -3549,8 +3750,8 @@ Terimakasih`,
         break;
 		
       case 'cektrojan': {
-        if (!isCreator) return reply(mess.owner)
-		if (!args.join("")) return reply(`MOHON INPUT *NAMA*`)
+        if (!isCreator) return reply(mess.botowner)
+		if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
         m.reply(`Plz Wait ${pushname} Detail Account Trojan... ⚙️`)
         let cp = require('child_process')
@@ -7576,39 +7777,138 @@ case 'music': {
       }
         break;
 
-      case 'promosi':
-      case 'bcgroup': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner);
+case 'promosi':
+case 'bcgroup': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
 
-        let getGroups = await A17.groupFetchAllParticipating()
-        let groups = Object.entries(getGroups).slice(0).map(entry => entry[1])
-        let anu = groups.map(v => v.id)
-		const mods = fs.readFileSync('./database/promo.json', 'utf8');
-        const helpexitText = JSON.parse(mods);
-        reply(`Sending Broadcast To ${anu.length} Group Chat, End Time ${anu.length * 1.5} seconds`)
-        for (let i of anu) {
-          await sleep(1500)
-          let a = `${helpexitText}` + ''
-          A17.sendMessage(i, {
-            text: a,
-            contextInfo: {
-              externalAdReply: {
-                showAdAttribution: true,
-                title: BotName,
-                body: `Sent in ${i.length} Group`,
-                thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
-                sourceUrl: global.website,
-                mediaType: 1,
-                renderLargerThumbnail: false
-              }
-            }
-          })
+    // Ambil semua grup
+    let getGroups = await A17.groupFetchAllParticipating();
+    let groups = Object.entries(getGroups).slice(0).map(entry => entry[1]);
+    let anu = groups.map(v => v.id);
+
+    // Fungsi untuk membaca file JSON
+    function readJSON(filePath) {
+        try {
+            const data = fs.readFileSync(filePath, 'utf8');
+            const parsed = JSON.parse(data);
+            return parsed.text && parsed.text.trim() ? parsed.text : null;
+        } catch (err) {
+            console.error(`Error reading ${filePath}:`, err);
+            return null;
         }
-        reply(`Successful in sending Broadcast To ${anu.length} Group`)
-      }
-        break
+    }
+
+    // Membaca pesan dari file JSON
+    const promoText = readJSON('./database/promo.json');
+    const autoscriptText = readJSON('./database/autoscript.json');
+    const recodeText = readJSON('./database/recode.json');
+    const vpsText = readJSON('./database/VPs.json');
+
+    // Periksa apakah ada pesan yang tersedia
+    if (!promoText && !autoscriptText && !recodeText && !vpsText) {
+        return reply('❌ Semua pesan kosong! Harap atur pesan dengan perintah terkait.');
+    }
+
+    reply(`Starting broadcast to ${anu.length} Group Chat(s).`);
+
+    // Fungsi untuk mengirim pesan ke grup dengan delay
+    const sendBatchMessages = async (groupBatch) => {
+        for (let groupId of groupBatch) {
+            try {
+                const groupMembers = await A17.groupMetadata(groupId);
+
+                // Kirim pesan Promo
+                if (promoText) {
+                    await A17.sendMessage(groupId, {
+                        text: promoText,
+                        contextInfo: {
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: `${nowtime}`,
+                                body: 'Promo Terbaru dari Newbie Store',
+                                thumbnail: global.Tumb,
+								sourceUrl: global.website,
+								mediaType: 1,
+								renderLargerThumbnail: true
+                            }
+                        }
+                    });
+                }
+
+                // Kirim pesan Autoscript
+                if (autoscriptText) {
+                    await A17.sendMessage(groupId, {
+                        text: autoscriptText,
+                        contextInfo: {
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: `${nowtime}`,
+                                body: 'Autoscript Tunneling by Newbie Store',
+								thumbnail: global.Thumb,
+								sourceUrl: global.website,
+								mediaType: 1,
+								renderLargerThumbnail: true
+                            }
+                        }
+                    });
+                }
+
+                // Kirim pesan Jasa Recode
+                if (recodeText) {
+                    await A17.sendMessage(groupId, {
+                        text: recodeText,
+                        contextInfo: {
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: `${nowtime}`,
+                                body: 'Jasa Recode Newbie Store',
+								thumbnail: global.Thumb,
+								sourceUrl: global.website,
+								mediaType: 1,
+								renderLargerThumbnail: true
+                            }
+                        }
+                    });
+                }
+
+                // Kirim pesan VPS
+                if (vpsText) {
+                    await A17.sendMessage(groupId, {
+                        text: vpsText,
+                        contextInfo: {
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: `${nowtime}`,
+								thumbnail: global.Thumb,
+								sourceUrl: global.website,
+								mediaType: 1,
+								renderLargerThumbnail: true
+                            }
+                        }
+                    });
+                }
+
+                // Delay antar pesan di grup
+                await sleep(2000); // Delay 2 detik
+            } catch (err) {
+                console.error(`Error sending to group ${groupId}:`, err);
+            }
+        }
+    };
+
+    // Membagi grup menjadi batch
+    const batchSize = 5; // Kirim ke 5 grup per batch
+    for (let i = 0; i < anu.length; i += batchSize) {
+        const groupBatch = anu.slice(i, i + batchSize);
+        await sendBatchMessages(groupBatch);
+        await sleep(15000); // Delay 10 detik antar batch
+    }
+
+    reply(`Broadcast successfully sent to ${anu.length} Group Chat(s).`);
+    break;
+}
 		
       case 'send': {
         if (isBan) return reply(mess.banned);
@@ -7641,6 +7941,8 @@ case 'music': {
         reply(`Promosi Berhasil Dikirim`)
       }
         break
+
+
 
       case 'help':
       case 'h':
@@ -7901,27 +8203,147 @@ A17.sendMessage(m.chat, {
         break;
 
 
-      case 'bugmenu': case 'bug': {
+case 'tutor':
+case 'tutorial': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
-        const helpexit = `Hemlo *${pushname}* Dear...!! ${nowtime} ,
+
+const list_tutorial = `_Berikut Tutorial Yang Disesdiakan!!_
+
+_*⭔ Tutorial Lengkap*_
+https://www.youtube.com/playlist?list=PLTDz6Tj-46qMZMS299iOlAvMpjmxV0Nlr
+
+_*⭔ Tutorial Versi Textnya Kamu Bisa Ketik list di bawah*_
+
+.pasangconfighcv2ray
+.pasangconfigdrak
+.pasangconfigv2box
+.carabeli`
+
+A17.sendMessage(m.chat, {
+    text: list_tutorial,
+    contextInfo: {
+        externalAdReply: {
+            showAdAttribution: true,
+            title: `${nowtime} ${pushname}`,
+            body: global.BotName,
+            thumbnailUrl: 'https://i.ytimg.com/vi/cfIi2pvMffo/hqdefault.jpg', // Thumbnail harus berupa URL gambar
+            sourceUrl: 'https://www.youtube.com/playlist?list=PLTDz6Tj-46qMZMS299iOlAvMpjmxV0Nlr', // URL video atau playlist
+            mediaType: 1, // Untuk media seperti video atau gambar
+			renderLargerThumbnail: true
+        }
+    }
+});
+}
+break
+
+
+case 'pasangconfighcv2ray': {
+
+const gantisound = `_*⭔ Cara Memasang Config V2ray HC*_
+
+_*⭔ Langkah 1*
+Copy Akun Yang Diberikan Oleh Admin Biasanya Diawali dengan VMESS:// atau VLESS:// atau Trojan://
+
+_*⭔ Langkah 2*_
+Masuk Apk Http Custom Dan Pilih Gambar Potongan Pasel 🧩 Sebelah Tulisan HTTP Custom
+
+_*⭔ Langkah 3*_
+Pilih V2ray Setting Dan Pastekan text yang Sudah dicopy Sebelumnya
+(Anda Juga Bisa melakukan Paste dengan gambar papan 📋 Pada Pojok Kanan Atas)
+
+_*⭔ Langkah 4*_
+Kemudian Kembali dengan Panah back Atau Tombol kembali, Ceklist V2ray dan Klik Connect`;
+reply(gantisound)
+
+}
+break
+
+
+
+case 'pasangconfigdrak': {
+
+const gantifotomenu = `_*⭔ Cara Memasang Config DrakTunnel*_
+
+_*⭔ Langkah 1*_
+Copy Akun Yang Diberikan Oleh Admin Biasanya Diawali dengan VMESS:// atau VLESS:// atau Trojan:// atau draktunnel://
+
+_*⭔ Langkah 2*_
+Buka Apk DrakTunnel Kemudian Pilih Titik Tiga Pada Pijok Kanan Atas
+
+_*⭔ Langkah 3*_
+pilih Config Kemudian Pilih Import Config Kemudian Pilih Clipboard
+
+_*⭔ Langkah 4*_
+Muncul Konfirmasi Dengan Nama Akun, Pilih OK
+
+_*⭔ Langkah 5*_
+Kemudian Klik Connect pada halaman DrakTunnel`;
+reply(gantifotomenu)
+
+}
+break
+
+
+
+
+case 'pasangconfigv2box': {
+
+const gantiowner = `_*⭔ Cara Memasang Config V2BOX*_
+
+_*⭔ Langkah 1*_
+Copy Akun Yang Diberikan Oleh Admin Biasanya Diawali dengan VMESS:// atau VLESS:// atau Trojan://
+
+_*⭔ Langkah 2*_
+Buka Apk *V2box* Dan Pilih Tab *Config* Pada Halaman Awal 
+(Biasaya ada di bagian bawah tengah)
+
+_*⭔ Langkah 3*_
+Pilih Tombol Plus ➕ Pada Bagian Pojok Atas Layar, Pilih Paste Uri Urutan Pertama sendiri,
+
+_*⭔ Langkah 4*_
+Config akan Masuk Ke dalam List, pilih Config yang baru saja Masuk Dan Klik Connect`;
+reply(gantiowner)
+
+}
+break
+
+
+case 'carabeli': {
+
+    const gantisuperowner = `_*⭔ Cara Membeli Config Premium*_
+    
+    _*⭔ Langkah 1*_
+    Silahkan Hubungin Whatasapp Admin di Whatsapp.nevpn.site / Nomor Bot ini
+    
+    _*⭔ Langkah 2*_
+    Infokan Kepada Admin [contoh]
+	Nama anda : Abdul Putra [Abdul]
+    Config : sesuai Paket aktif [XL Edukasi]
+	Lokasi : Posisi Anda Saat ini [Jabar]
+	Harga : Harga Yang anda Inginkan [10 K]
+	
+    _*⭔ Langkah 3*_
+    Lakukan Pembayaran Dan Kirimkan Bukti pembayaran Kepada Admin
+	Biasanya Admin Akan Mengirim Nomer Dana Namun Jika Anda Ingin Melaui Qriss Mintalah
+	Foto Qris Kepada Admin,
+    
+    _*⭔ Langkah 4*_
+    Tunggulah Sebentar Admin akan Sesegera Mungkin Membuatkan Config Pesanan Anda`;
+    reply(gantisuperowner)
+    
+    }
+    break
+
+      case 'bugmenu': case 'bug': case '`info bug config`': {
+		if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        const helpexit = `Hey kak *${pushname}* ${nowtime} ,
   
-Halo , Kenalin Saya *${global.BotName}* Saya Adalah Bot Whatsapp Yang dibuat oleh *${global.author}* Gunakan Bug dengan bijak yak, :).
 
-
-┏ ┅ ━━〔〄 Bot Info 〄 〕━ ┅ ━
-┃ ⌯    *Time* : ${kaitime}
-┃ ⌯    *Date* : ${kaidate}
-┃ ⌯    *Bot usr name :* ${pushname} 
-┃ ⌯    *My prefix is :*  ${prefix}
-┃ ⌯    *Owner name :* ${global.OwnerName} 
-┃ ⌯    *Bot runtime :* ${runtime(process.uptime())} 
-┃ ⌯    *Platform :* Linux
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━━〔〄 *MENU BUG* 〄 〕━ ┅ 
+┏ ┅ ━━〔〄 *INFO BUG* 〄 〕━ ┅ 
 ┃
+┃   ⌯     ${prefix}!tselopok
 ┃   ⌯     ${prefix}!tselilped
 ┃   ⌯     ${prefix}!tselruangguru
 ┃   ⌯     ${prefix}!isatfun
@@ -7939,306 +8361,359 @@ Halo , Kenalin Saya *${global.BotName}* Saya Adalah Bot Whatsapp Yang dibuat ole
 ┃   ⌯     ${prefix}!axisgame
 ┃   ⌯     ${prefix}!axissosmed
 ┃   ⌯     ${prefix}!axissushiroll
-┃   ⌯     ${prefix}sshprem
-┃   ⌯     sshws
-┃   ⌯     ${prefix}donasi
 ┃
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
+┗ ┅ ━━━━━━━━━━━ ┅ ━
 
 ┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ ━━━〢
 ┃⌯ALLAH SWT
 ┃⌯NEWBIE STORE
 ┃⌯MY BROTHER :)
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
+┗ ┅ ━━━━━━━━━━━ ┅ ━`
 
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
 
-      case 'sshmenu': case 'ssh': {
+      case '!tselopok': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
-        const helpexit = `Hemlo *${pushname}* Dear...!! ${nowtime} ,
-  
-Halo , Kenalin Saya *${global.BotName}* Saya Adalah Bot Whatsapp Yang dibuat oleh *${global.author}* Gunakan Bug dengan bijak yak, :).
+        A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
+        const helpexit = `*◇━━━ILPED OPOK KALSEL & SUMSEL UNLI━━━◇*
+Payload :
+		
+GET /cdn-cgi/trace HTTP/1.1[crlf]Host: [rotate=tsel.me;loop.co.id][crlf]Expect: 200-continue[crlf][crlf][split][crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]
 
+Proxy : 172.67.175.171:80`
 
-┏ ┅ ━━〔〄 Bot Info 〄 〕━ ┅ ━
-┃ ⌯    *Time* : ${kaitime}
-┃ ⌯    *Date* : ${kaidate}
-┃ ⌯    *Bot usr name :* ${pushname} 
-┃ ⌯    *My prefix is :*  ${prefix}
-┃ ⌯    *Owner name :* ${global.OwnerName} 
-┃ ⌯    *Bot runtime :* ${runtime(process.uptime())} 
-┃ ⌯    *Platform :* Linux
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━━〔〄 *MENU SSH* 〄 〕━ ┅ 
-┃
-┃ ━━〔〄 *FASTSSH.COM* 〄 〕━ 
-┃
-┃   ⌯     sshws
-┃   ⌯     sshws1
-┃   ⌯     sshws2
-┃   ⌯     sshws3
-┃   ⌯     sshws4
-┃
-┃ ━━〔〄 *SSHOCEAN.COM* 〄 〕━ 
-┃
-┃   ⌯     sshoce
-┃   ⌯     sshoce1
-┃   ⌯     sshoce2
-┃   ⌯     sshoce3
-┃   ⌯     sshoce4
-┃   ⌯     sshoce5
-┃   ⌯     sshoce6
-┃   ⌯     sshoce7
-┃
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ ━━━〢
-┃⌯ALLAH SWT
-┃⌯NEWBIE STORE
-┃⌯MY BROTHER :)
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
-
+		
       case '!tselilped': case '!tselruangguru': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
         const helpexit = `*◇━━━ILPED/RGURU TSEL━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: edu.ruangguru.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.26.6.171\n104.22.20.245\n104.18.24.139`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
 
 
       case '!liveon': {
           if (isBan) return reply(mess.banned);
-          if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
           A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
 
           const helpexit = `*◇━━━━LIVE ON OPOK━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: beacon.liveon.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy:\nbeacon.liveon.id\nnapi.zendesk.com\nsupport.liveon.id`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
         
 
       case '!byuggwp': {
           if (isBan) return reply(mess.banned);
-          if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
           A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
 
           const helpexit = `*◇━━━━BYU GGWP━━━━◇*\nPayload  \nGET /cdn-cgi/trace HTTP/1.1[crlf]Host: 104.19.143.108[crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.19.143.108`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
 
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
         break;
 
 
       case '!axissushiroll': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━AXIS SUSHIROLL━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: sushiroll.co.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\nwww.sushiroll.co.id\nblog.sushiroll.co.id`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
 
         break;
 
       case '!xledu': case '!axisedu': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
-           const helpexit = `*◇━━━━XL/AXIS EDU━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: edu.ruangguru.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\n104.18.107.64\n104.17.70.206\n104.17.3.81\nchat.sociomile.com`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+           const helpexit = `*◇━━━━XL/AXIS EDU━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nHEAD / HTTP/1.1[crlf]Host: io.ruangguru.com[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf][crlf]BMOVE / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.17.70.206\n104.17.3.81\nchat.sociomile.com`
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
         
 
       case '!isatfun': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━ISAT FUN━━━━◇*\nPayload 1\nGET / HTTP/1.1[crlf]Host: [Host][crlf]Upgrade: websocket [crlf][crlf]\n\nPlayload2\nGET /cdn-cgi/trace HTTP/1.1[crlf]Host: creativeservices.netflix.com[crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.17.241.25\ncreativeservices.netflix.com\n`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
         
         
       case '!xlflex': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL/ FLEX━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH /ssh-ws HTTP/1.1[crlf]Host: [host][crlf]Host: tr.line.me[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf][crlf]\n\nProxy\nsogood.linefriends.com\ndf.game.naver.com\n172.67.26.118`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
         
         
       case '!xlsosmed': case '!xlfb': case '!axissosmed': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL /AXIS SOSMED━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: www.help.tinder.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\nwww.help.tinder.com\ninvestor.fb.com\n\n*SNI METOD*\ngraph.instagram.com`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
         
 
       case '!xlvision': case '!xlvis':  {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL VISION +━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: partners-mplay.visionplus.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\n104.18.225.52\nakademiaforex.onesignal.com\napi.visionplus.id`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
         
         
       case '!xlvidio': case '!axisvidio': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL /AXIS VIDIO━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: vidio.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.22.4.240\nquiz.int.vidio.com\nquiz.vidio.com`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
         
         
       case '!xlcon': case '!axiscon': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL /AXIS CONFRENCE━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH /ssh-ws HTTP/1.1[crlf]Host: [host][crlf]Host: partner.zoom.us[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf][crlf]\n\nProxy\n170.114.45.0\ngomarketplacefront-cf.zoom.us\ngomarketplacecontent-cf.zoom.us`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
         
         
       case '!xlff': case '!axisgame': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL /AXIS GAME━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH / HTTP/1.1[crlf]Host: [host][crlf]Host: cdn.appsflyer.com[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\npoe.garena.com\n104.16.108.96`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpexit,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Tumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
 
 
