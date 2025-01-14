@@ -12,7 +12,6 @@ const {
   generateWAMessageFromContent,
   jidDecode,
   makeInMemoryStore,
-  PHONENUMBER_MCC,
   prepareWAMessageMedia,
   proto,
   useMultiFileAuthState,
@@ -113,7 +112,7 @@ const startA17  = async () => {
     if (pairingMode && !A17.authState.creds.registered) {
       phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
 
-      if (!Object.keys(v => phoneNumber.startsWith(0))) {
+      if (phoneNumber.startsWith(0)) {
         console.log(chalk.bgBlack(chalk.redBright('Start with country code of your WhatsApp Number, Example : 916xxxx'), '\n> '));
         process.exit(0);
       }
@@ -193,24 +192,101 @@ const startA17  = async () => {
     })
 
 
-    A17.ev.on("messages.upsert", async (chatUpdate) => {
-      try {
-        mek = chatUpdate.messages[0];
-        if (!mek.message) return;
-        mek.message =
-          Object.keys(mek.message)[0] === "ephemeralMessage"
-            ? mek.message.ephemeralMessage.message
-            : mek.message;
-        if (mek.key && mek.key.remoteJid === "status@broadcast") return;
-        if (!A17.public && !mek.key.fromMe && chatUpdate.type === "notify")
-          return;
-        if (mek.key.id.startsWith("BAE5") && mek.key.id.length === 16) return;
-        m = smsg(A17, mek, store);
-        require("./Core")(A17, m, chatUpdate, store);
-      } catch (err) {
-        console.log(err);
+A17.ev.on("messages.upsert", async (chatUpdate) => {
+  try {
+    let mek = chatUpdate.messages[0];
+    if (!mek.message) return;
+
+    mek.message =
+      Object.keys(mek.message)[0] === "ephemeralMessage"
+        ? mek.message.ephemeralMessage.message
+        : mek.message;
+
+    if (mek.key && mek.key.remoteJid === "status@broadcast") return;
+    if (!A17.public && !mek.key.fromMe && chatUpdate.type === "notify") return;
+    if (mek.key.id.startsWith("BAE5") && mek.key.id.length === 16) return;
+
+    if (global.joinall) {
+      const messageContent =
+        mek.message.conversation ||
+        mek.message.extendedTextMessage?.text ||
+        "";
+
+      const groupLinkRegex = /(https?:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]+)/g;
+      const groupLinkMatch = messageContent.match(groupLinkRegex);
+
+      if (groupLinkMatch) {
+        const maxGroups = 5; // Batasi jumlah grup yang diproses dalam satu waktu
+        let processedGroups = 0;
+
+        for (const groupLink of groupLinkMatch) {
+          if (processedGroups >= maxGroups) {
+            console.log("⚠️ Batas jumlah grup yang dapat diproses telah tercapai.");
+            break;
+          }
+
+          console.log(`🔍 Memproses link grup: ${groupLink}`);
+          const groupCode = groupLink.split("https://chat.whatsapp.com/")[1];
+          if (!groupCode) {
+            console.log("❌ Kode grup tidak valid.");
+            continue;
+          }
+
+          try {
+            // Validasi jumlah anggota grup sebelum bergabung
+            const groupInfo = await A17.query({
+              tag: "iq",
+              attrs: {
+                type: "get",
+                xmlns: "w:g2",
+                to: "@g.us"
+              },
+              content: [{ tag: "invite", attrs: { code: groupCode } }]
+            });
+
+            const groupSize = parseInt(groupInfo.content[0].attrs.size);
+            console.log(`👥 Jumlah anggota grup: ${groupSize}`);
+
+            if (groupSize < 50) {
+              console.log("❌ Grup tidak memenuhi syarat (minimal 20 anggota).");
+              continue;
+            }
+
+            // Bergabung ke grup
+            const response = await A17.groupAcceptInvite(groupCode);
+            console.log(`✅ Berhasil bergabung ke grup: ${response.gid}`);
+
+            // Tambahkan delay untuk menghindari rate limit
+            const randomDelay = Math.random() * (7000 - 3000) + 3000; // Delay 3-7 detik
+            await sleep(randomDelay);
+            processedGroups++;
+
+          } catch (err) {
+            if (err.message.includes("rate-overlimit")) {
+              console.error("❌ Rate limit tercapai. Tunggu sebelum melanjutkan.");
+              await sleep(60000); // Tunggu 1 menit sebelum melanjutkan
+            } else if (err.message.includes("already-in-group") || err.message.includes("already-exists")) {
+              console.log(`⚠️ Bot sudah menjadi anggota grup atau pernah bergabung: ${groupLink}`);
+            } else {
+              console.error(`❌ Gagal bergabung ke grup: ${groupLink}`, err.message);
+            }
+          }
+        }
+        return;
       }
-    });
+    }
+
+    // Lanjutkan pemrosesan untuk pesan lainnya
+    const m = smsg(A17, mek, store);
+    require("./Core")(A17, m, chatUpdate, store);
+  } catch (err) {
+    console.error("❌ Terjadi kesalahan pada pesan:", err);
+  }
+});
+
+
+
+
 
 
     /* 
@@ -361,7 +437,7 @@ const startA17  = async () => {
             try {
               ppgroup = await A17.profilePictureUrl(anu.id, 'image')
             } catch {
-              ppgroup = global.Tumb
+              ppgroup = 'https://telegra.ph/file/4cc2712eee93c105f6739.jpg'
             }
 
             let targetname = await A17.getName(num)

@@ -28,6 +28,7 @@ const eco = require('discord-mongoose-economy');
 // const ffmpegPath = require('ffmpeg-static').path;
 // ffmpeg.setFfmpegPath(ffmpegPath);
 const Jimp = require('jimp');  // for full dp etc.
+const { updateConfig } = require("./database/configUpdater");
 const modapk = require("tod-api");
 const { hentai } = require('./lib/scraper2.js');
 const { instadl } = require('./lib/instadl');
@@ -60,19 +61,18 @@ const { downloadContentFromMessage,
 let nowtime = '';
 
 if (time2 < "05:00:00") {
-  nowtime = 'Good night 🏙';
+  nowtime = 'Selamat malam 🏙';
 } else if (time2 < "11:00:00") {
-  nowtime = 'Good morning 🌅';
+  nowtime = 'Selamat pagi 🌅';
 } else if (time2 < "15:00:00") {
-  nowtime = 'Good afternoon 🏞';
+  nowtime = 'Selamat siang 🏞';
 } else if (time2 < "18:00:00") {
-  nowtime = 'Good evening 🌇';
+  nowtime = 'Selamat sore 🌇';
 } else if (time2 < "19:00:00") {
-  nowtime = 'Good evening 🌆';
+  nowtime = 'Selamat sore 🌆';
 } else {
-  nowtime = 'Good night 🌌';
+  nowtime = 'Selamat malam 🌌';
 }
-
 
 
 
@@ -2940,7 +2940,7 @@ case 'setvps': {
 }
 
 		
-case 'promo': {
+case 'promo': case 'list': case 'produk': {
     if (isBan) return reply(mess.banned);
     if (isBanChat) return reply(mess.bangc);
     if (!isCreator) return reply(mess.botowner);
@@ -2976,14 +2976,14 @@ case 'promo': {
                             showAdAttribution: true,
                             title: `${nowtime}`,
                             body: title,
-                            thumbnail: global.Tumb,
+                            thumbnail: global.Thumb,
                             sourceUrl: global.website,
                             mediaType: 1,
                             renderLargerThumbnail: true
                         }
                     }
                 };
-                await A17.sendMessage(m.sender, message, { quoted: m });
+                await A17.sendMessage(from, message);
                 await sleep(1500); // Delay antar pesan
             }
         };
@@ -3021,7 +3021,7 @@ case 'promo': {
             return reply(`❌ Semua pesan kosong!\nGunakan perintah:\n- *${prefix}setpromo <text>*\n- *${prefix}setautoscript <text>*\n- *${prefix}setrecode <text>*\n- *${prefix}setvps <text>*`);
         }
 
-        reply('✅ *Preview Pesan Berhasil Dikirim!*');
+        reply('✅ *Ini adalah List Kami Kaka!*');
 
     } catch (error) {
         console.error("Error saat membaca file promo/autoscript/recode/vps:", error);
@@ -4819,6 +4819,21 @@ A17.sendMessage(m.chat, {
         break;
 
 
+
+case "joinall":
+  if (args[0] === "on") {
+    global.joinall = true;
+    updateConfig("joinall", "JOINALL", true); // Mengupdate file config.js dengan nilai true
+    reply("✅ JoinAll telah diaktifkan!");
+  } else if (args[0] === "off") {
+    global.joinall = false;
+    updateConfig("joinall", "JOINALL", false); // Mengupdate file config.js dengan nilai false
+    reply("✅ JoinAll telah dinonaktifkan!");
+  } else {
+    reply("❌ Perintah tidak dikenali. Gunakan 'on' untuk mengaktifkan atau 'off' untuk menonaktifkan.");
+  }
+  break;
+  
       // join command  is a possible to Ban bot number.
       case 'join': {
         if (isBan) return reply(mess.banned);
@@ -4926,6 +4941,31 @@ A17.sendMessage(m.chat, {
 
         break;
       }
+	  
+case 'byeall': {
+
+  // Memeriksa apakah pengguna adalah pembuat bot
+  if (!isCreator) return reply('Perintah ini hanya dapat digunakan oleh pembuat bot.');
+
+  try {
+    // Mendapatkan daftar semua grup yang diikuti oleh bot
+    const allGroups = await A17.groupFetchAllParticipating();
+    
+    // Iterasi melalui setiap grup dan keluar
+    for (let groupId in allGroups) {
+      await A17.groupLeave(groupId);
+      console.log(`Berhasil keluar dari grup: ${allGroups[groupId].subject}`);
+    }
+    
+    reply('Bot telah berhasil keluar dari semua grup.');
+
+  } catch (error) {
+    console.error('Terjadi kesalahan saat keluar dari grup:', error);
+    reply('Terjadi kesalahan saat mencoba keluar dari grup.');
+  }
+
+  break;
+}
 
 
       //
@@ -7910,37 +7950,112 @@ case 'bcgroup': {
     break;
 }
 		
-      case 'send': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner);
-		if (!args.join("")) return reply(`6282326xxxx`)
-		const swn = args.join(" ")
-        var target = swn.split(".")[0];
-		if (isNaN(target)) return m.reply("Target Tidak Valid!")
-		var org = target.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-		const mods = fs.readFileSync('./database/promo.json', 'utf8');
-        const helpexitText = JSON.parse(mods);{
-          await sleep(1500)
-          let a = `${helpexitText}` + ''
-          A17.sendMessage(org, {
-            text: a,
-            contextInfo: {
-              externalAdReply: {
-                showAdAttribution: true,
-                title: BotName,
-                body: `Sent in ${swn}`,
-                thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
-                sourceUrl: global.website,
-                mediaType: 1,
-                renderLargerThumbnail: false
-              }
-            }
-          })
-        }
-        reply(`Promosi Berhasil Dikirim`)
+case 'send': {
+  try {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    // Memastikan bahwa args ada
+    if (!args.join("")) return reply(`Contoh perintah: send +62 851-6571-8519`);
+
+    // Gabungkan args menjadi satu string
+    const swn = args.join(" ");
+    
+    // Mengambil nomor target dan memisahkan pesan
+    const target = swn.split(".")[0];  // Ambil bagian pertama (nomor)
+
+    // Memastikan nomor telepon valid
+    const targetNumber = target.replace(/[^0-9]/g, ''); // Hapus karakter non-digit
+
+    // Mengecek apakah nomor valid (memiliki panjang minimal 10 digit)
+    if (targetNumber.length < 10) {
+      return reply(`Nomor telepon ${targetNumber} tidak valid. Pastikan nomor telepon lengkap dan benar.`);
+    }
+
+    // Format nomor WhatsApp yang benar
+    var org = targetNumber + '@s.whatsapp.net'; 
+
+    // Fungsi untuk membaca file JSON
+    const readJson = (filePath) => {
+      try {
+        const data = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(data).text || "";
+      } catch (err) {
+        console.error(`Error membaca file ${filePath}:`, err);
+        return ""; // Mengembalikan string kosong jika file error
       }
-        break
+    };
+
+    // Membaca file JSON
+    const promoText = readJson('./database/promo.json');
+    const autoscriptText = readJson('./database/autoscript.json');
+    const recodeText = readJson('./database/recode.json');
+    const vpsText = readJson('./database/VPs.json');
+
+    // Fungsi untuk mengirim pesan dengan format terpisah
+    const sendFormattedMessage = async (title, body) => {
+      if (body) {
+        let message = {
+          text: `📢 ${body}`,
+          contextInfo: {
+            externalAdReply: {
+              showAdAttribution: true,
+              title: `${nowtime}`,
+              body: title,
+              thumbnail: global.Thumb,
+              sourceUrl: global.website,
+              mediaType: 1,
+              renderLargerThumbnail: true
+            }
+          }
+        };
+        await A17.sendMessage(org, message);
+        await sleep(1500); // Delay antar pesan
+      }
+    };
+
+    // Kirim pesan Promo jika ada
+    await sendFormattedMessage(
+      "Promo Terbaru",
+      promoText,
+      'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg'
+    );
+
+    // Kirim pesan Autoscript jika ada
+    await sendFormattedMessage(
+      "Autoscript Tunneling",
+      autoscriptText,
+      'https://telegra.ph/file/d7c3d152d9fff8f85ee62.jpg'
+    );
+
+    // Kirim pesan Jasa Recode jika ada
+    await sendFormattedMessage(
+      "Jasa Recode",
+      recodeText,
+      'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg'
+    );
+
+    // Kirim pesan VPS jika ada
+    await sendFormattedMessage(
+      "VPS Newbie",
+      vpsText,
+      'https://telegra.ph/file/5dcae7a3d0b3c4d3f60c4.jpg'
+    );
+
+    // Cek apakah semua file kosong
+    if (!promoText && !autoscriptText && !recodeText && !vpsText) {
+      return reply(`❌ Semua pesan kosong!\nGunakan perintah:\n- *${prefix}setpromo <text>*\n- *${prefix}setautoscript <text>*\n- *${prefix}setrecode <text>*\n- *${prefix}setvps <text>*`);
+    }
+
+    reply('✅ *Preview Pesan Berhasil Dikirim!*');
+
+  } catch (error) {
+    console.error("Error saat membaca file promo/autoscript/recode/vps:", error);
+    reply('❌ Terjadi kesalahan saat menampilkan preview pesan. Pastikan format file JSON sudah benar.');
+  }
+  break;
+}
 
 
 
@@ -8178,7 +8293,7 @@ A17.sendMessage(m.chat, {
                     showAdAttribution: true,
                     title: BotName,
                     body: `Follow Saluran Kami`,
-                    thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
+                    thumbnail: global.Tumb,
                     sourceUrl: global.website,
                     mediaType: 1,
                     renderMediumThumbnail: true
@@ -8826,13 +8941,13 @@ A17.sendMessage(m.chat, {
           const helpexitText = `◇━━━━━━━━━━━━━━◇
       AUTOSCRIPT TUNNELING
 ◇━━━━━━━━━━━━━━◇
-🔰 Script Premium V4.04 N By NEWBIE 🔰
+🔰 Script Premium V1.6.9 N By NEWBIE 🔰
 ◇━━━━━━━━━━━━━━◇
 SEWA :
 1 IP/Bulan : 10k
-UNLI IP Lifetime : 150k
+UNLI IP Lifetime : 200k
 LICENSI OPEN SOUCE : 
-250 K (Recode Harga Terpisah)
+500 K (Recode Harga Terpisah)
 ◇━━━━━━━━━━━━━━◇
 > FEATURE :
 1. Backup & Restore
@@ -8846,17 +8961,15 @@ LICENSI OPEN SOUCE :
 10. Multilogin Akun otomatis ke Kunci
 11. Support Slowdns ✓
 12. Bisa Rename Scritp ✓
-13. Tersedia 2 tema berbeda
-14. Support lock Unlock Xray(vmess. Vless. Trojan)
-15. Support auto pointing jika tidak memiliki domain sendiri!
-16. Recovery akun Xray Expaired! (Memungkinkan mengembalikan akun X-ray yang sudah melewati masa aktif)
-17. Scritp ringan bahkan di ram 1 GB
+13. Support lock Unlock Xray(vmess. Vless. Trojan)
+14. Support auto pointing jika tidak memiliki domain sendiri!
+15. Recovery akun Xray Expaired! (Memungkinkan mengembalikan akun X-ray yang sudah melewati masa aktif)
+16. Scritp ringan bahkan di ram 1 GB
 ◇━━━━━━━━━━━━━━◇
 > SUPPORT OS :
-✓ Ubuntu 20.04 LTS
-✓ Debian 10
-✓ Debian 11 (Not Support Enhanced)
-Rekomendasi OS : Debian 10
+✓ Ubuntu 20.04 LTS - 24.04
+✓ Debian 10 - 12 
+> Support Enhacend 
 ◇━━━━━━━━━━━━━━◇`
 A17.sendMessage(m.chat, {
             text: helpexitText,
@@ -8865,7 +8978,7 @@ A17.sendMessage(m.chat, {
                     showAdAttribution: true,
                     title: BotName,
                     body: `Follow Saluran Kami`,
-                    thumbnailUrl: 'https://telegra.ph/file/d7c3d152d9fff8f85ee62.jpg',
+                    thumbnail: global.Tumb,
                     sourceUrl: global.website,
                     mediaType: 1,
                     renderMediumThumbnail: true
@@ -8914,7 +9027,7 @@ _Jasa Recode_
                     showAdAttribution: true,
                     title: BotName,
                     body: 'Follow Saluran Kami',
-                    thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
+                    thumbnail: global.Tumb,
                     sourceUrl: global.website,
                     mediaType: 1,
                     renderMediumThumbnail: true

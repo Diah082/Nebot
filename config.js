@@ -7,6 +7,7 @@ require("dotenv").config();
 global.available = process.env.AVAILABLE || true;
 global.autoReadAll = process.env.AUTO_READ_ALL || false;
 global.antitags = process.env.ANTITAGS || true;
+global.joinall = process.env.JOINALL || true;
 
 // Auto functioner
 global.autoTyping = process.env.AUTO_TYPING || false;
@@ -17,7 +18,7 @@ global.autoreadgc = process.env.AUTOREADGC || true;
 
 
 // Auth information
-global.pairNumber = "XXXX";                         // Add your paining number with country code example "6282326322300"; 
+global.pairNumber = "6285135312640";                         // Add your paining number with country code example "6282326322300"; 
 global.port = process.env.PORT || "10000";
 global.auth = process.env.AUTH || "Pairing";                // Auth mode OR/Pairing.
 global.sessionFile = process.env.SESSION_FILE || "A17-SESSION";
@@ -43,7 +44,7 @@ global.SupportGroupLink = "https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp";
 
 
 //
-global.openAiAPI = process.env.OPENAI_API || "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";
+global.openAiAPI = process.env.OPENAI_API || "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";
 global.location = process.env.LOCATION || "Center Java, Indonesia";
 global.reactmoji = process.env.REACT_MOJI || "❤️";
 global.themeemoji = process.env.THEME_EMOJI || "💖";
