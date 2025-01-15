@@ -77,7 +77,7 @@ const startA17  = async () => {
     const A17 = A17Connect({
       logger: pino({ level: "silent" }),
       printQRInTerminal: !pairingMode,
-      browser: ["Ubuntu", "Chrome", "127.0.6533.72-1"],
+      browser: ["Windows", "Chrome", "114.0.0.0"],
       auth: state,
       patchMessageBeforeSending: (message) => {
         const requiresPatch = !!(
