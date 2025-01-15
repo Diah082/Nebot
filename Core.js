@@ -8293,10 +8293,10 @@ A17.sendMessage(m.chat, {
                     showAdAttribution: true,
                     title: BotName,
                     body: `Follow Saluran Kami`,
-                    thumbnail: global.Tumb,
+                    thumbnail: global.Thumb,
                     sourceUrl: global.website,
                     mediaType: 1,
-                    renderMediumThumbnail: true
+                    renderLargerThumbnail: true
                 }
             }
         });
