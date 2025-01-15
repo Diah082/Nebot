@@ -7868,7 +7868,7 @@ case 'bcgroup': {
                                 showAdAttribution: true,
                                 title: `${nowtime}`,
                                 body: 'Promo Terbaru dari Newbie Store',
-                                thumbnail: global.Tumb,
+                                thumbnail: global.Thumb,
 								sourceUrl: global.website,
 								mediaType: 1,
 								renderLargerThumbnail: true
@@ -8492,7 +8492,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8521,7 +8521,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8544,7 +8544,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8569,7 +8569,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8594,7 +8594,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8620,7 +8620,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8645,7 +8645,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8670,7 +8670,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8695,7 +8695,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8720,7 +8720,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8745,7 +8745,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8770,7 +8770,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8795,7 +8795,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8820,7 +8820,7 @@ A17.sendMessage(m.chat, {
         showAdAttribution: true, 
         title: `${nowtime} ${pushname}`,
         body: global.BotName,
-        thumbnail: global.Tumb,
+        thumbnail: global.Thumb,
         sourceUrl: global.website,
         mediaType: 1,
         renderLargerThumbnail: true
@@ -8978,7 +8978,7 @@ A17.sendMessage(m.chat, {
                     showAdAttribution: true,
                     title: BotName,
                     body: `Follow Saluran Kami`,
-                    thumbnail: global.Tumb,
+                    thumbnail: global.Thumb,
                     sourceUrl: global.website,
                     mediaType: 1,
                     renderMediumThumbnail: true
@@ -9027,7 +9027,7 @@ _Jasa Recode_
                     showAdAttribution: true,
                     title: BotName,
                     body: 'Follow Saluran Kami',
-                    thumbnail: global.Tumb,
+                    thumbnail: global.Thumb,
                     sourceUrl: global.website,
                     mediaType: 1,
                     renderMediumThumbnail: true
