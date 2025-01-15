@@ -201,9 +201,12 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
       Object.keys(mek.message)[0] === "ephemeralMessage"
         ? mek.message.ephemeralMessage.message
         : mek.message;
-
+    const isOwner = global.OwnerNumber.some(owner => {
+      return mek.key.remoteJid === `${owner}@s.whatsapp.net` || mek.key.fromMe;
+    });
+	
     if (mek.key && mek.key.remoteJid === "status@broadcast") return;
-    if (!A17.public && !mek.key.fromMe && chatUpdate.type === "notify") return;
+    if (!A17.public && !mek.key.fromMe && !isOwner && chatUpdate.type === "notify") return;
     if (mek.key.id.startsWith("BAE5") && mek.key.id.length === 16) return;
 
     if (global.joinall) {

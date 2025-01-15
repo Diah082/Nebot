@@ -425,7 +425,6 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
     //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
-    // //don't edit this part.
     const formatTime = (seconds) => {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
@@ -452,8 +451,7 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
 
     // Initial call to start the random status updates
     updateStatus();
-
-
+    
 
     //-----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -731,7 +729,7 @@ Dana : 085135314992 An Diah Fitri Liani
 
 *Jangan Lupa Kirim Bukti TF Yah.*
 Terimakasih`,
-    'no dana': `*Pembayaran Lewat Dana dan Qris*
+    dana: `*Pembayaran Lewat Dana dan Qris*
         
 Dana : 085135314992 An Diah Fitri Liani
 
@@ -779,7 +777,6 @@ Terimakasih`,
     //============= [LIST RESPONCE CHECKING END ]================
 
     //-----------------------------------------------------------------------------------------------------------------------------------//
-
 
 
     switch (command) {
@@ -8061,8 +8058,6 @@ case 'send': {
 
       case 'help':
       case 'h':
-      case 'menu':
-      case 'allmenu':
       case 'listmenu': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
@@ -8308,6 +8303,76 @@ A17.sendMessage(m.chat, {
 }
 
 
+      case 'menu':
+      case 'allmenu': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+
+        try {
+          await A17.sendMessage(from, { react: { text: "✨", key: m.key } });
+
+
+          const helpexitText = `\nHello ${pushname} Dear...!! ${nowtime} ,
+          
+          
+             ⌯  Date : ${kaidate}
+          
+          
+            〢━ 〄 Bot Info 〄 ━〢
+          
+   ⌯  My prefix is :  ${prefix}
+   ⌯  Bot usr name : ${pushname} 
+   ⌯  Owner name : ${global.OwnerName} 
+   ⌯  Runtime : ${runtime(process.uptime())} 
+   ⌯  RAM: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
+   ⌯  Total CPU Usage: ${totalCpuUsage}%
+   ⌯  Platform : Linux
+          
+          
+┏ ┅ ━━〔〄 *MENU UTAMA* 〄 〕━ ┅ 
+┃           
+┃  ⌯   ${prefix}tutor
+┃  ⌯   ${prefix}bug (config)
+┃  ⌯   ${prefix}menuserver
+┃  ⌯   ${prefix}setpromo
+┃  ⌯   ${prefix}setrecode
+┃  ⌯   ${prefix}setautoscript
+┃  ⌯   ${prefix}setvps
+┃  ⌯   ${prefix}promosi
+┃  
+┏ ┅ ━━〔 ♨ *Info* ♨ 〕━ ┅
+┃                    
+┃  ⌯   ${prefix}list
+┃  ⌯   ${prefix}qr
+┃  ⌯   dana           
+┃           
+┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ 〕━ ┅
+┃⌯ALLAH SWT
+┃⌯NEWBIE STORE
+┃⌯MY BROTHER :)
+┗ ┅ ━━━━━━━━━━━ ┅ ━`;
+
+A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: `Follow Saluran Kami`,
+                    thumbnail: global.Thumb,
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderLargerThumbnail: true
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Error sending help menu:', err);
+        reply('Oops, terjadi kesalahan saat mengirim menu bantuan.');
+    }
+    break;
+}
+
       case 'support': case 'supportgc': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
@@ -8458,24 +8523,24 @@ case 'carabeli': {
 
 ┏ ┅ ━━〔〄 *INFO BUG* 〄 〕━ ┅ 
 ┃
-┃   ⌯     ${prefix}!tselopok
-┃   ⌯     ${prefix}!tselilped
-┃   ⌯     ${prefix}!tselruangguru
-┃   ⌯     ${prefix}!isatfun
-┃   ⌯     ${prefix}!byuggwp
-┃   ⌯     ${prefix}!xlsosmed
-┃   ⌯     ${prefix}!xlflex
-┃   ⌯     ${prefix}!xlfb
-┃   ⌯     ${prefix}!xledu
-┃   ⌯     ${prefix}!xlcon
-┃   ⌯     ${prefix}!xlff
-┃   ⌯     ${prefix}!xlvision
-┃   ⌯     ${prefix}!xlvideo
-┃   ⌯     ${prefix}!axiscon
-┃   ⌯     ${prefix}!axisedu
-┃   ⌯     ${prefix}!axisgame
-┃   ⌯     ${prefix}!axissosmed
-┃   ⌯     ${prefix}!axissushiroll
+┃   ⌯  ${prefix}tselopok
+┃   ⌯  ${prefix}tselilped
+┃   ⌯  ${prefix}tselruangguru
+┃   ⌯  ${prefix}isatfun
+┃   ⌯  ${prefix}byuggwp
+┃   ⌯  ${prefix}xlsosmed
+┃   ⌯  ${prefix}xlflex
+┃   ⌯  ${prefix}xlfb
+┃   ⌯  ${prefix}xledu
+┃   ⌯  ${prefix}xlcon
+┃   ⌯  ${prefix}xlff
+┃   ⌯  ${prefix}xlvision
+┃   ⌯  ${prefix}xlvideo
+┃   ⌯  ${prefix}axiscon
+┃   ⌯  ${prefix}axisedu
+┃   ⌯  ${prefix}axisgame
+┃   ⌯  ${prefix}axissosmed
+┃   ⌯  ${prefix}axissushiroll
 ┃
 ┗ ┅ ━━━━━━━━━━━ ┅ ━
 
@@ -8503,7 +8568,7 @@ A17.sendMessage(m.chat, {
 	  }
         break;
 
-      case '!tselopok': {
+      case 'tselopok': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
@@ -8514,321 +8579,306 @@ GET /cdn-cgi/trace HTTP/1.1[crlf]Host: [rotate=tsel.me;loop.co.id][crlf]Expect: 
 
 Proxy : 172.67.175.171:80`
 
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
 		
-      case '!tselilped': case '!tselruangguru': {
+      case 'tselilped': case 'tselruangguru': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
         const helpexit = `*◇━━━ILPED/RGURU TSEL━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: edu.ruangguru.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.26.6.171\n104.22.20.245\n104.18.24.139`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
 
 
-      case '!liveon': {
+      case 'liveon': {
           if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
           A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
 
           const helpexit = `*◇━━━━LIVE ON OPOK━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: beacon.liveon.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy:\nbeacon.liveon.id\nnapi.zendesk.com\nsupport.liveon.id`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
 
-      case '!byuggwp': {
+      case 'byuggwp': {
           if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
           A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
 
           const helpexit = `*◇━━━━BYU GGWP━━━━◇*\nPayload  \nGET /cdn-cgi/trace HTTP/1.1[crlf]Host: 104.19.143.108[crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.19.143.108`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
-
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
 
 
-      case '!axissushiroll': {
+      case 'axissushiroll': {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━AXIS SUSHIROLL━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: sushiroll.co.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\nwww.sushiroll.co.id\nblog.sushiroll.co.id`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
-
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
 
-      case '!xledu': case '!axisedu': {
+      case 'xledu': case 'axisedu': {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL/AXIS EDU━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nHEAD / HTTP/1.1[crlf]Host: io.ruangguru.com[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf][crlf]BMOVE / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.17.70.206\n104.17.3.81\nchat.sociomile.com`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
 
-      case '!isatfun': {
+      case 'isatfun': {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━ISAT FUN━━━━◇*\nPayload 1\nGET / HTTP/1.1[crlf]Host: [Host][crlf]Upgrade: websocket [crlf][crlf]\n\nPlayload2\nGET /cdn-cgi/trace HTTP/1.1[crlf]Host: creativeservices.netflix.com[crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.17.241.25\ncreativeservices.netflix.com\n`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
         
-      case '!xlflex': {
+      case 'xlflex': {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL/ FLEX━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH /ssh-ws HTTP/1.1[crlf]Host: [host][crlf]Host: tr.line.me[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf][crlf]\n\nProxy\nsogood.linefriends.com\ndf.game.naver.com\n172.67.26.118`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
         
-      case '!xlsosmed': case '!xlfb': case '!axissosmed': {
+      case 'xlsosmed': case 'xlfb': case 'axissosmed': {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL /AXIS SOSMED━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: www.help.tinder.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\nwww.help.tinder.com\ninvestor.fb.com\n\n*SNI METOD*\ngraph.instagram.com`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
 
-      case '!xlvision': case '!xlvis':  {
+      case 'xlvision': case 'xlvis':  {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL VISION +━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: partners-mplay.visionplus.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\n104.18.225.52\nakademiaforex.onesignal.com\napi.visionplus.id`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
         
-      case '!xlvidio': case '!axisvidio': {
+      case 'xlvidio': case 'axisvidio': {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL /AXIS VIDIO━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: vidio.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.22.4.240\nquiz.int.vidio.com\nquiz.vidio.com`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
         
-      case '!xlcon': case '!axiscon': {
+      case 'xlcon': case 'axiscon': {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL /AXIS CONFRENCE━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH /ssh-ws HTTP/1.1[crlf]Host: [host][crlf]Host: partner.zoom.us[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf][crlf]\n\nProxy\n170.114.45.0\ngomarketplacefront-cf.zoom.us\ngomarketplacecontent-cf.zoom.us`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
         
-      case '!xlff': case '!axisgame': {
+      case 'xlff': case 'axisgame': {
            if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
            const helpexit = `*◇━━━━XL /AXIS GAME━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH / HTTP/1.1[crlf]Host: [host][crlf]Host: cdn.appsflyer.com[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\npoe.garena.com\n104.16.108.96`
-A17.sendMessage(m.chat, {
-    text : helpexit,
-    contextInfo: {
-    externalAdReply: {
-        showAdAttribution: true, 
-        title: `${nowtime} ${pushname}`,
-        body: global.BotName,
-        thumbnail: global.Thumb,
-        sourceUrl: global.website,
-        mediaType: 1,
-        renderLargerThumbnail: true
-    }
-    }
-}
-)
-	  }
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
 
 
