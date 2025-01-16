@@ -3193,7 +3193,7 @@ case 'loginssh': {
 
     try {
         await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
-        m.reply(`Plz Wait ${pushname}, Show All Member XRAY... ⚙️`);
+        m.reply(`Plz Wait ${pushname}, Show All Member SSH... ⚙️`);
 
         const cp = require('child_process');
         const { promisify } = require('util');
