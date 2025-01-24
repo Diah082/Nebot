@@ -3193,7 +3193,7 @@ case 'loginssh': {
 
     try {
         await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
-        m.reply(`Plz Wait ${pushname}, Show All Member SSH... ⚙️`);
+        m.reply(`Plz Wait ${pushname}, Show All Member XRAY... ⚙️`);
 
         const cp = require('child_process');
         const { promisify } = require('util');
@@ -4966,42 +4966,52 @@ case 'byeall': {
 
 
       //
-      case 'welcome':
-      case 'group-event':
+case 'welcome':
+case 'group-event':
+  A17.sendMessage(from, { react: { text: '❤', key: m.key } });
+  if (isBan) return reply(mess.banned);
+  if (isBanChat) return reply(mess.bangc);
+  if (!m.isGroup) return reply(mess.grouponly);
+  if (!isAdmins && !isCreator) return reply(mess.useradmin);
 
-        A17.sendMessage(from, { react: { text: '❤', key: m.key } });
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isBotAdmins) return reply(mess.botadmin);
-        if (!isAdmins && !isCreator) return reply(mess.useradmin)
+  const { getGroup, updateGroup } = require('./src/groups.js'); // Impor fungsi dari groups.js
 
-        if (args.length === 0) {
-          if (global.groupevent) {
-            return m.reply(`Group events are currently *enabled*.\n\nYou can turn them *off* using "${global.prefa[0]}groupevent off".`);
-          } else {
-            return m.reply(`Group events are currently *disabled*.\n\nYou can turn them *on* using "${global.prefa[0]}groupevent on".`);
-          }
-        } else if (args.length === 1 && (args[0] === 'on' || args[0] === 'off')) {
-          const status = args[0];
-          if (status === 'on') {
-            if (global.groupevent) {
-              return m.reply(`Group events are already *enabled*.`);
-            } else {
-              global.groupevent = true;
-              return m.reply(`Group events are now *enabled*.`);
-            }
-          } else {
-            if (!global.groupevent) {
-              return m.reply(`Group events are already *disabled*.`);
-            } else {
-              global.groupevent = false;
-              return m.reply(`Group events are now *disabled*.`);
-            }
-          }
-        } else {
-          return m.reply(`Usage: ${global.prefa[0]}groupevent [on/off]`);
-        }
-        break;
+  // Ambil data grup dari database
+  const groupData = getGroup(from) || { welcome: false };
+
+  if (args.length === 0) {
+    const status = groupData.welcome ? '*aktif*' : '*nonaktif*';
+    return m.reply(`Fitur welcome saat ini ${status} di grup ini.\n\nKamu bisa mengubahnya dengan perintah "${global.prefa[0]}welcome on/off".`);
+  }
+
+  if (args.length === 1 && (args[0] === 'on' || args[0] === 'off')) {
+    const status = args[0];
+
+    if (status === 'on') {
+      // Jika fitur welcome sudah aktif
+      if (groupData.welcome) {
+        return m.reply(`Fitur welcome sudah *aktif* di grup ini.`);
+      } else {
+        // Perbarui data grup untuk mengaktifkan fitur welcome
+        updateGroup(from, { welcome: true });
+        return m.reply(`Fitur welcome sekarang *aktif* di grup ini.`);
+      }
+    } else if (status === 'off') {
+      // Jika fitur welcome sudah nonaktif
+      if (!groupData.welcome) {
+        return m.reply(`Fitur welcome sudah *nonaktif* di grup ini.`);
+      } else {
+        // Perbarui data grup untuk menonaktifkan fitur welcome
+        updateGroup(from, { welcome: false });
+        return m.reply(`Fitur welcome sekarang *nonaktif* di grup ini.`);
+      }
+    }
+  } else {
+    return m.reply(`Penggunaan: ${global.prefa[0]}welcome [on/off]`);
+  }
+  break;
+
+
 
 
       //
@@ -7850,6 +7860,9 @@ case 'bcgroup': {
 
     reply(`Starting broadcast to ${anu.length} Group Chat(s).`);
 
+    // Fungsi untuk membuat jeda random
+    const randomDelay = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
     // Fungsi untuk mengirim pesan ke grup dengan delay
     const sendBatchMessages = async (groupBatch) => {
         for (let groupId of groupBatch) {
@@ -7866,11 +7879,11 @@ case 'bcgroup': {
                                 title: `${nowtime}`,
                                 body: 'Promo Terbaru dari Newbie Store',
                                 thumbnail: global.Thumb,
-								sourceUrl: global.website,
-								mediaType: 1,
-								renderLargerThumbnail: true
-                            }
-                        }
+                                sourceUrl: global.website,
+                                mediaType: 1,
+                                renderLargerThumbnail: true,
+                            },
+                        },
                     });
                 }
 
@@ -7883,12 +7896,12 @@ case 'bcgroup': {
                                 showAdAttribution: true,
                                 title: `${nowtime}`,
                                 body: 'Autoscript Tunneling by Newbie Store',
-								thumbnail: global.Thumb,
-								sourceUrl: global.website,
-								mediaType: 1,
-								renderLargerThumbnail: true
-                            }
-                        }
+                                thumbnail: global.Thumb,
+                                sourceUrl: global.website,
+                                mediaType: 1,
+                                renderLargerThumbnail: true,
+                            },
+                        },
                     });
                 }
 
@@ -7901,12 +7914,12 @@ case 'bcgroup': {
                                 showAdAttribution: true,
                                 title: `${nowtime}`,
                                 body: 'Jasa Recode Newbie Store',
-								thumbnail: global.Thumb,
-								sourceUrl: global.website,
-								mediaType: 1,
-								renderLargerThumbnail: true
-                            }
-                        }
+                                thumbnail: global.Thumb,
+                                sourceUrl: global.website,
+                                mediaType: 1,
+                                renderLargerThumbnail: true,
+                            },
+                        },
                     });
                 }
 
@@ -7918,17 +7931,17 @@ case 'bcgroup': {
                             externalAdReply: {
                                 showAdAttribution: true,
                                 title: `${nowtime}`,
-								thumbnail: global.Thumb,
-								sourceUrl: global.website,
-								mediaType: 1,
-								renderLargerThumbnail: true
-                            }
-                        }
+                                thumbnail: global.Thumb,
+                                sourceUrl: global.website,
+                                mediaType: 1,
+                                renderLargerThumbnail: true,
+                            },
+                        },
                     });
                 }
 
-                // Delay antar pesan di grup
-                await sleep(2000); // Delay 2 detik
+                // Jeda random antara 2 hingga 5 detik
+                await new Promise((resolve) => setTimeout(resolve, randomDelay(2000, 5000)));
             } catch (err) {
                 console.error(`Error sending to group ${groupId}:`, err);
             }
@@ -7940,12 +7953,15 @@ case 'bcgroup': {
     for (let i = 0; i < anu.length; i += batchSize) {
         const groupBatch = anu.slice(i, i + batchSize);
         await sendBatchMessages(groupBatch);
-        await sleep(15000); // Delay 10 detik antar batch
+
+        // Jeda random antar batch (10 hingga 15 detik)
+        await new Promise((resolve) => setTimeout(resolve, randomDelay(10000, 15000)));
     }
 
     reply(`Broadcast successfully sent to ${anu.length} Group Chat(s).`);
     break;
 }
+
 		
 case 'send': {
   try {

@@ -30,6 +30,7 @@ const { promisify } = require("util");
 const writeFileAsync = promisify(fs.writeFile);
 const path = require("path");
 const readLine = require("readline");
+const { getGroup } = require('./src/groups.js');
 
 const {
   imageToWebp,
@@ -421,77 +422,90 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
 
     //... Groupevent handling
 
-    A17.ev.on('group-participants.update', async (anu) => {
-      if (global.groupevent) { // Check if group event handling is enabled ...
-        console.log(anu);
+ A17.ev.on('group-participants.update', async (anu) => {
+  try {
+    let groupId = anu.id; // ID grup yang mengalami perubahan
+    let metadata = await A17.groupMetadata(groupId);
+    let participants = anu.participants;
 
+    // Periksa apakah fitur welcome aktif untuk grup ini
+    const groupData = getGroup(groupId);
+    if (groupData?.welcome) {
+      console.log('Fitur welcome aktif untuk grup:', metadata.subject);
+
+      for (let num of participants) {
+        let ppuser, ppgroup;
+
+        // Ambil gambar profil pengguna
         try {
-          let metadata = await A17.groupMetadata(anu.id);
-          let participants = anu.participants;
-          for (let num of participants) {
-            // ... existing logic for adding and removing participants ...
-
-            try {
-              ppuser = await A17.profilePictureUrl(num, 'image')
-            } catch {
-              ppuser = 'https://images6.alphacoders.com/690/690121.jpg'
-            }
-
-            try {
-              ppgroup = await A17.profilePictureUrl(anu.id, 'image')
-            } catch {
-              ppgroup = 'https://telegra.ph/file/4cc2712eee93c105f6739.jpg'
-            }
-
-            let targetname = await A17.getName(num)
-            grpmembernum = metadata.participants.length
-
-
-            if (anu.action == 'add') {
-              // ... existing logic for welcoming new participants ...
-              let WAuserName = num
-              A17text = `
-Hello @${WAuserName.split("@")[0]},
-
-I am *Newbie Bot*, Welcome to ${metadata.subject}.
-
-*Group Description:*
-${metadata.desc}
-`
-
-              let buttonMessage = {
-                image: await getBuffer(ppgroup),
-                mentions: [num],
-                caption: A17text,
-                footer: `${global.BotName}`,
-                headerType: 4,
-              }
-              A17.sendMessage(anu.id, buttonMessage)
-            } else if (anu.action == 'remove') {
-              // ... existing logic for saying goodbye to departing participants ...
-              let WAuserName = num
-              A17text = `
-Okay Bye 👋, @${WAuserName.split("@")[0]},
-
-You'll be a noticeable absence!
-`
-
-              let buttonMessage = {
-                image: await getBuffer(ppuser),
-                mentions: [num],
-                caption: A17text,
-                footer: `${global.BotName}`,
-                headerType: 4,
-
-              }
-              A17.sendMessage(anu.id, buttonMessage)
-            }
-          }
+          ppuser = await A17.profilePictureUrl(num, 'image');
         } catch (err) {
-          console.log(err);
+          ppuser = `https://files.catbox.moe/a6zaap.jpg`; // Default gambar profil pengguna
+        }
+
+        // Ambil gambar profil grup
+        try {
+          ppgroup = await A17.profilePictureUrl(groupId, 'image');
+        } catch (err) {
+          ppgroup = `https://files.catbox.moe/a6zaap.jpg`; // Default gambar grup
+        }
+
+        let participantName = `@${num.split('@')[0]}`;
+
+        if (anu.action === 'add') {
+          // Pesan Selamat Datang
+          let welcomeText = `✨ *Selamat Datang di Grup, Kak ${participantName}!* 👋\n\nHai Kak! Senang banget kamu bisa join di grup ini. Yuk, saling sapa dan kenalan sama member lainnya 💬💕\n\n*Deskripsi Grup :* \n${metadata.desc}`;
+
+          A17.sendMessage(groupId, {
+            image: { url: ppuser },
+            caption: welcomeText,
+            footer: `Dari ${global.OwnerName}`,
+            headerType: 4,
+            mentions: [num],
+            contextInfo: {
+              forwardingScore: 999,
+              isForwarded: true,
+              externalAdReply: {
+                showAdAttribution: true,
+                title: `Selamat Datang Di ${metadata.subject}! 🌟`,
+                body: global.BotName,
+                previewType: "PHOTO",
+                thumbnailUrl: ppgroup,
+                sourceUrl: global.website,
+              },
+            },
+          });
+        } else if (anu.action === 'remove') {
+          // Pesan Selamat Tinggal
+          let goodbyeText = `😢 *Selamat Tinggal, Kak ${participantName}!* 👋\n\nTerima kasih sudah menjadi bagian dari grup ini. Semoga kita bisa bertemu lagi di lain kesempatan. Hati-hati di perjalanan ya~ 💐`;
+
+          A17.sendMessage(groupId, {
+            text: goodbyeText,
+            footer: `Dari ${global.OwnerName}`,
+            mentions: [num],
+            contextInfo: {
+              forwardingScore: 999,
+              isForwarded: true,
+              externalAdReply: {
+                showAdAttribution: true,
+                title: `Goodbye from ${metadata.subject}! 🌟`,
+                body: `Dari ${global.OwnerName}`,
+                previewType: "PHOTO",
+                thumbnailUrl: ppgroup,
+                sourceUrl: global.website,
+              },
+            },
+          });
         }
       }
-    });
+    } else {
+      console.log('Fitur welcome tidak aktif untuk grup:', metadata.subject);
+    }
+  } catch (error) {
+    console.error('❌ Terjadi kesalahan di fitur auto send join/leave:', error);
+  }
+});
+
 
 
     //
