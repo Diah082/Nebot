@@ -38,9 +38,9 @@
         "@hapi/boom": "^10.0.1",
         "@shineiichijo/mal-news-scraper": "^0.0.2",
         "@shineiichijo/marika": "^2.0.6",
-        "@whiskeysockets/baileys": "^6.7.5",
+        "@whiskeysockets/baileys": "^6.7.9",
         "anime-wallpaper": "^1.1.1",
-        "awesome-phonenumber": "^2.73.0",
+        "awesome-phonenumber": "^4.4.0",
         "axios": "^0.24.0",
         "canvacord": "^5.4.10",
         "cfonts": "^2.10.1",
@@ -91,7 +91,7 @@
         "path": "^0.12.7",
         "perf_hooks": "^0.0.1",
         "performance-now": "^2.1.0",
-        "pino": "^7.11.0",
+        "pino": "^9.4.0",
         "pm2": "^5.4.2",
         "qrcode-terminal": "^0.12.0",
         "quick.db": "^9.1.7",
@@ -107,8 +107,8 @@
         "util": "^0.12.5",
         "vicuna-ts": "^1.2.2",
         "wa-sticker-formatter": "^4.4.4",
-        "yargs": "^17.7.2",
-        "youtube-yts": "^2.0.0",
-        "youtubedl-core": "^4.11.7"
+        "yargs": "^17.7.2",    
+        "yt-search": "^2.10.4",
+        "ytdl-core": "npm:@distube/ytdl-core@latest"
     }
 }
