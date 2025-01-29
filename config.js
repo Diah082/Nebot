@@ -18,7 +18,7 @@ global.autoreadgc = process.env.AUTOREADGC || true;
 
 
 // Auth information
-global.pairNumber = "6285135312640";                         // Add your paining number with country code example "6282326322300"; 
+global.pairNumber = "XXXX";                         // Add your paining number with country code example "6282326322300"; 
 global.port = process.env.PORT || "10000";
 global.auth = process.env.AUTH || "Pairing";                // Auth mode OR/Pairing.
 global.sessionFile = process.env.SESSION_FILE || "A17-SESSION";
