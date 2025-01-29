@@ -450,7 +450,7 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
     }
 
     // Initial call to start the random status updates
-    updateStatus();
+
     
 
     //-----------------------------------------------------------------------------------------------------------------------------------//
@@ -788,7 +788,7 @@ Terimakasih`,
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "❤", key: m.key } })
 
-        let { data } = await axios.get('https://api.github.com/repos/Kai0071/A17');
+        let { data } = await axios.get('https://api.github.com/repos/Diah082/Nebot');
         teks = `*NewbieBot Script*\n\n*Total Stars*: ${data.stargazers_count}⭐\n*Total Forks*: ${data.forks_count} forks\n*GitHub*: https://github.com/Diah082/NewbieBot\n\nDont forget to follow me on *GitHub* and give a ⭐️ to my projects. `
         /*  let buttons = [
           {buttonId: `${prefix}owner`, buttonText: {displayText: '🍁 DEVELOPER 🍁'}, type: 1}
@@ -872,7 +872,7 @@ Terimakasih`,
 
           await A17.sendMessage(from, { react: { text: "❤", key: m.key } });
 
-          let { data } = await axios.get('https://api.github.com/repos/Kai0071/A17');
+          let { data } = await axios.get('https://api.github.com/repos/Diah082/Nebot');
           let teks = `                      *Newbie Store*\n\n   *Total Member Aktif*: ${data.stargazers_count}⭐\n   *Total Terjual*: ${data.forks_count} Akun\n   *Grup*: https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v\n\n           Terimakasih .`;
 
           let msg = generateWAMessageFromContent(m.key.remoteJid, {
