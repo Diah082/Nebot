@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Kai0071/A17.git"
+        "url": "git+https://github.com/Diah082/Nebot.git"
     },
     "keywords": [
         "md-bot"
@@ -20,9 +20,9 @@
     "author": "Kai",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/Kai0071/A17/issues"
+        "url": "https://github.com/Diah082/Nebot/issues"
     },
-    "homepage": "https://github.com/Kai0071/A17#readme",
+    "homepage": "https://github.com/Diah082/Nebot#readme",
     "devDependencies": {
         "@adiwajshing/keyed-db": "^0.2.4",
         "@hapi/boom": "^10.0.1",
@@ -48,6 +48,7 @@
         "cheerio": "1.0.0-rc.12",
         "child_process": "^1.0.2",
         "currency-system": "^2.8.9",
+        "dhn-api": "^1.1.3",
         "discord-mongoose-economy": "^1.2.0",
         "discord-xp": "^1.1.16",
         "dotenv": "^16.4.5",
@@ -104,6 +105,7 @@
         "scrape-primbon": "^1.1.0",
         "steno": "^4.0.2",
         "supervisor": "^0.12.0",
+        "textmaker-thiccy": "^1.3.1",
         "tod-api": "^1.0.5",
         "util": "^0.12.5",
         "vicuna-ts": "^1.2.2",

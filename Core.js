@@ -1,4 +1,4 @@
-        process.on("uncaughtException", console.error);
+process.on("uncaughtException", console.error);
 require("./config");
 
 const fs = require('fs');
@@ -24,12 +24,11 @@ const currentDay = new Intl.DateTimeFormat('en-US', options).format(currentDate)
 
 const speed = require('performance-now');
 const eco = require('discord-mongoose-economy');
-const thiccysapi = require('textmaker-thiccy');
 // const ffmpeg = require('fluent-ffmpeg');
 // const ffmpegPath = require('ffmpeg-static').path;
 // ffmpeg.setFfmpegPath(ffmpegPath);
-const maker = require('mumaker');
 const Jimp = require('jimp');  // for full dp etc.
+const { updateConfig } = require("./database/configUpdater");
 const modapk = require("tod-api");
 const { hentai } = require('./lib/scraper2.js');
 const { instadl } = require('./lib/instadl');
@@ -38,101 +37,52 @@ const { isLimit, limitAdd, getLimit, giveLimit, kurangBalance, getBalance, isGam
 const githubstalk = require('./lib/githubstalk');
 let { covid } = require('./lib/covid.js');
 const { Gempa } = require("./lib/gempa.js");
-
+const getLyrics = require("@fantox01/lyrics-scraper");
 const spaceemojis = ["🌌", "🌠", "🚀", "🪐", "🌟"];     // list of emojis for Space CMDs.
 const manyemojis = ["😄", "👍", "👏", "👌", "🥇", "🌟", "🎉", "🙌", "🤩", "💯", "🔥", "✨", "🚀", "💖", "🌈", "🌞", "🌠", "🌼", "💪", "😎", "💫", "💓", "🎈", "🎁", "🍾", "🎊", "🥳", "👑", "🌺", "🌻", "🌸"];
-const os = require('os');       // for os info
-
+const os = require("node:os");       // for os info
 const gis = require("g-i-s");
-const { MessageType } = require('@whiskeysockets/baileys');
-const {
-  FajarNews,
-  BBCNews,
-  metroNews,
-  CNNNews,
-  iNews,
-  KumparanNews,
-  TribunNews,
-  DailyNews,
-  DetikNews,
-  OkezoneNews,
-  CNBCNews,
-  KompasNews,
-  SindoNews,
-  TempoNews,
-  IndozoneNews,
-  AntaraNews,
-  RepublikaNews,
-  VivaNews,
-  KontanNews,
-  MerdekaNews,
-  KomikuSearch,
-  AniPlanetSearch,
-  KomikFoxSearch,
-  KomikStationSearch,
-  MangakuSearch,
-  KiryuuSearch,
-  KissMangaSearch,
-  KlikMangaSearch,
-  PalingMurah,
-  LayarKaca21,
-  AminoApps,
-  Mangatoon,
-  WAModsSearch,
-  Emojis,
-  CoronaInfo,
-  JalanTikusMeme,
-  Cerpen,
-  Quotes,
-  Couples,
-  Darkjokes
-} = require("dhn-api");
+
+const { downloadContentFromMessage,
+  WA_DEFAULT_EPHEMERAL,
+  proto, jid,
+  getContentType,
+  generateWAMessageContent,
+  generateWAMessageFromContent,
+  BufferJSON,
+  prepareWAMessageMedia,
+  MessageType,
+  areJidsSameUser, } = require('@whiskeysockets/baileys');
+
+
 //"parse-ms": "^1.1.0",
 
-
-
 //
-if (time2 < "23:59:00") {
-
-  var nowtime = 'Good night 🌌'
-
-}
-
-if (time2 < "19:00:00") {
-
-  var nowtime = 'Good afternoon 🌆'
-
-}
-
-if (time2 < "18:00:00") {
-
-  var nowtime = 'Good afternoon 🌇'
-
-}
-
-if (time2 < "15:00:00") {
-
-  var nowtime = 'Good afternoon 🏞'
-
-}
-
-if (time2 < "11:00:00") {
-
-  var nowtime = 'Good morning 🌅'
-
-}
+let nowtime = '';
 
 if (time2 < "05:00:00") {
-
-  var nowtime = 'Good night 🏙'
-
+  nowtime = 'Selamat malam 🏙';
+} else if (time2 < "11:00:00") {
+  nowtime = 'Selamat pagi 🌅';
+} else if (time2 < "15:00:00") {
+  nowtime = 'Selamat siang 🏞';
+} else if (time2 < "18:00:00") {
+  nowtime = 'Selamat sore 🌇';
+} else if (time2 < "19:00:00") {
+  nowtime = 'Selamat sore 🌆';
+} else {
+  nowtime = 'Selamat malam 🌌';
 }
 
 
 
-//
+// 
 const timestampe = speed();
 const latensie = speed() - timestampe
+const used = process.memoryUsage();
+const cpu = os.cpus()[0];
+const totalCpuUsage = (100 * (cpu.times.user + cpu.times.nice + cpu.times.sys + cpu.times.irq) / cpu.times.idle).toFixed(2);
+const systemName = os.platform() + ' ' + os.release();
 
 var low;
 try {
@@ -160,7 +110,7 @@ global.loadDatabase = async function loadDatabase() {
     return new Promise((resolve) =>
       setInterval(function () {
         !global.db.READ
-          ? (clearInterval(this),
+          ? (Interval(this),
             resolve(
               global.db.data == null ? global.loadDatabase() : global.db.data
             ))
@@ -196,7 +146,6 @@ if (global.db)
   };
 
 
-
 //
 let isSleeping = false; // Move the declaration here.
 let banUser = JSON.parse(fs.readFileSync('./database/banUser.json'));
@@ -220,7 +169,7 @@ let videox = JSON.parse(fs.readFileSync('./src/video.json'))
 global.db = JSON.parse(fs.readFileSync('./src/database.json'))
 let _sewa = require("./lib/sewa");
 const sewa = JSON.parse(fs.readFileSync('./database/sewa.json'))
-const time = moment.tz('Asia/Kolkata').format('DD/MM HH:mm:ss')
+const time = moment.tz('Asia/Jakarta').format('DD/MM HH:mm:ss')
 const ucap = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('a')
 var buln = ['/01/', '/02/', '/03/', '/04/', '/05/', '/06/', '/07/', '/08/', '/09/', '/10/', '/11/', '/12/'];
 var myHari = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -252,7 +201,7 @@ var yye = tgel.getYear();
 //
 module.exports = A17 = async (A17, m, chatUpdate, store) => {
   try {
-    var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectreply.selectedRowId : (m.mtype == 'templateButtonreplyMessage') ? m.message.templateButtonreplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectreply.selectedRowId || m.text) : ''
+    var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
     var budy = (typeof m.text == 'string' ? m.text : '')
     const prefix = global.prefa
     const isCmd = body.startsWith(prefix)
@@ -296,6 +245,7 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
     autoreadsw = true
     const content = JSON.stringify(m.message)
     const q = args.join(' ')
+    // const button = m.body
 
     const isQuotedVideo = m.mtype === 'extendedTextMessage' && content.includes('videoMessage')
     const isQuotedAudio = m.mtype === 'extendedTextMessage' && content.includes('audioMessage')
@@ -410,19 +360,19 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
 
 
 
-    //Dm and Groups Autoreply/Bot chat
-    /*
-    if (!isCmd && !m.isGroup){
-        const botreply = await axios.get(`http://api.brainshop.ai/get?bid=166512&key=5nz1Ha6nS9Zx1MfT&uid=[uid]&msg=[msg]=[${budy}]`)
-        txt = `${botreply.data.cnt}`
-        m.reply(txt)
-        }    
-        
-     */
+    // //Dm and Groups Autoreply/Bot chat
+
+    // if (!isCmd && !m.isGroup){
+    //     const botreply = await axios.get(`http://api.brainshop.ai/get?bid=166512&key=5nz1Ha6nS9Zx1MfT&uid=[uid]&msg=[msg]=[${budy}]`)
+    //     txt = `${botreply.data.cnt}`
+    //     m.reply(txt)
+    //     }    
 
 
 
-    //----------------------------------------------------------------------------------------------------//
+
+
+    //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -475,7 +425,6 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
     //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
-    //don't edit this part.
     const formatTime = (seconds) => {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
@@ -491,19 +440,17 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
       // ㅤㅤ〄ㅤㅤ〘 A17 Personal Edition 〙ㅤㅤ〄ㅤㅤㅤㅤ
       // ㅤㅤㅤ〘ㅤ Auto Uptime: ${uptimeFormatted}ㅤ〙`;
 
-      function _0x582b(_0xabb6f8, _0x12cdd8) { const _0x58e890 = _0x58e8(); return _0x582b = function (_0x582b90, _0x4387b3) { _0x582b90 = _0x582b90 - 0x189; let _0x932613 = _0x58e890[_0x582b90]; return _0x932613; }, _0x582b(_0xabb6f8, _0x12cdd8); } function _0x58e8() { const _0x109554 = ['12896370RDSmnX', '3BgvPel', '189HbmdoW', '18854HvEPNh', '11TZHUID', '9125326EcyeIg', '464328lPaAMf', '3400722cbWEOK', '2263175KIczdo', '12TaHNqM', '2521564eqJRHK']; _0x58e8 = function () { return _0x109554; }; return _0x58e8(); } (function (_0x429d7b, _0x532ab5) { const _0x527567 = _0x582b, _0x130eb4 = _0x429d7b(); while (!![]) { try { const _0x75c57a = -parseInt(_0x527567(0x18b)) / 0x1 + -parseInt(_0x527567(0x192)) / 0x2 * (-parseInt(_0x527567(0x189)) / 0x3) + parseInt(_0x527567(0x191)) / 0x4 * (-parseInt(_0x527567(0x190)) / 0x5) + -parseInt(_0x527567(0x18f)) / 0x6 + parseInt(_0x527567(0x18d)) / 0x7 + parseInt(_0x527567(0x18e)) / 0x8 * (-parseInt(_0x527567(0x18a)) / 0x9) + parseInt(_0x527567(0x193)) / 0xa * (parseInt(_0x527567(0x18c)) / 0xb); if (_0x75c57a === _0x532ab5) break; else _0x130eb4['push'](_0x130eb4['shift']()); } catch (_0x19ea04) { _0x130eb4['push'](_0x130eb4['shift']()); } } }(_0x58e8, 0xa8dae)); const status = '\x0a\x20\x20ㅤㅤ〄ㅤㅤ〘\x20A17\x20Personal\x20Edition\x20〙ㅤㅤ〄ㅤㅤㅤㅤ\x0a\x20\x20ㅤㅤㅤ〘ㅤ\x20Auto\x20Uptime:\x20' + uptimeFormatted + 'ㅤ〙';
+     function _0x582b(_0xabb6f8, _0x12cdd8) { const _0x58e890 = _0x58e8(); return _0x582b = function (_0x582b90, _0x4387b3) { _0x582b90 = _0x582b90 - 0x189; let _0x932613 = _0x58e890[_0x582b90]; return _0x932613; }, _0x582b(_0xabb6f8, _0x12cdd8); } function _0x58e8() { const _0x109554 = ['12896370RDSmnX', '3BgvPel', '189HbmdoW', '18854HvEPNh', '11TZHUID', '9125326EcyeIg', '464328lPaAMf', '3400722cbWEOK', '2263175KIczdo', '12TaHNqM', '2521564eqJRHK']; _0x58e8 = function () { return _0x109554; }; return _0x58e8(); } (function (_0x429d7b, _0x532ab5) { const _0x527567 = _0x582b, _0x130eb4 = _0x429d7b(); while (!![]) { try { const _0x75c57a = -parseInt(_0x527567(0x18b)) / 0x1 + -parseInt(_0x527567(0x192)) / 0x2 * (-parseInt(_0x527567(0x189)) / 0x3) + parseInt(_0x527567(0x191)) / 0x4 * (-parseInt(_0x527567(0x190)) / 0x5) + -parseInt(_0x527567(0x18f)) / 0x6 + parseInt(_0x527567(0x18d)) / 0x7 + parseInt(_0x527567(0x18e)) / 0x8 * (-parseInt(_0x527567(0x18a)) / 0x9) + parseInt(_0x527567(0x193)) / 0xa * (parseInt(_0x527567(0x18c)) / 0xb); if (_0x75c57a === _0x532ab5) break; else _0x130eb4['push'](_0x130eb4['shift']()); } catch (_0x19ea04) { _0x130eb4['push'](_0x130eb4['shift']()); } } }(_0x58e8, 0xa8dae)); const status = '〄ㅤㅤ〘\x20NEWBIE\x20STORE\x20VPN\x20〙ㅤㅤ〄';
 
       A17.setStatus(status); // Set the status using A17.setStatus or your equivalent method
 
       // Update the status randomly within 5 minutes (300000 milliseconds)
-      const randomTime = Math.floor(Math.random() * 300000) + 1000; // don't edit.
+      const randomTime = Math.floor(Math.random() * 300000) + 15000; // don't edit.
       setTimeout(updateStatus, randomTime);
     }
 
     // Initial call to start the random status updates
-    updateStatus();
-
-
+    
 
     //-----------------------------------------------------------------------------------------------------------------------------------//
 
@@ -514,7 +461,7 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
     //   var rondonxk = '[-a-zA-Z0-9@:%._+~#=].[-a-zA-Z0-9@:%._+~#=].[-a-zA-Z0-9()@:%_+.~#?&/=]'
     //   if (budy.includes("https://")) {
     //     if (!isBotAdmins) return
-    //     bvl = `\`\`\`「  Antilink System  」\`\`\`\n\nLink sent by Admin so no action will be taken${prefix}!`
+    //     bvl = `\`\`\`「  Antilink System  」\`\`\`\n\nLink sent by Admin so no action will be taken!`
     //     if (isAdmins) return reply(bvl)
     //     if (m.key.fromMe) return reply(bvl)
     //     if (isCreator) return reply(bvl)
@@ -540,7 +487,7 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
 
     // if (budy.includes("http://")) {
     //     if (!isBotAdmins) return
-    //     bvl = `\`\`\`「  Antilink System  」\`\`\`\n\nLink sent by Admin so no action will be taken${prefix}!`
+    //     bvl = `\`\`\`「  Antilink System  」\`\`\`\n\nLink sent by Admin so no action will be taken!`
     //     if (isAdmins) return reply(bvl)
     //     if (m.key.fromMe) return reply(bvl)
     //     if (isCreator) return reply(bvl)
@@ -565,7 +512,7 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
     //   }
 
 
-    //     const menulist = `
+    //     const exitlist = `
     //     Konichiwa ${pushname} dear 👋. I am ${global.BotName}, a bot developed by: Kai to take your WhatsApp usage into next level.
 
     //        「 System Info 」
@@ -580,8 +527,8 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
 
     //        「 User Info 」
 
-    //     User Level: ${levelMenu}
-    //     User XP : ${xpMenu} \ ${reqXp}
+    //     User Level: ${levelexit}
+    //     User XP : ${xpexit} \ ${reqXp}
     //     User Role : ${role}
 
 
@@ -594,7 +541,7 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
     //     Potion : ${getPotion(m.sender)}
 
 
-    //     Type *-menu* or press any button below to start using *${global.BotName}*
+    //     Type *-exit* or press any button below to start using *${global.BotName}*
 
     //     ©️ *${global.BotName}* All Rights Reserved by: *Kai*
     //     `
@@ -660,7 +607,7 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
 ${arr.slice(0, 3).join('')}
 ${arr.slice(3, 6).join('')}
 ${arr.slice(6).join('')}
-${isWin ? `@${winner.split('@')[0]} Won${prefix}!` : isTie ? `Game Over` : `Turn ${['❌', '⭕'][1 * room.game._currentTurn]} (@${room.game.currentTurn.split('@')[0]})`}
+${isWin ? `@${winner.split('@')[0]} Won!` : isTie ? `Game Over` : `Turn ${['❌', '⭕'][1 * room.game._currentTurn]} (@${room.game.currentTurn.split('@')[0]})`}
 ❌: @${room.game.playerX.split('@')[0]}
 ⭕: @${room.game.playerO.split('@')[0]}
 Typed *surrender* to surrender and admited defeat`
@@ -751,50 +698,11 @@ Typed *surrender* to surrender and admited defeat`
 
     const responses = {
 
-      'order bg': `*___________________________*
-*_MOHON INFOKAN_*
-*___________________________*
--» CONFIG : 
--» NAMA : 
--» HARGA : 
--» TKP/TMPT TINGGAL:
-*___________________________*
-*_NewbieStore_*`,
-      'order kak': `*___________________________*
-*_MOHON INFOKAN_*
-*___________________________*
--» CONFIG : 
--» NAMA : 
--» HARGA : 
--» TKP/TMPT TINGGAL:
-*___________________________*
-*_NewbieStore_*`,
-      order: `*___________________________*
-*_MOHON INFOKAN_*
-*___________________________*
--» CONFIG : 
--» NAMA : 
--» HARGA : 
--» TKP/TMPT TINGGAL:
-*___________________________*
-*_NewbieStore_*`,
-      'newbie thr': `Horee, Selamat kak *_${pushname}_* Anda Berhak Mendapatkan Promo THR dari *Newbie*
-*___________________________*
-*_MOHON INFOKAN_*
-*___________________________*
--» CONFIG : 
--» NAMA : 
--» TKP/TMPT TINGGAL : 
--» HARGA : 10,000
--» Limit Ip : 4 Hp / Free Hostpot
-*___________________________*
-*_Newbie Store VPN_*`,
-      gcvip: `https://chat.whatsapp.com/GllWYIjeUHMKRpedQW78Qw\n\nSilahkan Join Grup Member Vip Kak`,
+      gcvip: `https://chat.whatsapp.com/DPaquwU3PBhAb50oHM39mh\n\nSilahkan Join Grup Member Vip Kak, Grup ini untuk info server, Kontak Alternatif Admin, Dan info Info penting lainnya`,
       playloaden: `GET / HTTP/1.1[crlf]Host: [host][crlf]PATCH / HTTP/1.1[crlf]Host: Bug.com[crlf]Upgrade: websocket [crlf] User-Agent: [ua][crlf][crlf]Content-Length: CONFIG BY. NEWBIE[crlf][crlf][split]200 OK [crlf]`,
       playloadws: `GET / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf]User-Agent: [ua][crlf][crlf][split]CONFIG BY. NEWBIE[crlf][crlf]`,
-      config: `Link Config Newbie : https://sfile.mobi/user.php?files&user=681091\n\nLink *ALL CONFIG VIP NEWBIE*, ${kaidate} : https://sfile.mobi/7309A1NFeM8\n\nLink Grup NEWBIE : https://chat.whatsapp.com/Dg92Vc51FhlDE8nVfkLZJB\n\nhttps://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
-
-https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp`,
+      hello: `Hello ${pushname}, I am ${BotName}. My current prefix is "${prefix}". How can I help you?`,
+      kai: `My Boss is lost in another Multiverse, and I lost connection with him...`,
       runtime: `Hey ${pushname}\n${nowtime}\n\nMy runtime:${runtime(process.uptime())}\n\nPrefix is: *${prefix}*\n\nTime: ${kaitime}\n\nDate: ${kaidate}\n\nToday is ${currentDay}`,
       konichiwa: `Konichiwa ${pushname}, I am ${BotName}. How can I help you?`,
       sasha: 'Only you...🫶🏻',
@@ -812,322 +720,17 @@ https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp`,
     if (responses.hasOwnProperty(smallinput)) {
       reply(responses[smallinput]);
     }
-
-    const respon = {
-      harga: `*NEWBIE STORE VPN PREMIUM*
-*_SERVER SGDO_* 🇸🇬
-◇━━━━━━━━━━━━━━━◇
-*List Harga*
-◇━━━━━━━━━━━━━━━◇
-*_PREMIUM_*
-◇━━━━━━━━━━━━━━━◇
-😀 *_5K  | 15 Hari | 1HP |_*
-🤩 *_10K | 30 Hari | 2HP |_*
-🔥 *_15K | 30 Hari | 4HP |_*
-◇━━━━━━━━━━━━━━━◇
-*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
-◇━━━━━━━━━━━━━━━◇
-*Pembayaran*
-DANA
-QRIS ALLPAYMENT
-◇━━━━━━━━━━━━━━━◇
-Ketik :
-*pay* untuk infomasi Pembayaran
-◇━━━━━━━━━━━━━━━◇`,
-      p: `PaPe PaPe, Salam bukankan Lebih baik Bos!`,
-      promosi: `*NEWBIE STORE VPN PREMIUM*
-*_SERVER SGDO_* 🇸🇬
-◇━━━━━━━━━━━━━━━◇
-*List Harga*
-◇━━━━━━━━━━━━━━━◇
-*_PREMIUM_*
-◇━━━━━━━━━━━━━━━◇
-😀 *_5K  | 15 Hari | 1HP |_*
-🤩 *_10K | 30 Hari | 2HP |_*
-🔥 *_15K | 30 Hari | 4HP |_*
-◇━━━━━━━━━━━━━━━◇
-*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
-◇━━━━━━━━━━━━━━━◇
-*Pembayaran*
-DANA
-QRIS ALLPAYMENT
-◇━━━━━━━━━━━━━━━◇
-BENEFIT:
-💎 KUALITAS TERJAMIN
-💎 FREE CONFIG
-💎 BEBAS GONTA GANTI CONFIG REQUEST KE ADMIN 
-💎 WAJIB TRIAL 
-💎 GARANSI 
-💎 SUDAH BAYAR TDK PUAS BISA REFUNDS
-💎 SUPPORT VC, CALL
-💎 GAME (SILAHKAN DICOBA LANGSUNG)
-💎 DIJAMIN AMANAH
-◇━━━━━━━━━━━━━━━◇
-*RULES*
-⛔ No Judi Online
-⛔ No Trade
-⛔ No Torrent 
-⛔ No Hacking
-⛔ No DDOS
-⛔ Multi Login Sesuai Akun!!
-
-*_Melanggar = Baned_*
-◇━━━━━━━━━━━━━━━◇
-*NEWBIE STORE JUGA SEDIA*
-◇━━━━━━━━━━━━━━━◇
-*_OPEN SOURCE SCRIPT_*
-*_SEWA SCRIPT LIFETIME_*
-*_OPEN JASA RECODE_*
-◇━━━━━━━━━━━━━━━◇
-📚Grup Newbie :
-https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
-
-https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
-📂Testi : https://t.me/TESTI_NEWBIE
-🔖Grup Tele : https://t.me/newbielearning
-Minat Hub :
-➠ ADMIN 1
-Https://wa.me/6282326322300 
-➠ *_ADMIN TELE_*
-Https://t.me/newbie_store24 
-◇━━━━━━━━━━━━━━━◇`,
-      newbie: `*NEWBIE STORE VPN PREMIUM*
-*_SERVER SGDO_* 🇸🇬
-◇━━━━━━━━━━━━━━━◇
-*List Harga*
-◇━━━━━━━━━━━━━━━◇
-*_PREMIUM_*
-◇━━━━━━━━━━━━━━━◇
-😀 *_5K  | 15 Hari | 1HP |_*
-🤩 *_10K | 30 Hari | 2HP |_*
-🔥 *_15K | 30 Hari | 4HP |_*
-◇━━━━━━━━━━━━━━━◇
-*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
-◇━━━━━━━━━━━━━━━◇
-*Pembayaran*
-DANA
-QRIS ALLPAYMENT
-◇━━━━━━━━━━━━━━━◇
-BENEFIT:
-💎 KUALITAS TERJAMIN
-💎 FREE CONFIG
-💎 BEBAS GONTA GANTI CONFIG REQUEST KE ADMIN 
-💎 WAJIB TRIAL 
-💎 GARANSI 
-💎 SUDAH BAYAR TDK PUAS BISA REFUNDS
-💎 SUPPORT VC, CALL
-💎 GAME (SILAHKAN DICOBA LANGSUNG)
-💎 DIJAMIN AMANAH
-◇━━━━━━━━━━━━━━━◇
-*RULES*
-⛔ No Judi Online
-⛔ No Trade
-⛔ No Torrent 
-⛔ No Hacking
-⛔ No DDOS
-⛔ Multi Login Sesuai Akun!!
-
-*_Melanggar = Baned_*
-◇━━━━━━━━━━━━━━━◇
-*NEWBIE STORE JUGA SEDIA*
-◇━━━━━━━━━━━━━━━◇
-*_OPEN SOURCE SCRIPT_*
-*_SEWA SCRIPT LIFETIME_*
-*_OPEN JASA RECODE_*
-◇━━━━━━━━━━━━━━━◇
-📚Grup Newbie :
-https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
-
-https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
-📂Testi : https://t.me/TESTI_NEWBIE
-🔖Grup Tele : https://t.me/newbielearning
-Minat Hub :
-➠ ADMIN 1
-Https://wa.me/6282326322300 
-➠ *_ADMIN TELE_*
-Https://t.me/newbie_store24 
-◇━━━━━━━━━━━━━━━◇`,
-    'izin min': `*NEWBIE STORE VPN PREMIUM*
-*_SERVER SGDO_* 🇸🇬
-◇━━━━━━━━━━━━━━━◇
-*List Harga*
-◇━━━━━━━━━━━━━━━◇
-*_PREMIUM_*
-◇━━━━━━━━━━━━━━━◇
-😀 *_5K  | 15 Hari | 1HP |_*
-🤩 *_10K | 30 Hari | 2HP |_*
-🔥 *_15K | 30 Hari | 4HP |_*
-◇━━━━━━━━━━━━━━━◇
-*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
-◇━━━━━━━━━━━━━━━◇
-*Pembayaran*
-DANA
-QRIS ALLPAYMENT
-◇━━━━━━━━━━━━━━━◇
-BENEFIT:
-💎 KUALITAS TERJAMIN
-💎 FREE CONFIG
-💎 BEBAS GONTA GANTI CONFIG REQUEST KE ADMIN 
-💎 WAJIB TRIAL 
-💎 GARANSI 
-💎 SUDAH BAYAR TDK PUAS BISA REFUNDS
-💎 SUPPORT VC, CALL
-💎 GAME (SILAHKAN DICOBA LANGSUNG)
-💎 DIJAMIN AMANAH
-◇━━━━━━━━━━━━━━━◇
-*RULES*
-⛔ No Judi Online
-⛔ No Trade
-⛔ No Torrent 
-⛔ No Hacking
-⛔ No DDOS
-⛔ Multi Login Sesuai Akun!!
-
-*_Melanggar = Baned_*
-◇━━━━━━━━━━━━━━━◇
-*NEWBIE STORE JUGA SEDIA*
-◇━━━━━━━━━━━━━━━◇
-*_OPEN SOURCE SCRIPT_*
-*_SEWA SCRIPT LIFETIME_*
-*_OPEN JASA RECODE_*
-◇━━━━━━━━━━━━━━━◇
-📚Grup Newbie2 :
-https://chat.whatsapp.com/CwFzjaOve4T3bAuO2sT8WZ
-
-https://chat.whatsapp.com/Jo9QobvI8Ge2LdFVNL6Mlp
-📂Testi : https://t.me/TESTI_NEWBIE
-🔖Grup Tele : https://t.me/newbielearning
-Minat Hub :
-➠ ADMIN 1
-Https://wa.me/6282326322300 
-➠ *_ADMIN TELE_*
-Https://t.me/newbie_store24  
-◇━━━━━━━━━━━━━━━◇`,
-    };
-
-    const iinnput = budy.toLowerCase();
-    
-    if (respon.hasOwnProperty(iinnput)) {
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Promo.jpg'), gifPlayback: false,
-          caption: (respon[iinnput]),
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m });
-      }
-
-    const respons = {
-      vps: `◇━━━━━━━━━━━━━━◇
-       🌐 *_VPS BY_* 🌐
-🌐 *_NEWBIE STORE_* 🌐
-◇━━━━━━━━━━━━━━◇
-✓ ISP DigitalOcean 🚀
-✓ Install script by NEWBIE STORE
-✓ Garansi Selama Masa Aktif❗❗❗
-◇━━━━━━━━━━━━━━◇
-*_Operating System_*
-• Ubuntu
-• Debian
-◇━━━━━━━━━━━━━━◇
-- Spek dan Harga :
-✓ 1GB RAM, 25GB SSD : 35 IDR
-✓ 2GB RAM, 50GB SSD : 45 IDR
-✓ 4GB RAM, 80GB SSD : 80 IDR
-✓ 8GB RAM, 160GB SSD : 120 IDR
-✓ 3 Unit Ram 8,160 SSD : 250 IDR
-◇━━━━━━━━━━━━━━◇
-ORDER ? :
-TELEGRAM : https://t.me/newbie_store24`,
-    };
-
-    const input = budy.toLowerCase();
-    
-    if (respons.hasOwnProperty(input)) {
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Sc.jpg'), gifPlayback: false,
-          caption: (respons[input]),
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m });
-      }
-
-    const responee = {
-      sshoce: `id1.wscom.pro:80@sshocean-newbie:store`,
-      sshoce1: `id2.wscom.pro:80@sshocean-newbie:store`,
-      sshoce2: `id4.wscom.pro:80@sshocean-newbie:store`,
-      sshoce3: `sg1.wscom.pro:80@sshocean-newbie:store`,
-      sshoce4: `sg2.wscom.pro:80@sshocean-newbie:store`,
-      sshoce5: `sg3.wscom.pro:80@sshocean-newbie:store`,
-      sshoce6: `sg4.wscom.pro:80@sshocean-newbie:store`,
-      sshoce7: `sg6.wscom.pro:80@sshocean-newbie:store`,
-      sshws2: `ssh-sg3-ws.sshws.net:80@fastssh.com-newbie:store`,
-      sshws3: `ssh-sg4-ws.sshws.net:80@fastssh.com-newbie:store`,
-      sshws1: `sg-public1.sshws.net:80@fastssh.com-newbie:store`,
-      sshws: `ssh-sg-ws.sshws.net:80@fastssh.com-newbie:store`,
-      sshws4: `us1.sshws.net:80@fastssh.com-newbie:store`,
-
-    };
-
-    const inputeee = budy.toLowerCase();
-    
-    if (responee.hasOwnProperty(inputeee)) {
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/ssh.mp4'), gifPlayback: false,
-          caption: (responee[inputeee]),
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m });
-      }
-
-    const respoonee = {
-      'newbie store': `◇━━━━━━━━━━━━━━◇
-       🌐 *_NEWBIE STORE_* 🌐
-🌐 *_MENYEDIAKAN_* 🌐
-◇━━━━━━━━━━━━━━◇
-✓ SSH PREMIUM 🚀
-✓ VPS ISP DIGITALOCEAN LCC 🚀
-✓ JASA RECODE SCRIPT 
-✓ OPEN SOURCE SCRIPT TUNNELING
-✓ SEWA SOURCE SCRIPT TUNNELING
-✓ DOMAIN
-◇━━━━━━━━━━━━━━◇
-*_KONTAK ADMIN_*
-Whatsapp : wa.me/6282326322300
-Telegram : https://t.me/newbie_store24
-◇━━━━━━━━━━━━━━◇
-NEWBIE STORE
-*_AMAN DAN TERPERCAYA_* `,
-    };
-
-    const inputol = budy.toLowerCase();
-    
-    if (respoonee.hasOwnProperty(inputol)) {
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Promo.jpg'), gifPlayback: false,
-          caption: (respoonee[inputol]),
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m });
-      }
-
+		
     const responi = { 
     pay: `*Pembayaran Lewat Dana dan Qris*
         
-Dana : 087863446310 An Diah Fitri Liani
+Dana : 085135314992 An Diah Fitri Liani
 
 *Jangan Lupa Kirim Bukti TF Yah.*
 Terimakasih`,
-    'no dana': `*Pembayaran Lewat Dana dan Qris*
+    dana: `*Pembayaran Lewat Dana dan Qris*
         
-Dana : 087863446310 An Diah Fitri Liani
+Dana : 085135314992 An Diah Fitri Liani
 
 *Jangan Lupa Kirim Bukti TF Yah.*
 Terimakasih`,
@@ -1146,52 +749,166 @@ Terimakasih`,
         }
         A17.sendMessage(m.chat, buttonMessage, { quoted: m });
       }
+	  
+	  
+const slideButton = async (jid, mention = []) => {
+
+let imgsc = await prepareWAMessageMedia({ image: fs.readFileSync('./Assets/Ne.jpg')}, { upload: A17.waUploadToServer })
+    function readJSON(filePath) {
+        try {
+            const data = fs.readFileSync(filePath, 'utf8');
+            const parsed = JSON.parse(data);
+            return parsed.text && parsed.text.trim() ? parsed.text : null;
+        } catch (err) {
+            console.error(`Error reading ${filePath}:`, err);
+            return null;
+        }
+    }
+	
+const promoText = readJSON('./database/promo.json');
+const autoscriptText = readJSON('./database/autoscript.json');
+const recodeText = readJSON('./database/recode.json');
+
+const msgii = await generateWAMessageFromContent(jid, {
+ephemeralMessage: {
+message: {
+messageContextInfo: {
+deviceListMetadata: {},
+deviceListMetadataVersion: 2
+}, interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+body: proto.Message.InteractiveMessage.Body.fromObject({
+text: "*All Transaksi Open ✅*\n\n*Newbie Store* Menyediakan Produk & Jasa Dibawah Ini ⬇️"
+}), 
+contextInfo: {
+mentionedJid: mention
+}, 
+carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+cards: [{
+header: proto.Message.InteractiveMessage.Header.fromObject({
+title: promoText, 
+hasMediaAttachment: true,
+...imgsc
+}), 
+nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+buttons: [{                  
+name: "cta_url",
+buttonParamsJson: `{"display_text":"ORDER","url":"global.website","merchant_url":"https://wa.me/c/6285929880376"}`
+}]
+})
+}, 
+{
+header: proto.Message.InteractiveMessage.Header.fromObject({
+title: autoscriptText, 
+hasMediaAttachment: true,
+...imgsc
+}),
+nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+buttons: [{                  
+name: "cta_url",
+buttonParamsJson: `{"display_text":"JOIN GRUP","url":"https://gcwa.nevpn.site","merchant_url":"https://wa.me/c/6285929880376"}`
+}]
+})
+}, 
+{
+header: proto.Message.InteractiveMessage.Header.fromObject({
+title: recodeText, 
+hasMediaAttachment: true,
+...imgsc
+}),
+nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+buttons: [{                  
+name: "cta_url",
+buttonParamsJson: `{"display_text":"LIHAT SALURAN","url":"https://saluran.nevpn.site","merchant_url":"https://wa.me/c/6285929880376"}`
+}]
+})
+}]
+})
+})}
+}}, {userJid: m.sender})
+await A17.relayMessage(jid, msgii.message, {messageId: msgii.key.id})
+}
+
+    const responin = { 
+    produk: `Jangan Dirubah`,
+    };
+
+    const inputen = budy.toLowerCase();
+    
+    if (responin.hasOwnProperty(inputen)) {
+			await slideButton(m.chat)
+      }
+
+    //============= [LIST RESPONCE CHECKING START ]================
+
+    //-----------------------------------------------------------------------------------------------------------------------------------//
+    try {
+      if (m.mtype === "interactiveResponseMessage") {
+        console.log("interactiveResponseMessage Detected!")
+        let msg = m.message[m.mtype] || m.msg
+        if (msg.nativeFlowResponseMessage && !m.isBot) {
+          let { id } = JSON.parse(msg.nativeFlowResponseMessage.paramsJson) || {}
+          if (id) {
+            let emit_msg = {
+              key: { ...m.key }, // SET RANDOME MESSAGE ID  
+              message: { extendedTextMessage: { text: id } },
+              pushName: m.pushName,
+              messageTimestamp: m.messageTimestamp || 754785898978
+            }
+            return A17.ev.emit("messages.upsert", { messages: [emit_msg], type: "append" })
+          }
+        }
+      }
+    } catch (e) { console.log("ERROR WHILE CHECKING LIST RESPONCE : ", e) }
+    //============= [LIST RESPONCE CHECKING END ]================
 
     //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
-    //
     switch (command) {
 
 
       //
+	  case "produk": {
+			await slideButton(m.chat)
+		}
+		break
+		
       case 'sc': case 'script': case 'sourcecode': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "❤", key: m.key } })
 
-        let { data } = await axios.get('https://api.github.com/repos/diah082/newbiebot');
-        teks = `*AUTO SC NEWBIEBOT*\n\n*Total Stars*: ${data.stargazers_count}⭐\n*Total Forks*: ${data.forks_count} forks\n*GitHub*: https://github.com/diah082/newbiebot\n\nDont forget to follow me on *GitHub* and give a ⭐️ to my projects. `
-        /*  let buttons = [
+        let { data } = await axios.get('https://api.github.com/repos/Diah082/Nebot');
+        teks = `*NewbieBot Script*\n\n*Total Stars*: ${data.stargazers_count}⭐\n*Total Forks*: ${data.forks_count} forks\n*GitHub*: https://github.com/Diah082/NewbieBot\n\nDont forget to follow me on *GitHub* and give a ⭐️ to my projects. `
+          let buttons = [
           {buttonId: `${prefix}owner`, buttonText: {displayText: '🍁 DEVELOPER 🍁'}, type: 1}
-          ] */
-        let buttonMessage = {
-          image: Thumb,
-          jpegThumbnail: BotLogo,
-          caption: teks,
-          /* footer: `${BotName}`,
-           buttons: buttons,
-           headerType: 4, */
-          contextInfo: {
+          ] 
+try {
+    let buttonMessage = {
+        image: Thumb,
+        jpegThumbnail: BotLogo,
+        caption: teks || "Default Caption",
+        footer: `${BotName}`,
+        headerType: 4,
+        contextInfo: {
             externalAdreply: {
-              title: "Powered by Newbie",
-              body: " ",
-              thumbnail: fs.readFileSync("As  sets/pic2.jpg"),
-              mediaType: 1,
-              //mediaUrl: 'https://wallpapercave.com/wp/wp10524580.jpg',
-              //sourceUrl: "https://wallpapercave.com/wp/wp10524580.jpg"
-              mediaUrl: 'github.com/diah082/newbiebot',
-              sourceUrl: "github.com/diah082/newbiebot"
+                title: "Powered by Newbie",
+                body: " ",
+                thumbnail: Thumb,
+                mediaType: 1,
+                mediaUrl: 'github.com/Diah082/Nebot',
+                sourceUrl: "github.com/Diah082/Nebot"
             }
-          }
-
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
+    };
+    A17.sendMessage(m.chat, buttonMessage, { quoted: m });
+} catch (error) {
+    console.error("Terjadi error saat mengirim pesan:", error);
+}
+
       }
         break;
-
-
-
+		
       case 'qt': {
         if (!args[0] && !m.quoted) {
           return m.reply(`Please provide a text (Type or mention a message) !`);
@@ -1247,165 +964,15 @@ Terimakasih`,
         }
         break;
       }
-
-
-
-      case 'support': case 'supportgc': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-
-        A17.sendMessage(from, { react: { text: "💫", key: m.key } })
-        reply(`⚙ *My developer's group:* ⚙ http://gg.gg/12ewfs`)
-      }
-        break;
-
-
-      case 'repo': case 'botrepo': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-
-        A17.sendMessage(from, { react: { text: "💫", key: m.key } })
-        reply(`⚙ My Source Code is </> - https://github.com/diah082/newbiebot`)
-      }
-        break;
-
-
       case 'owner': case 'creator': case 'mod': case 'mods': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
 
         A17.sendMessage(from, { react: { text: "💫", key: m.key } })
-        A17.sendContact(m.chat, global.ownertag, m)
+        A17.sendContact(m.chat, global.Owner, m)
       }
         break;
 
-
-      case 'addmod':
-      case 'addowner':
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
-
-        if (!args[0]) return reply(`Use ${prefix + command} number\nExample ${prefix + command} ${OwnerNumber}`)
-        bnnd = q.split("|")[0].replace(/[^0-9]/g, '')
-        let ceknye = await A17.onWhatsApp(bnnd)
-        if (ceknye.length == 0) return reply(`Enter A Valid And Registered Number On WhatsApp!!!`)
-        Owner.push(bnnd)
-        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
-        reply(`Number ${bnnd} Has Become An Owner!!!`)
-        break;
-
-
-      case 'delowner':
-      case 'delmod':
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
-
-        if (!args[0]) return reply(`Use ${prefix + command} nomor\nExample ${prefix + command} 916297175943`)
-        ya = q.split("|")[0].replace(/[^0-9]/g, '')
-        unp = Owner.indexOf(ya)
-        Owner.splice(unp, 1)
-        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
-        reply(`The Numbrr ${ya} Has been deleted from owner list by the owner!!!`)
-        break;
-
-
-      case 'modlist':
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner);
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
-
-        try {
-          const modData = fs.readFileSync('./database/mod.json', 'utf8');
-          const mods = JSON.parse(modData);
-
-          if (mods.length === 0) {
-            reply('There are no mods in the list.');
-          } else {
-            let modList = '';
-
-            mods.forEach((mod, index) => {
-              modList += `(${index + 1}) ${A17.getName(mod)}\n`;
-            });
-
-            reply(`List of List of Moderators:\n\n${modList}`);
-          }
-        } catch (error) {
-          console.error(error);
-          reply('Failed to fetch mod list.');
-        }
-        break;
-
-
-      case 'setbotpp': {
-
-        if (!isCreator) return reply(mess.owner)
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.owner)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-
-        if (!quoted) return `*Send/reply Image With Caption* ${prefix + command}`
-        if (!/image/.test(mime)) return `*Send/reply Image With Caption* ${prefix + command}`
-        if (/webp/.test(mime)) return `*Send/reply Image With Caption* ${prefix + command}`
-        let media = await A17.downloadAndSaveMediaMessage(quoted)
-        await A17.updateProfilePicture(botNumber, { url: media }).catch((err) => fs.unlinkSync(media))
-        m.reply(mess.jobdone)
-      }
-        break;
-
-
-      //
-      case 'changeprefix':
-      case 'setprefix':
-
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
-
-        if (args.length !== 1) {
-          return m.reply(`Please provide a single character as the new prefix.`);
-        } else {
-          const newPrefix = args[0];
-          try {
-            global.prefa = [newPrefix];
-            return m.reply(`${pushname} Successfully changed Prefix to "${newPrefix}"`);
-          } catch (error) {
-            console.error('Error changing prefix:', error);
-            return m.reply(`An error occurred while changing the prefix. Please try again later.`);
-          }
-        }
-
-
-      //
-      case 'restart':
-        await A17.sendMessage(from, { react: { text: "⚙", key: m.key } });
-        if (!isCreator) return reply(mess.botowner)
-
-        await A17.sendMessage(from, { text: mess.waiting });
-        await A17.sendMessage(from, { react: { text: "✅", key: m.key } });
-        await A17.sendMessage(from, { text: 'Restarting Success!' });
-
-        // Delay the shutdown by 5 seconds using sleep function
-        //await sleep(5000);
-
-        // Use PM2 to restart the script
-        pm2.restart('index', (err) => {
-          if (err) {
-            A17.sendMessage(from, { react: { text: "❌", key: m.key } });
-            A17.sendMessage(from, { text: 'Restarting Failed!' });
-          } else {
-            return;
-          }
-        });
-        break;
-
-
-      //
       case 'shutdown': case 'sleep':
         if (!isCreator) return reply(mess.owner)
         if (isBanChat) return reply(mess.bangc);
@@ -1443,102 +1010,72 @@ Terimakasih`,
       }
         break;
 
-
-      case 'autoreadgc':
-      case 'auto-read-gc':
-      case 'readgc':
+      case "link": {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner);
-        A17.sendMessage(from, { react: { text: '❤', key: m.key } });
 
-        if (args.length === 0) {
-          // Display the current status of autoreadgc
-          return m.reply(`Auto-Read-GC is currently ${global.autoreadgc ? 'enabled' : 'disabled'}.`);
-        } else if (args.length === 1 && (args[0] === 'on' || args[0] === 'off')) {
-          const status = args[0];
-          if (status === 'on') {
-            global.autoreadgc = true;
-            return m.reply('Auto-Read-GC is now enabled.');
-          } else {
-            global.autoreadgc = false;
-            return m.reply('Auto-Read-GC is now disabled.');
+        try {
+
+          await A17.sendMessage(from, { react: { text: "❤", key: m.key } });
+          let teks = `*Newbie Store*`;
+
+          let msg = generateWAMessageFromContent(m.key.remoteJid, {
+            viewOnceMessage: {
+              message: {
+                "messageContextInfo": {
+                  "deviceListMetadata": {},
+                  "deviceListMetadataVersion": 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.create({
+                  body: proto.Message.InteractiveMessage.Body.create({
+                    text: teks
+                  }),
+                  footer: proto.Message.InteractiveMessage.Footer.create({
+                    text: "                    Powered by Newbie"
+                  }),
+                  header: proto.Message.InteractiveMessage.Header.create({
+                    title: "                 Selamat Datang Di",
+                    subtitle: "Download Gratis",
+                    hasMediaAttachment: false
+                  }),
+                              nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                    buttons: [
+                      {
+                        name: "cta_url",
+                        buttonParamsJson: `{"\display_text\":\"DOWNLOAD LINK CONFIG HC\",\"url\":\"https://sfile.mobi/user.php?files&user=681091\"}`
+                      }
+                    ]
+                  })
+                })
+              }
+            }
+          }, {});
+
+          if (!msg || !msg.key || !msg.key.remoteJid || !msg.key.id) {
+            const errorMessage = 'Error: Invalid message key.';
+            console.error(errorMessage);
+            return reply(errorMessage);
           }
-        } else {
-          return m.reply(`Usage: ${global.prefa[0]}autoreadgc [on/off]`);
+
+          await A17.relayMessage(msg.key.remoteJid, msg.message, {
+            messageId: msg.key.id
+          });
+        } catch (error) {
+          console.error('Error generating and relaying message:', error);
+          return reply('Error generating and relaying message.');
         }
+
         break;
+      }
 
-
-      case 'autotyping':
-      case 'auto-typing':
-
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: '❤', key: m.key } });
-
-        if (args.length === 0) {
-          if (global.autoTyping) {
-            return m.reply(`Auto typing in group chats is currently *enabled*.\n\nTo disable, use \`${global.prefa[0]}autotyping off\`.`);
-          } else {
-            return m.reply(`Auto typing in group chats is currently *disabled*.\n\nTo enable, use \`${global.prefa[0]}autotyping on\`.`);
-          }
-        } else if (args.length === 1 && (args[0] === 'on' || args[0] === 'off')) {
-          const status = args[0];
-          if (status === 'on') {
-            global.autoTyping = true;
-            return m.reply(`Auto typing in group chats is now *enabled*.`);
-          } else {
-            global.autoTyping = false;
-            return m.reply(`Auto typing in group chats is now *disabled*.`);
-          }
-        } else {
-          return m.reply(`Usage: \`${global.prefa[0]}autotyping [on/off]\``);
-        }
-        break;
-
-
-      case 'autorecord':
-      case 'auto-recording':
-
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: '❤', key: m.key } });
-
-        if (args.length === 0) {
-          if (global.autoRecord) {
-            return m.reply(`Auto recording is currently *enabled*.\n\nTo disable, use \`${global.prefa[0]}autorecord off\`.`);
-          } else {
-            return m.reply(`Auto recording is currently *disabled*.\n\nTo enable, use \`${global.prefa[0]}autorecord on\`.`);
-          }
-        } else if (args.length === 1 && (args[0] === 'on' || args[0] === 'off')) {
-          const status = args[0];
-          if (status === 'on') {
-            global.autoRecord = true;
-            return m.reply(`Auto recording is now *enabled*.`);
-          } else {
-            global.autoRecord = false;
-            return m.reply(`Auto recording is now *disabled*.`);
-          }
-        } else {
-          return m.reply(`Usage: \`${global.prefa[0]}autorecord [on/off]\``);
-        }
-        break;
 
 
       //Hosted platfrom info
       case 'server':
-      case 'sysinfo':
-      case 'ping': {
-        const used = process.memoryUsage();
-        const cpu = os.cpus()[0];
-        const totalCpuUsage = (100 * (cpu.times.user + cpu.times.nice + cpu.times.sys + cpu.times.irq) / cpu.times.idle).toFixed(2);
-        const systemName = os.platform() + ' ' + os.release();
+      case 'sysinfo': {
 
         const respon = `
-  🤖 *Emily's Server Info* 🤖
+  🤖 *Newbie Bot Server Info* 🤖
   
   *System*: ${systemName}
   
@@ -1558,6 +1095,182 @@ Terimakasih`,
         m.reply(respon);
         break;
       }
+
+
+      case 'ipcheck':
+      case 'checkip':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+
+        if (!args[0]) {
+          return reply(`Please provide an IP address to check.\nExample: ${prefix}ipcheck 207.97.227.239`);
+        }
+
+        const ipAddress = args[0];
+
+        // Encode the IP address
+        const encodedIpAddress = encodeURIComponent(ipAddress);
+
+        // Construct the API URL with the encoded IP address
+        const apiUrl = `https://www.exenoz.tech/api/ip-location?ip=${encodedIpAddress}`;
+
+        try {
+
+          const response = await axios.get(apiUrl);
+
+          const locationData = response.data;
+
+          const message = `
+      IP Address: ${encodedIpAddress}\n
+      Country: ${locationData.location.country}\n
+      Region: ${locationData.location.region}\n
+      Timezone: ${locationData.location.timezone}\n
+      City: ${locationData.location.city}\n
+      Latitude: ${locationData.location.ll[0]}\n
+      Longitude: ${locationData.location.ll[1]}\n
+    `;
+
+          A17.sendMessage(from, { text: message }, { quoted: m });
+        } catch (error) {
+          console.error('Error fetching IP location data:', error);
+          reply('Failed to fetch IP location data. Please try again later.');
+        }
+        break;
+
+
+      case 'serverip':
+      case 'ip':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+
+        async function getServerIp() {
+          try {
+            const response = await axios.get('https://api.ipify.org?format=json');
+
+            const serverIp = response.data.ip;
+
+            return serverIp;
+          } catch (error) {
+
+            console.error('Error fetching server IP address:', error.message);
+            return null;
+          }
+        }
+
+        getServerIp()
+          .then(serverIp => {
+            if (serverIp) {
+              const message = `The bot's IP address is: ${serverIp}`;
+              A17.sendMessage(from, { text: message }, { quoted: m });
+            } else {
+              A17.sendMessage(from, { text: 'Failed to fetch server IP address.' }, { quoted: m });
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error.message);
+            A17.sendMessage(from, { text: 'An error occurred while fetching the server IP address.' }, { quoted: m });
+          });
+        break;
+
+        case 'restart':
+        await A17.sendMessage(from, { react: { text: "⚙", key: m.key } });
+        if (!isCreator) return reply(mess.botowner)
+
+        await A17.sendMessage(from, { text: mess.waiting });
+        await A17.sendMessage(from, { react: { text: "✅", key: m.key } });
+        await A17.sendMessage(from, { text: 'Restarting Success!' });
+
+        // Delay the shutdown by 5 seconds using sleep function
+        //await sleep(5000);
+
+        // Use PM2 to restart the script
+        pm2.restart('index', (err) => {
+          if (err) {
+            A17.sendMessage(from, { react: { text: "❌", key: m.key } });
+            A17.sendMessage(from, { text: 'Restarting Failed!' });
+          } else {
+            return;
+          }
+        });
+        break;
+
+case 'domaincheck':
+case 'checkdomain':
+  if (isBan) return reply(mess.banned);
+  if (isBanChat) return reply(mess.bangc);
+
+  if (!args[0]) {
+    return reply(`Please provide a domain to check.\nExample: ${prefix}domaincheck example.com`);
+  }
+
+  const domain = args[0];
+
+  try {
+    // Resolve the domain to get its IP
+    const dns = require('dns').promises;
+    const lookup = await dns.lookup(domain);
+
+    if (!lookup || !lookup.address) {
+      return reply(`Could not resolve the domain: ${domain}`);
+    }
+
+    const ipAddress = lookup.address;
+
+    // Encode the IP address
+    const encodedIpAddress = encodeURIComponent(ipAddress);
+
+    // Construct the API URL with ipwhois
+    const apiUrl = `https://ipwhois.app/json/${encodedIpAddress}`;
+
+    // Fetch IP location data
+    const axios = require('axios');
+    const response = await axios.get(apiUrl);
+
+    if (response.data.success === false) {
+      return reply('Failed to fetch IP location data. Please try again later.');
+    }
+
+    const locationData = response.data;
+
+    const message = `
+Domain: ${domain}
+Resolved IP Address: ${ipAddress}
+Country: ${locationData.country}
+Region: ${locationData.region}
+City: ${locationData.city}
+Timezone: ${locationData.timezone}
+Latitude: ${locationData.latitude}
+Longitude: ${locationData.longitude}
+ISP: ${locationData.isp}
+    `;
+
+    A17.sendMessage(from, { text: message }, { quoted: m });
+  } catch (error) {
+    console.error('Error fetching domain/IP location data:', error);
+    reply('Failed to fetch domain or IP location data. Please try again later.');
+  }
+  break;
+
+
+
+
+      case 'ls':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        A17.sendMessage(from, { react: { text: "📂", key: m.key } });
+
+        const currentDir = process.cwd(); // Get the current working directory
+
+        try {
+          const files = fs.readdirSync(currentDir);
+          let folderName = `Files in ${currentDir}:\n\n`;
+          let fileList = files.join('\n'); // Join the file names with a newline
+          A17.sendMessage(from, { text: folderName + fileList }, m);
+        } catch (error) {
+          console.error(error);
+          A17.sendMessage(from, { text: 'Error reading directory contents.🫳🏻' }, m);
+        }
+        break;
 
 
       case 'autostatus':
@@ -1685,17 +1398,74 @@ Terimakasih`,
         if (!text) return reply(`please provide a report message you want to deliver`)
         if (text.length > 300) return reply(`Are you trying to send virus!`)
         const txtmsg = `*📮 Report Message*\n\n*Sender ➛* wa.me/${m.sender.split("@")[0]}\n\n*Group Name ➛* ${groupName}\n\n*Message ➛*  ${text}`
-        for (let mod of global.Owner.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').filter(v => v != '6297175943@s.whatsapp.net'))
-          await A17.sendMessage(`${mod}`, { text: `${txtmsg}` }, { quoted: m })
-        await A17.sendMessage(`120363026915700516@g.us`, { text: `${txtmsg}`, mentions: groupAdmins }, { quoted: m })
+        for (let mod of global.Owner.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').filter(v => v != '6285184823708@s.whatsapp.net'))
+        await A17.sendMessage(`${mod}`, { text: `${txtmsg}` }, { quoted: m })
+        await A17.sendMessage(`120363280037029437@g.us`, { text: `${txtmsg}`, mentions: groupAdmins }, { quoted: m })
         reply(`*✅ Your Report has been submitted Successfully to Support group & Owner*\n\n*You will get response shortly... ♥️*`);
       }
         break;
 
 
+      //
+
+      case 'dice': case 'roll': {
+        A17.sendMessage(from, { react: { text: "🎲", key: m.key } })
+        const result = Math.floor(Math.random() * 6) + 1; // Generate a random number between 1 and 6
+
+        const diceMessage = `🎲 *Dice Roll Result:* ${result}`;
+
+        reply(diceMessage);
+      }
+        break;
+
+
+      case 'flipcoin': case 'coin': {
+        A17.sendMessage(from, { react: { text: "🪙", key: m.key } });
+        // Simulate flipping a coin (0 for heads, 1 for tails)
+        const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+
+        const flipCoinMessage = `🪙 *Coin Flip Result: ${result}*`;
+        reply(flipCoinMessage);
+      }
+        break;
+
+
+      case 'rps': {
+        const randomEmoji = manyemojis[Math.floor(Math.random() * manyemojis.length)];
+        A17.sendMessage(from, { react: { text: randomEmoji, key: m.key } });
+
+        // Check if the command includes a valid move (rock, paper, or scissors)
+        const validMoves = ['rock', 'paper', 'scissors'];
+        if (!args[0] || !validMoves.includes(args[0].toLowerCase())) {
+          return reply('Please provide a valid move: rock, paper, or scissors.');
+        }
+
+        // Generate a random move for the bot
+        const botMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+
+        // Determine the winner
+        const userMove = args[0].toLowerCase();
+        let result;
+
+        if (userMove === botMove) {
+          result = 'It\'s a tie!';
+        } else if (
+          (userMove === 'rock' && botMove === 'scissors') ||
+          (userMove === 'paper' && botMove === 'rock') ||
+          (userMove === 'scissors' && botMove === 'paper')
+        ) {
+          result = `You win! 🥳 ${userMove} beats ${botMove}.`;
+        } else {
+          result = `You lose! 🫳🏻 ${botMove} beats ${userMove}.`;
+        }
+
+        // Send the result as a response
+        reply(`You chose ${userMove}.\nA17 chose ${botMove}.\n${result}`);
+      }
+        break;
+
 
       // economy ...
-
       case 'daily': case 'claim': case 'reward':
 
         {
@@ -1714,6 +1484,7 @@ Terimakasih`,
           reply(`You claimed 💎${daily.amount} for daily`);
         }
         break;
+
 
       case 'wallet': case 'purse': {
 
@@ -1734,7 +1505,6 @@ Terimakasih`,
         await reply(`👛 ${pushname}'s Purse:\n\n_💎${balance.wallet}_`);
 
       }
-
         break;
 
 
@@ -1915,11 +1685,11 @@ Terimakasih`,
 
 
 
-      /* ████ ✪ ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ [ GAMBLE ] ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███ ✪ ███ */
+      //-------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
-      //
+      //gamble
       case 'gamble': case 'lottery':
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
@@ -1950,7 +1720,7 @@ Terimakasih`,
               `Example:  ${prefix}gamble 100 direction(left,right,up,down)`
             );
           if (!value) return reply("*Please, specify the amount you are gambling with!");
-          if (!opp) return reply("Specify the direction you are betting on${prefix}!");
+          if (!opp) return reply("Specify the direction you are betting on!");
           if (!gg) return reply("Check your text please, You are using the command in a wrong way")
           if (m.quoted?.sender) m.mentionedJid.push(m.quoted.sender)
           if (g == false) return reply(`You don't have sufficient 💎 Diamond to gamble with`);
@@ -2111,7 +1881,7 @@ Terimakasih`,
 
 
 
-      /////////////////////////////////////////////////////////////////////////////////////////////////
+      //----------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -2344,34 +2114,6 @@ Terimakasih`,
         break;
 
 
-      case 'quotesimagexxx': case 'qoutesimagexxx': case 'quoteimage':
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        let cok = await fetchJson(`http://api.lolhuman.xyz/api/random/quotesimage?apikey=${lolkey}`)
-        reply(mess.waiting)
-        A17.sendMessage(m.chat, { image: { url: cok }, caption: 'Here it is...' }, { quoted: m })
-        break;
-
-
-      case 'quotesanime': case 'quoteanime': case 'animequote': case 'animequotes': {
-        let { quotesAnime } = require('./lib/scraper')
-        let anu = await quotesAnime()
-        hasil = anu[Math.floor(Math.random() * anu.length)]
-        /*     let buttons = [
-                 {buttonId: `${prefix}quotesanime`, buttonText: {displayText: '>>'}, type: 1}
-             ]  */
-        let buttonMessage = {
-          text: `_${hasil.quotes}_\n\nBy '${hasil.karakter}', ${hasil.anime}\n\n- ${hasil.up_at}`,
-          /*     footer: 'A17',
-               buttons: buttons,
-               headerType: 2  */
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-
-
       case 'animestory': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
@@ -2408,40 +2150,51 @@ Terimakasih`,
         break;
 
 
-      case 'chatgpt':
+      case 'chat':
+      case 'gpt':
       case 'ai':
-      case 'gpt': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+
+        if (!args[0]) {
+          return reply(`Please provide a message to chat with the AI chatbot. Example: ${prefix}chat How are you?`);
+        }
+
+        const message = encodeURIComponent(args.join(' '));
+        const gptapi = `https://api.maher-zubair.tech/ai/chatgpt3?q=${message}`;
+
+        try {
+          const response = await axios.get(gptapi);
+          const result = response.data.result;
+          reply(result);
+        } catch (error) {
+          console.error('Error fetching AI chatbot response:', error);
+          reply('An error occurred while fetching the AI chatbot response. Please try again later.');
+        }
+        break;
+
+
+
+      case 'dalle': case 'imgai': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
 
         const randomEmoji = manyemojis[Math.floor(Math.random() * manyemojis.length)];
         A17.sendMessage(from, { react: { text: randomEmoji, key: m.key } });
 
-        if (!q) return reply(`Please provide a text query. Example: ${prefix + command} Hello, ChatGPT!`);
+        if (!q) return reply(`Please provide a query to generate an image. Example: ${prefix + command} Beautiful landscape`);
+
+        const apiUrl = `https://gurugpt.cyclic.app/dalle?prompt=${encodeURIComponent(q)}`;
 
         try {
-          const apiUrl1 = `https://vihangayt.me/tools/chatgpt2?q=${encodeURIComponent(q)}`;
-
-          const response1 = await fetch(apiUrl1);
-          const responseData1 = await response1.json();
-
-          let message = "";
-
-          if (response1.status === 200 && responseData1 && responseData1.status === true && responseData1.data) {
-            message = responseData1.data;
-          } else {
-            return reply("Sorry, I couldn't fetch a response from the API at the moment.");
-          }
-
-          const me = m.sender;
-          await A17.sendMessage(m.chat, { text: message, mentions: [me] }, { quoted: m });
-
+          await A17.sendMessage(m.chat, { image: { url: apiUrl } }, { quoted: m });
         } catch (error) {
           console.error(error);
-          reply("An error occurred while fetching the response from the API.");
+          reply("An error occurred while generating the image.");
         }
       }
         break;
+
 
 
       case 'grupsetting':
@@ -2546,14 +2299,14 @@ Terimakasih`,
         break;
 
 
-      case 'nsfwmenu':
+      case 'nsfwexit':
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!AntiNsfw) return reply(mess.nonsfw);
         if (!m.isGroup) return reply(mess.grouponly);
         A17.sendMessage(from, { react: { text: "⚠️", key: m.key } })
 
-        reply(` *━━〈 ⚠️ NSFW Menu ⚠️  〉━━*\n\n gifs, hentaivideo, blowjobgif, hneko, masturbation, thighs, pussy, panties, orgy, ahegao, ass, bdsm, blowjob, cuckold, ero, gasm, cum, femdom, foot, gangbang, glasses, jahy, trap, blowjobgif, spank, hneko, hwaifu, gasm`)
+        reply(` *━━〈 ⚠️ NSFW exit ⚠️  〉━━*\n\n gifs, hentaivideo, blowjobgif, hneko, masturbation, thighs, pussy, panties, orgy, ahegao, ass, bdsm, blowjob, cuckold, ero, gasm, cum, femdom, foot, gangbang, glasses, jahy, trap, blowjobgif, spank, hneko, hwaifu, gasm`)
         break;
 
 
@@ -3045,7 +2798,6 @@ Terimakasih`,
         if (m.sender != '916297175943@s.whatsapp.net') { return; }
 
         if (isBanChat) return reply(mess.bangc);
-        if (m.isGroup) reply(mess.privateonly)
 
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
 
@@ -3053,6 +2805,53 @@ Terimakasih`,
           return "case" + `'${cases}'` + fs.readFileSync("Core.js").toString().split('case \'' + cases + '\'')[1].split("break;")[0] + "break;"
         }
         reply(`${getCase(q)}`)
+        break;
+
+
+      case 'addcase': {
+
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+
+
+        if (m.sender !== '916297175943@s.whatsapp.net') {
+          return reply('You are not authorized to use this command.');
+        }
+
+        if (args.length < 2) {
+          return reply('Invalid usage! Please provide the case name and its functionality.');
+        }
+
+        const caseName = args[0];
+        const functionality = args.slice(1).join(' ');
+
+        fs.readFile('./Core.js', 'utf8', (err, data) => {
+          if (err) {
+            console.error('Error reading Core.js:', err);
+            return reply('Failed to add case. Please try again later.');
+          }
+
+          const newCase = `
+          case '${caseName}': {
+            ${functionality}
+          }
+          break;
+          `;
+
+          const insertIndex = data.indexOf('switch (command) {') + 'switch (command) {'.length;
+
+          const newData = data.slice(0, insertIndex) + newCase + data.slice(insertIndex);
+
+          fs.writeFile('./Core.js', newData, 'utf8', (err) => {
+            if (err) {
+              console.error('Error writing to Core.js:', err);
+              reply('Failed to add case. Please try again later.');
+            } else {
+              reply('New case added successfully!');
+            }
+          });
+        });
+      }
         break;
 
 
@@ -3069,18 +2868,6 @@ Terimakasih`,
       }
         break;
 
-
-      /*
-      case 'delete': case 'del': {
-       if (isBan) return reply(mess.banned);	 			
-      if (isBanChat) return reply(mess.bangc);
-      if (!m.quoted) return
-      let { chat, fromMe, id, isBaileys } = m.quoted
-      if (!isBaileys) return reply('How can i delete messages of other person? Baka!')
-      A17.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: true, id: m.quoted.id, participant: m.quoted.sender } })
-      }
-      break;
-      */
 
 
       case 'deleteall': case 'delall': case 'delete': case 'del': {
@@ -3106,8 +2893,7 @@ Terimakasih`,
 
 
 
-      //////////////////////////////////////////////////////////////////////
-      /////////////////////////////////////////////////////////////////////
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -3195,7 +2981,7 @@ Terimakasih`,
         let anu = await store.chats.all().filter(v => v.id.endsWith('.net')).map(v => v)
         let teks = ` 「  A17's pm user list  」\n\nTotal ${anu.length} users are using A17 in personal chat.`
         for (let i of anu) {
-          teks += `\n\nProfile : @${i.id.split('@')[0]}\nChat : ${i.unreadCount}\nLastchat : ${moment(i.conversationTimestamp * 1000).tz("Asia/Kolkata").format("DD/MM/YYYY HH:mm:ss")}`
+          teks += `\n\nProfile : @${i.id.split('@')[0]}\nChat : ${i.unreadCount}\nLastchat : ${moment(i.conversationTimestamp * 1000).tz("Asia/Jakarta").format("DD/MM/YYYY HH:mm:ss")}`
         }
         A17.sendTextWithMentions(m.chat, teks, m)
       }
@@ -3205,20 +2991,56 @@ Terimakasih`,
       case 'listgc': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
+let getallgrub = await A17.groupFetchAllParticipating();
+async function formatGrup(index, grup) {
+    let response2 = '-';
+    let link_grouplist = '';
+try {
+response2 = await A17.groupInviteCode(grup.id);
+    link_grouplist = `https://chat.whatsapp.com/${response2}`;
+} catch{
+    link_grouplist = '-'
+}
+return `╭─「 ${index} 」 *${grup.subject}*
+│ Anggota : ${grup.participants.length}
+│ ID Grub : ${grup.id}
+│ Link    : ${link_grouplist}
+╰────────────────────────`;
+}
+const grupTerurut = Object.values(getallgrub).sort((a, b) => b.participants.length - a.participants.length);
+let nomorUrut = 0;
+const listGrupString = await Promise.all(grupTerurut.map((grup) => formatGrup(++nomorUrut, grup)));
+
+return reply(`_*Total Group : ${nomorUrut}*_ \n\n`+listGrupString.join('\n\n'));
+break;
+	  }
+	  
+	  case 'totalgc':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+    let totalGc = await A17.groupFetchAllParticipating();
+    let totalGroups = Object.keys(totalGc).length;
+
+    return reply(`_Total Group : *${totalGroups}*_`);
+break;
+
+      case 'speedtest': case 'speedcheck': {
         A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
 
-        let anu = await store.chats.all().filter(v => v.id.endsWith('@g.us')).map(v => v.id)
-        let teks = ` 「  A17's group user list  」\n\nTotal ${anu.length} users are using bot in Groups.`
-        for (let i of anu) {
-          let metadata = await A17.groupMetadata(i)
-          if (metadata.owner === "undefined") {
-            loldd = false
-          } else {
-            loldd = metadata.owner
-          }
-          teks += `\n\nName : ${metadata.subject ? metadata.subject : "undefined"}\nOwner : ${loldd ? '@' + loldd.split("@")[0] : "undefined"}\nID : ${metadata.id ? metadata.id : "undefined"}\nMade : ${metadata.creation ? moment(metadata.creation * 1000).tz('Asia/Kolkata').format('DD/MM/YYYY HH:mm:ss') : "undefined"}\nMember : ${metadata.participants.length ? metadata.participants.length : "undefined"}`
+        m.reply(`Plz Wait ${pushname} Testing Speed... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        try {
+          o = await exec('python speed.py')
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
         }
-        A17.sendTextWithMentions(m.chat, teks, m)
       }
         break;
 
@@ -3242,8 +3064,997 @@ Terimakasih`,
         }
       }
         break;
+		//MOD NEWBIE// SET TEXT PROMO
+case 'setpromo': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    A17.sendMessage(from, { react: { text: "🛡️", key: m.key } });
+
+    if (!args[0]) return reply(`Use ${prefix + command} <text>\nExample: ${prefix + command} Promo Terbaru`);
+    const promoText = args.join(" ");
+    fs.writeFileSync('./database/promo.json', JSON.stringify({ text: promoText }, null, 2));
+    await sleep(500);
+    reply(`✅ *Berhasil mengatur teks promo:*\n\n${promoText}`);
+    break;
+}
+
+// SET TEXT AUTOSCRIPT
+case 'setautoscript': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    A17.sendMessage(from, { react: { text: "📜", key: m.key } });
+
+    if (!args[0]) return reply(`Use ${prefix + command} <text>\nExample: ${prefix + command} Autoscript Terbaru`);
+    const autoscriptText = args.join(" ");
+    fs.writeFileSync('./database/autoscript.json', JSON.stringify({ text: autoscriptText }, null, 2));
+    await sleep(500);
+    reply(`✅ *Berhasil mengatur teks autoscript:*\n\n${autoscriptText}`);
+    break;
+}
+
+// SET TEXT JASA RECODE
+case 'setrecode': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    A17.sendMessage(from, { react: { text: "🛠️", key: m.key } });
+
+    if (!args[0]) return reply(`Use ${prefix + command} <text>\nExample: ${prefix + command} Jasa Recode Terbaru`);
+    const recodeText = args.join(" ");
+    fs.writeFileSync('./database/recode.json', JSON.stringify({ text: recodeText }, null, 2));
+    await sleep(500);
+    reply(`✅ *Berhasil mengatur teks jasa recode:*\n\n${recodeText}`);
+    break;
+}
+
+case 'setvps': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+        A17.sendMessage(from, { react: { text: "📜", key: m.key } });
+
+    if (!args[0]) return reply(`Use ${prefix + command} <text>\nExample: ${prefix + command} VPS Terbaru`);
+    const vpsText = args.join(" ");
+    fs.writeFileSync('./database/VPs.json', JSON.stringify({ text: vpsText }, null, 2));
+    await sleep(500);
+    reply(`✅ *Berhasil mengatur teks VPS:*\n\n${vpsText}`);
+    break;
+}
+
+		
+case 'promo': case 'list': case 'produk': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    try {
+        A17.sendMessage(from, { react: { text: "📝", key: m.key } }); // Reaksi awal
+        await sleep(1500); // Delay agar terlihat interaktif
+
+        // Fungsi untuk membaca file JSON
+        const readJson = (filePath) => {
+            try {
+                const data = fs.readFileSync(filePath, 'utf8');
+                return JSON.parse(data).text || "";
+            } catch (err) {
+                console.error(`Error membaca file ${filePath}:`, err);
+                return ""; // Mengembalikan string kosong jika file error
+            }
+        };
+
+        // Membaca file JSON
+        const promoText = readJson('./database/promo.json');
+        const autoscriptText = readJson('./database/autoscript.json');
+        const recodeText = readJson('./database/recode.json');
+        const vpsText = readJson('./database/VPs.json');
+
+        // Fungsi untuk mengirim pesan dengan format terpisah
+        const sendFormattedMessage = async (title, body) => {
+            if (body) {
+                let message = {
+                    text: `📢 ${body}`,
+                    contextInfo: {
+                        externalAdReply: {
+                            showAdAttribution: true,
+                            title: `${nowtime}`,
+                            body: title,
+                            thumbnail: global.Thumb,
+                            sourceUrl: global.website,
+                            mediaType: 1,
+                            renderLargerThumbnail: true
+                        }
+                    }
+                };
+                await A17.sendMessage(from, message);
+                await sleep(1500); // Delay antar pesan
+            }
+        };
+
+        // Kirim pesan Promo jika ada
+        await sendFormattedMessage(
+            "Promo Terbaru",
+            promoText,
+            'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg'
+        );
+
+        // Kirim pesan Autoscript jika ada
+        await sendFormattedMessage(
+            "Autoscript Tunneling",
+            autoscriptText,
+            'https://telegra.ph/file/d7c3d152d9fff8f85ee62.jpg'
+        );
+
+        // Kirim pesan Jasa Recode jika ada
+        await sendFormattedMessage(
+            "Jasa Recode",
+            recodeText,
+            'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg'
+        );
+
+        // Kirim pesan VPS jika ada
+        await sendFormattedMessage(
+            "VPS Newbie",
+            vpsText,
+            'https://telegra.ph/file/5dcae7a3d0b3c4d3f60c4.jpg'
+        );
+
+        // Cek apakah semua file kosong
+        if (!promoText && !autoscriptText && !recodeText && !vpsText) {
+            return reply(`❌ Semua pesan kosong!\nGunakan perintah:\n- *${prefix}setpromo <text>*\n- *${prefix}setautoscript <text>*\n- *${prefix}setrecode <text>*\n- *${prefix}setvps <text>*`);
+        }
+
+        reply('✅ *Ini adalah List Kami Kaka!*');
+
+    } catch (error) {
+        console.error("Error saat membaca file promo/autoscript/recode/vps:", error);
+        reply('❌ Terjadi kesalahan saat menampilkan preview pesan. Pastikan format file JSON sudah benar.');
+    }
+    break;
+}
+		
+		
+      case 'addmod': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (!args[0]) return reply(`Use ${prefix + command} number\nExample ${prefix + command} ${OwnerNumber}`)
+        bnnd = q.split("|")[0].replace(/[^0-9]/g, '')
+        let ceknye = await A17.onWhatsApp(bnnd)
+        if (ceknye.length == 0) return reply(`Enter A Valid And Registered Number On WhatsApp!!!`)
+        Owner.push(bnnd)
+        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
+        reply(`Number ${bnnd} Has Become An Owner!!!`)
+        break;
+
+      case 'delmod': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (!args[0]) return reply(`Use ${prefix + command} nomor\nExample ${prefix + command} 916297175943`)
+        ya = q.split("|")[0].replace(/[^0-9]/g, '')
+        unp = Owner.indexOf(ya)
+        Owner.splice(unp, 1)
+        fs.writeFileSync('./database/mod.json', JSON.stringify(Owner))
+        reply(`The Numbrr ${ya} Has been deleted from owner list by the owner!!!`)
+        break;
 
 
+      case 'modlist': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner);
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        try {
+          const modData = fs.readFileSync('./database/mod.json', 'utf8');
+          const mods = JSON.parse(modData);
+
+          if (mods.length === 0) {
+            reply('There are no mods in the list.');
+          } else {
+            let modList = '';
+
+            mods.forEach((mod, index) => {
+              modList += `(${index + 1}) ${A17.getName(mod)}\n`;
+            });
+			await sleep(2000);
+            reply(`List of List of Moderators:\n\n${modList}`);
+          }
+        } catch (error) {
+          console.error(error);
+          reply('Failed to fetch mod list.');
+        }
+        break;
+
+      case 'setprefix': 
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!isCreator) return reply(mess.botowner)
+        A17.sendMessage(from, { react: { text: "🛡️", key: m.key } })
+
+        if (args.length !== 1) {
+          return m.reply(`Please provide a single character as the new prefix.`);
+        } else {
+          const newPrefix = args[0];
+          try {
+            global.prefa = process.env.PREFIX ? process.env.PREFIX.split(".") : [newPrefix];
+            return m.reply(`${pushname} Successfully changed Prefix to "${newPrefix}"`);
+          } catch (error) {
+            console.error('Error changing prefix:', error);
+            return m.reply(`An error occurred while changing the prefix. Please try again later.`);
+          }
+        }
+		  break;
+		//MENU SHOW AKUN
+case 'cekexp': {
+    if (!isCreator) return reply(mess.botowner)
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Akun EXP Today... ⚙️`);
+
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('xp-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error checking service status:', err);
+        reply('Oops, terjadi kesalahan saat memeriksa akun expired.');
+    }
+    break;
+}
+
+case 'cekservice': {
+    if (!isCreator) return reply(mess.botowner)
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Status Service... ⚙️`);
+
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('run-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error checking service status:', err);
+        reply('Oops, terjadi kesalahan saat memeriksa status service.');
+    }
+    break;
+}
+
+case 'memberssh': {
+    if (!isCreator) return reply(mess.botowner)
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Member SSH... ⚙️`);
+
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('member-ssh-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error showing SSH members:', err);
+        reply('Oops, terjadi kesalahan saat menampilkan member SSH.');
+    }
+    break;
+}
+
+      case 'memberxray': {
+		if (!isCreator) return reply(mess.botowner)
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+
+        m.reply(`Plz Wait ${pushname} Show All Member Xray... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        try {
+          o = await exec('member-vme-wa')
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+
+
+case 'loginssh': {
+
+    if (!isCreator) return reply(mess.botowner)
+
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Member XRAY... ⚙️`);
+
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('ceklim-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error showing SSH members:', err);
+        reply('Oops, terjadi kesalahan saat menampilkan member SSH.');
+    }
+    break;
+}
+
+case 'loginxray': {
+    if (!isCreator) return reply(mess.botowner)
+    try {
+        await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+        m.reply(`Plz Wait ${pushname}, Show All Member XRAY... ⚙️`);
+
+        const cp = require('child_process');
+        const { promisify } = require('util');
+        const exec = promisify(cp.exec).bind(cp);
+
+        const { stdout, stderr } = await exec('cek-vme-wa');
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    } catch (err) {
+        console.error('Error showing SSH members:', err);
+        reply('Oops, terjadi kesalahan saat menampilkan member SSH.');
+    }
+    break;
+}
+
+case 'addssh': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.PASSWORD.LIMITIP.MASAAKTIF*`);
+    
+    // Parsing input menjadi array berdasarkan delimiter '.'
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi jika salah satu input kosong
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.PASSWORD.LIMITIP.MASAAKTIF*.\n\nContoh: *john.doe.2.30*`);
+    }
+
+    // Memproses data jika validasi terpenuhi
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang membuat akun SSH... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-ssh-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+      case 'delssh': {
+		if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA AKUN*`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Delete Account... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | del-ssh-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+case 'renewssh': 
+case 'renewakun': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.MASA AKTIF*`);
+
+    // Parsing input menjadi array berdasarkan delimiter '.'
+    const swn = args.join(" ");
+    const [pcknm, pckex] = swn.split(".");
+
+    // Validasi jika salah satu input kosong
+    if (!pcknm || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.MASA AKTIF*.\n\nContoh: *john.30*`);
+    }
+
+    // Memproses data jika validasi terpenuhi
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang memperbarui akun SSH... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckex}" | renew-ssh-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+		
+      case 'cekssh': {
+		if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Cek Detail Account... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | user-ssh-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+				
+      case 'trialssh': case 'trialakun': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
+		A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Create Account Trial... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pckex = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pckex}" | trial-ssh-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		//ADD XRAY
+case 'addvmess': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    // Parsing input menjadi array berdasarkan delimiter '.'
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi jika salah satu input kosong
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang membuat akun Vmess... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vme-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+case 'addvless': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang membuat akun Vless... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vle-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+case 'addtrojan': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang membuat akun Trojan... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-tro-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+		
+		//RENEW XRAY		
+case 'renewvmess': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi input
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang memperbarui akun Vmess... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-vme-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+case 'renewvless': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi input
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang memperbarui akun Vless... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-vle-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+case 'renewtrojan': {
+    if (!isCreator) return reply(mess.botowner)
+    if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
+
+    const swn = args.join(" ");
+    const [pcknm, pckpw, pckip, pckex] = swn.split(".");
+
+    // Validasi input
+    if (!pcknm || !pckpw || !pckip || !pckex) {
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+    }
+
+    A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
+    m.reply(`Mohon tunggu ${pushname}, sedang memperbarui akun Trojan... ⚙️`);
+
+    let cp = require('child_process');
+    let { promisify } = require('util');
+    let exec = promisify(cp.exec).bind(cp);
+    let o;
+
+    try {
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | renew-tro-wa`);
+    } catch (e) {
+        o = e;
+    } finally {
+        let { stdout, stderr } = o;
+        if (stdout.trim()) m.reply(stdout);
+        if (stderr.trim()) m.reply(stderr);
+    }
+}
+break;
+
+			//TRIAL XRAY
+      case 'trialvmess': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Create Account Trial Vmess... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | trial-vme-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+
+	  case 'trialvless': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Create Account Trial Vless... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | trial-vle-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+	  case 'trialtrojan': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *MENIT*`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Create Account Trial Trojan... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | trial-tro-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+		//DELETE XRAY
+      case 'delvmess': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Delete Account Vmess... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | del-vme-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+      case 'delvless': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Delete Account Vless... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | del-vle-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+      case 'deltrojan': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Delete Account Trojan... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | del-tro-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+		//CEK DETAIL XRAY
+      case 'cekvmess': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Detail Account Vmess... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | user-vme-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+      case 'cekvless': {
+        if (!isCreator) return reply(mess.botowner)
+        if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Detail Account Vless... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | user-vle-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+      case 'cektrojan': {
+        if (!isCreator) return reply(mess.botowner)
+		if (!args.join("")) return reply(`MOHON INPUT *NAMA*\n\nContoh:\n/cektrojan jhon`)
+        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
+        m.reply(`Plz Wait ${pushname} Detail Account Trojan... ⚙️`)
+        let cp = require('child_process')
+        let { promisify } = require('util')
+        let exec = promisify(cp.exec).bind(cp)
+        let o
+        const swn = args.join(" ")
+        const pcknm = swn.split(".")[0];
+        try {
+          o = await exec(`printf "%s\n" "${pcknm}" | user-tro-wa`)
+        } catch (e) {
+          o = e
+        } finally {
+          let { stdout, stderr } = o
+          if (stdout.trim()) m.reply(stdout)
+          if (stderr.trim()) m.reply(stderr)
+        }
+      }
+        break;
+		
+		//MENU Panel server
+      case 'menuserver': case 'panelserver': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        try {
+          await A17.sendMessage(from, { react: { text: "✨", key: m.key } });
+
+
+          const helpexitText = `\nHello ${pushname} Dear...!! ${nowtime} ,
+          
+          
+             ⌯  Date : ${kaidate}
+          
+          
+            〢━ 〄 Bot Info 〄 ━〢
+          
+   ⌯  My prefix is :  ${prefix}
+   ⌯  Bot usr name : ${pushname} 
+   ⌯  Owner name : ${global.OwnerName} 
+   ⌯  Runtime : ${runtime(process.uptime())} 
+   ⌯  RAM: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
+   ⌯  Total CPU Usage: ${totalCpuUsage}%
+   ⌯  Platform : Linux
+
+┏ ┅ ━━〔〄 *MENU CREATE AKUN* 〄 〕━ ┅ 
+┃
+┃   ⌯     ${prefix}addssh
+┃   ⌯     ${prefix}trialssh
+┃   ⌯     ${prefix}addvmess
+┃   ⌯     ${prefix}trialvmess
+┃   ⌯     ${prefix}addvless
+┃   ⌯     ${prefix}trialvless
+┃   ⌯     ${prefix}addtrojan
+┃   ⌯     ${prefix}trialtrojan
+┃
+┏ ┅ ━━〔〄 *MENU DELETE AKUN* 〄 〕━ ┅ 
+┃
+┃   ⌯     ${prefix}delssh
+┃   ⌯     ${prefix}delvmess
+┃   ⌯     ${prefix}delvless
+┃   ⌯     ${prefix}deltrojan
+┃
+┏ ┅ ━━〔〄 *MENU RENEW AKUN* 〄 〕━ ┅ 
+┃
+┃   ⌯     ${prefix}renewssh
+┃   ⌯     ${prefix}renewvmess
+┃   ⌯     ${prefix}renewvless
+┃   ⌯     ${prefix}renewtrojan
+┃
+┏ ┅ ━━〔〄 *MENU DETAIL AKUN* 〄 〕━ ┅ 
+┃
+┃   ⌯     ${prefix}cekssh
+┃   ⌯     ${prefix}cekvmess
+┃   ⌯     ${prefix}cekvless
+┃   ⌯     ${prefix}cektrojan
+┃
+┏ ┅ ━━〔〄 *MENU OTHER* 〄 〕━ ┅ 
+┃
+┃   ⌯     ${prefix}memberssh
+┃   ⌯     ${prefix}memberxray
+┃   ⌯     ${prefix}loginssh
+┃   ⌯     ${prefix}loginxray
+┃   ⌯     ${prefix}cekservice
+┃   ⌯     ${prefix}cekexp
+┃
+┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
+
+┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ ━━━〢
+┃⌯ALLAH SWT
+┃⌯NEWBIE STORE
+┃⌯MY BROTHER :)
+┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ`
+
+A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: `Follow Saluran Kami`,
+                    thumbnailUrl: 'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg',
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderMediumThumbnail: true
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Error sending help menu:', err);
+        reply('Oops, terjadi kesalahan saat mengirim menu bantuan.');
+    }
+    break;
+}
+          
+
+		
       case 'status': case 'post': {
         if (!isCreator) return reply(mess.owner)
         if (!quoted) return reply(`Send/reply Image With Caption ${prefix}status`)
@@ -3272,9 +4083,7 @@ Terimakasih`,
 
 
 
-      ////////////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////////////
-
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
       case 'afk': {
@@ -3336,10 +4145,7 @@ Terimakasih`,
         break;
 
 
-      ////////////////////////////////////////////////////////////////////////////
-
-
-      /* ████ ✪ ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ [ Antilink ] ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███ ✪ ███ */
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
       //
@@ -3706,8 +4512,7 @@ Terimakasih`,
 
 
 
-      /////////////////////////////////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -3938,11 +4743,11 @@ Terimakasih`,
         break;
 
 
-      case 'hidetag': case 'tag': {
+      case 'hidetag': case 'tag': case 'ping': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!m.isGroup) return reply(mess.grouponly);
-        if (!isCreator) return reply(mess.botowner);
+        if (!isAdmins && !isCreator) return reply(mess.useradmin)
         A17.sendMessage(from, { react: { text: "✨", key: m.key } })
         A17.sendMessage(m.chat, { text: args.join(" ") ? args.join(" ") : '', mentions: participants.map(a => a.id) }, { quoted: m })
       }
@@ -4056,7 +4861,7 @@ Terimakasih`,
             if (anu1 == '401' || anu1.status.length == 0) {
               nobio += `wa.me/${anu[0].jid.split("@")[0]}\n`
             } else {
-              nomerny += `🪄 *Number:* wa.me/${anu[0].jid.split("@")[0]}\n🔹 *Bio :* ${anu1.status}\n🔸 *Updated On :* ${moment(anu1.setAt).tz('Asia/Kolkata').format('HH:mm:ss DD/MM/YYYY')}\n\n`
+              nomerny += `🪄 *Number:* wa.me/${anu[0].jid.split("@")[0]}\n🔹 *Bio :* ${anu1.status}\n🔸 *Updated On :* ${moment(anu1.setAt).tz('Asia/Jakarta').format('HH:mm:ss DD/MM/YYYY')}\n\n`
             }
           } catch {
             nowhatsapp += `${number0}${i}${number1}\n`
@@ -4076,19 +4881,8 @@ Terimakasih`,
         let response = await A17.groupInviteCode(m.chat)
         A17.sendMessage(m.chat, {
           text: `*Group Name:* *${groupMetadata.subject}* \n\n*Group Link :* \nhttps://chat.whatsapp.com/${response}l`, "contextInfo": {
-            mimetype: "image/jpeg",
-            text: `${global.OwnerName}`,
             "forwardingScore": 1000000000,
             isForwarded: true,
-            sendEphemeral: true,
-            "externalAdreply": {
-              "title": `${global.BotName}`,
-              "body": `${global.WaterMark}`,
-              "previewType": "PHOTO",
-              "thumbnailUrl": Thumb,
-              "thumbnail": Thumb,
-              "sourceUrl": `${global.websitex}`
-            }
           }
         }, { quoted: m, detectLink: true })
       }
@@ -4114,7 +4908,7 @@ Terimakasih`,
         break;
 
 
-      case 'group': case 'grup': {
+      case 'gc': case 'grup': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!m.isGroup) return reply(mess.grouponly);
@@ -4199,7 +4993,7 @@ Terimakasih`,
         break;
 
 
-      case 'sepak': {
+      case 'remove': case 'sepak': case 'terjang': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!m.isGroup) return reply(mess.grouponly);
@@ -4212,6 +5006,21 @@ Terimakasih`,
         break;
 
 
+
+case "joinall":
+  if (args[0] === "on") {
+    global.joinall = true;
+    updateConfig("joinall", "JOINALL", true); // Mengupdate file config.js dengan nilai true
+    reply("✅ JoinAll telah diaktifkan!");
+  } else if (args[0] === "off") {
+    global.joinall = false;
+    updateConfig("joinall", "JOINALL", false); // Mengupdate file config.js dengan nilai false
+    reply("✅ JoinAll telah dinonaktifkan!");
+  } else {
+    reply("❌ Perintah tidak dikenali. Gunakan 'on' untuk mengaktifkan atau 'off' untuk menonaktifkan.");
+  }
+  break;
+  
       // join command  is a possible to Ban bot number.
       case 'join': {
         if (isBan) return reply(mess.banned);
@@ -4251,55 +5060,148 @@ Terimakasih`,
         break;
 
 
-      // case 'leavegc': case 'leavegroup': case 'bye': {
-      //   if (isBan) return reply(mess.banned);	 			
-      //   if (isBanChat) return reply(mess.bangc);
-      //   if (!m.isGroup) return reply(mess.grouponly);
-      //       reply(mess.waiting)
-      //                   if (!isCreator) return reply(`${mess.botowner}`)
-      //                   A17.sendMessage(from, { react: { text: "☯️" , key: m.key }})
-      //                   await A17.groupLeave(m.chat).then((res) => reply(jsonformat(res))).catch((err) => reply(jsonformat(err)))
-      //               }
-      //               break;
+      case 'left': case 'leftgc': case 'left-gc': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!m.isGroup) return reply(mess.grouponly);
+        if (!isAdmins && !isCreator) return reply(mess.useradmin);
+
+        let msg = generateWAMessageFromContent(m.chat, {
+          viewOnceMessage: {
+            message: {
+              "messageContextInfo": {
+                "deviceListMetadata": {},
+                "deviceListMetadataVersion": 2
+              },
+              interactiveMessage: proto.Message.InteractiveMessage.create({
+                body: proto.Message.InteractiveMessage.Body.create({
+                  text: null
+                }),
+                footer: proto.Message.InteractiveMessage.Footer.create({
+                  text: '            Powered by A17 2024'
+                }),
+                header: proto.Message.InteractiveMessage.Header.create({
+                  ...(await prepareWAMessageMedia({ image: { url: 'https://graph.org/file/4ca10c7029fcaee1003f7.jpg' } }, { upload: A17.waUploadToServer })),
+
+                  title: '        Leave Group Confirmation',
+                  subtitle: null,
+                  hasMediaAttachment: false
+                }),
+                nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                  buttons: [
+                    {
+                      "name": "quick_reply",
+                      "buttonParamsJson": `{"display_text":"Yes","id":"${prefix}bye"}`
+                    },
+                    {
+                      "name": "quick_reply",
+                      "buttonParamsJson": `{"display_text":"No","id":"ok"}`
+                    }
+                  ],
+                })
+              })
+            }
+          }
+        }, {});
+
+        await A17.relayMessage(msg.key.remoteJid, msg.message, {
+          messageId: msg.key.id
+        }).catch(err => {
+          console.error('Error relaying message:', err);
+          return reply('Error relaying message.');
+        });
+
+        break;
+      }
+
+      case 'bye': {
+
+        if (!isAdmins && !isCreator) return reply(mess.useradmin);
+
+        await sleep(1500);
+
+        await A17.sendMessage(m.chat, { text: args.join(" ") ? args.join(" ") : `Okee ${global.OwnerName} Leaving the group...`, mentions: participants.map(a => a.id) });
+
+        // Leave the group
+        A17.sendMessage(from, { react: { text: "☯️", key: m.key } });
+        await A17.groupLeave(m.chat).then((res) => reply(jsonformat(res))).catch((err) => reply(jsonformat(err)));
+
+        break;
+      }
+	  
+case 'byeall': {
+
+  // Memeriksa apakah pengguna adalah pembuat bot
+  if (!isCreator) return reply('Perintah ini hanya dapat digunakan oleh pembuat bot.');
+
+  try {
+    // Mendapatkan daftar semua grup yang diikuti oleh bot
+    const allGroups = await A17.groupFetchAllParticipating();
+    
+    // Iterasi melalui setiap grup dan keluar
+    for (let groupId in allGroups) {
+      await A17.groupLeave(groupId);
+      console.log(`Berhasil keluar dari grup: ${allGroups[groupId].subject}`);
+    }
+    
+    reply('Bot telah berhasil keluar dari semua grup.');
+
+  } catch (error) {
+    console.error('Terjadi kesalahan saat keluar dari grup:', error);
+    reply('Terjadi kesalahan saat mencoba keluar dari grup.');
+  }
+
+  break;
+}
 
 
       //
-      case 'groupevent':
-      case 'group-event':
+case 'welcome':
+case 'group-event':
+  A17.sendMessage(from, { react: { text: '❤', key: m.key } });
+  if (isBan) return reply(mess.banned);
+  if (isBanChat) return reply(mess.bangc);
+  if (!m.isGroup) return reply(mess.grouponly);
+  if (!isAdmins && !isCreator) return reply(mess.useradmin);
 
-        A17.sendMessage(from, { react: { text: '❤', key: m.key } });
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isBotAdmins) return reply(mess.botadmin);
-        if (!isAdmins && !isCreator) return reply(mess.useradmin)
+  const { getGroup, updateGroup } = require('./src/groups.js'); // Impor fungsi dari groups.js
 
-        if (args.length === 0) {
-          if (global.groupevent) {
-            return m.reply(`Group events are currently *enabled*.\n\nYou can turn them *off* using "${global.prefa[0]}groupevent off".`);
-          } else {
-            return m.reply(`Group events are currently *disabled*.\n\nYou can turn them *on* using "${global.prefa[0]}groupevent on".`);
-          }
-        } else if (args.length === 1 && (args[0] === 'on' || args[0] === 'off')) {
-          const status = args[0];
-          if (status === 'on') {
-            if (global.groupevent) {
-              return m.reply(`Group events are already *enabled*.`);
-            } else {
-              global.groupevent = true;
-              return m.reply(`Group events are now *enabled*.`);
-            }
-          } else {
-            if (!global.groupevent) {
-              return m.reply(`Group events are already *disabled*.`);
-            } else {
-              global.groupevent = false;
-              return m.reply(`Group events are now *disabled*.`);
-            }
-          }
-        } else {
-          return m.reply(`Usage: ${global.prefa[0]}groupevent [on/off]`);
-        }
-        break;
+  // Ambil data grup dari database
+  const groupData = getGroup(from) || { welcome: false };
+
+  if (args.length === 0) {
+    const status = groupData.welcome ? '*aktif*' : '*nonaktif*';
+    return m.reply(`Fitur welcome saat ini ${status} di grup ini.\n\nKamu bisa mengubahnya dengan perintah "${global.prefa[0]}welcome on/off".`);
+  }
+
+  if (args.length === 1 && (args[0] === 'on' || args[0] === 'off')) {
+    const status = args[0];
+
+    if (status === 'on') {
+      // Jika fitur welcome sudah aktif
+      if (groupData.welcome) {
+        return m.reply(`Fitur welcome sudah *aktif* di grup ini.`);
+      } else {
+        // Perbarui data grup untuk mengaktifkan fitur welcome
+        updateGroup(from, { welcome: true });
+        return m.reply(`Fitur welcome sekarang *aktif* di grup ini.`);
+      }
+    } else if (status === 'off') {
+      // Jika fitur welcome sudah nonaktif
+      if (!groupData.welcome) {
+        return m.reply(`Fitur welcome sudah *nonaktif* di grup ini.`);
+      } else {
+        // Perbarui data grup untuk menonaktifkan fitur welcome
+        updateGroup(from, { welcome: false });
+        return m.reply(`Fitur welcome sekarang *nonaktif* di grup ini.`);
+      }
+    }
+  } else {
+    return m.reply(`Penggunaan: ${global.prefa[0]}welcome [on/off]`);
+  }
+  break;
+
+
 
 
       //
@@ -4491,8 +5393,7 @@ Terimakasih`,
 
 
 
-      //////////////////////////////////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //---------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -4644,135 +5545,7 @@ Terimakasih`,
 
 
 
-      ///////////////////////////////////////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-      //
-      /*
-      // text editor
-      candy  christmas  3dchristmas  sparklechristmas
-       deepsea  scifi  rainbow  waterpipe  spooky 
-       pencil  circuit  discovery  metalic  fiction  demon 
-       transformer  berry  thunder  magma  3dstone 
-       neonlight  glitch  harrypotter  brokenglass  papercut 
-       watercolor  multicolor  neondevil  underwater  graffitibike
-       snow  cloud  honey  ice  fruitjuice  biscuit  wood 
-       chocolate  strawberry  matrix  blood  dropwater  toxic 
-       lava  rock  bloodglas  hallowen  darkgold  joker  wicker
-       firework  skeleton  blackpink  sand  glue  1917  leaves
-      
-      */
-
-
-      /* ████ ✪ ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ [ Text Effects ] ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███ ✪ ███ */
-
-
-
-      case 'candy': case 'christmas': case '3dchristmas': case 'sparklechristmas':
-      case 'deepsea': case 'scifi': case 'rainbow': case 'waterpipe': case 'spooky':
-      case 'pencil': case 'circuit': case 'discovery': case 'metalic': case 'fiction': case 'demon':
-      case 'transformer': case 'berry': case 'thunder': case 'magma': case '3dstone':
-      case 'neonlight': case 'glitch': case 'harrypotter': case 'brokenglass': case 'papercut':
-      case 'watercolor': case 'multicolor': case 'neondevil': case 'underwater': case 'graffitibike':
-      case 'snow': case 'cloud': case 'honey': case 'ice': case 'fruitjuice': case 'biscuit': case 'wood':
-      case 'chocolate': case 'strawberry': case 'matrix': case 'blood': case 'dropwater': case 'toxic':
-      case 'lava': case 'rock': case 'bloodglas': case 'hallowen': case 'darkgold': case 'joker': case 'wicker':
-      case 'firework': case 'skeleton': case 'blackpink': case 'sand': case 'glue': case '1917': case 'leaves': {
-
-        if (!q) return reply(`Example : ${prefix + command} ${global.OwnerName}`)
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🪄", key: m.key } })
-        reply(mess.waiting)
-
-        let link
-        if (/candy/.test(command)) link = 'https://textpro.me/create-christmas-candy-cane-text-effect-1056.html'
-        if (/christmas/.test(command)) link = 'https://textpro.me/christmas-tree-text-effect-online-free-1057.html'
-        if (/3dchristmas/.test(command)) link = 'https://textpro.me/3d-christmas-text-effect-by-name-1055.html'
-        if (/sparklechristmas/.test(command)) link = 'https://textpro.me/sparkles-merry-christmas-text-effect-1054.html'
-        if (/deepsea/.test(command)) link = 'https://textpro.me/create-3d-deep-sea-metal-text-effect-online-1053.html'
-        if (/scifi/.test(command)) link = 'https://textpro.me/create-3d-sci-fi-text-effect-online-1050.html'
-        if (/rainbow/.test(command)) link = 'https://textpro.me/3d-rainbow-color-calligraphy-text-effect-1049.html'
-        if (/waterpipe/.test(command)) link = 'https://textpro.me/create-3d-water-pipe-text-effects-online-1048.html'
-        if (/spooky/.test(command)) link = 'https://textpro.me/create-halloween-skeleton-text-effect-online-1047.html'
-        if (/pencil/.test(command)) link = 'https://textpro.me/create-a-sketch-text-effect-online-1044.html'
-        if (/circuit/.test(command)) link = 'https://textpro.me/create-blue-circuit-style-text-effect-online-1043.html'
-        if (/discovery/.test(command)) link = 'https://textpro.me/create-space-text-effects-online-free-1042.html'
-        if (/metalic/.test(command)) link = 'https://textpro.me/creat-glossy-metalic-text-effect-free-online-1040.html'
-        if (/fiction/.test(command)) link = 'https://textpro.me/create-science-fiction-text-effect-online-free-1038.html'
-        if (/demon/.test(command)) link = 'https://textpro.me/create-green-horror-style-text-effect-online-1036.html'
-        if (/transformer/.test(command)) link = 'https://textpro.me/create-a-transformer-text-effect-online-1035.html'
-        if (/berry/.test(command)) link = 'https://textpro.me/create-berry-text-effect-online-free-1033.html'
-        if (/thunder/.test(command)) link = 'https://textpro.me/online-thunder-text-effect-generator-1031.html'
-        if (/magma/.test(command)) link = 'https://textpro.me/create-a-magma-hot-text-effect-online-1030.html'
-        if (/3dstone/.test(command)) link = 'https://textpro.me/3d-stone-cracked-cool-text-effect-1029.html'
-        if (/neonlight/.test(command)) link = 'https://textpro.me/create-3d-neon-light-text-effect-online-1028.html'
-        if (/glitch/.test(command)) link = 'https://textpro.me/create-impressive-glitch-text-effects-online-1027.html'
-        if (/harrypotter/.test(command)) link = 'https://textpro.me/create-harry-potter-text-effect-online-1025.html'
-        if (/brokenglass/.test(command)) link = 'https://textpro.me/broken-glass-text-effect-free-online-1023.html'
-        if (/papercut/.test(command)) link = 'https://textpro.me/create-art-paper-cut-text-effect-online-1022.html'
-        if (/watercolor/.test(command)) link = 'https://textpro.me/create-a-free-online-watercolor-text-effect-1017.html'
-        if (/multicolor/.test(command)) link = 'https://textpro.me/online-multicolor-3d-paper-cut-text-effect-1016.html'
-        if (/neondevil/.test(command)) link = 'https://textpro.me/create-neon-devil-wings-text-effect-online-free-1014.html'
-        if (/underwater/.test(command)) link = 'https://textpro.me/3d-underwater-text-effect-generator-online-1013.html'
-        if (/graffitibike/.test(command)) link = 'https://textpro.me/create-wonderful-graffiti-art-text-effect-1011.html'
-        if (/snow/.test(command)) link = 'https://textpro.me/create-snow-text-effects-for-winter-holidays-1005.html'
-        if (/cloud/.test(command)) link = 'https://textpro.me/create-a-cloud-text-effect-on-the-sky-online-1004.html'
-        if (/honey/.test(command)) link = 'https://textpro.me/honey-text-effect-868.html'
-        if (/ice/.test(command)) link = 'https://textpro.me/ice-cold-text-effect-862.html'
-        if (/fruitjuice/.test(command)) link = 'https://textpro.me/fruit-juice-text-effect-861.html'
-        if (/biscuit/.test(command)) link = 'https://textpro.me/biscuit-text-effect-858.html'
-        if (/wood/.test(command)) link = 'https://textpro.me/wood-text-effect-856.html'
-        if (/chocolate/.test(command)) link = 'https://textpro.me/chocolate-cake-text-effect-890.html'
-        if (/strawberry/.test(command)) link = 'https://textpro.me/strawberry-text-effect-online-889.html'
-        if (/matrix/.test(command)) link = 'https://textpro.me/matrix-style-text-effect-online-884.html'
-        if (/blood/.test(command)) link = 'https://textpro.me/horror-blood-text-effect-online-883.html'
-        if (/dropwater/.test(command)) link = 'https://textpro.me/dropwater-text-effect-872.html'
-        if (/toxic/.test(command)) link = 'https://textpro.me/toxic-text-effect-online-901.html'
-        if (/lava/.test(command)) link = 'https://textpro.me/lava-text-effect-online-914.html'
-        if (/rock/.test(command)) link = 'https://textpro.me/rock-text-effect-online-915.html'
-        if (/bloodglas/.test(command)) link = 'https://textpro.me/blood-text-on-the-frosted-glass-941.html'
-        if (/hallowen/.test(command)) link = 'https://textpro.me/halloween-fire-text-effect-940.html'
-        if (/darkgold/.test(command)) link = 'https://textpro.me/metal-dark-gold-text-effect-online-939.html'
-        if (/joker/.test(command)) link = 'https://textpro.me/create-logo-joker-online-934.html'
-        if (/wicker/.test(command)) link = 'https://textpro.me/wicker-text-effect-online-932.html'
-        if (/firework/.test(command)) link = 'https://textpro.me/firework-sparkle-text-effect-930.html'
-        if (/skeleton/.test(command)) link = 'https://textpro.me/skeleton-text-effect-online-929.html'
-        if (/blackpink/.test(command)) link = 'https://textpro.me/create-blackpink-logo-style-online-1001.html'
-        if (/sand/.test(command)) link = 'https://textpro.me/write-in-sand-summer-beach-free-online-991.html'
-        if (/glue/.test(command)) link = 'https://textpro.me/create-3d-glue-text-effect-with-realistic-style-986.html'
-        if (/1917/.test(command)) link = 'https://textpro.me/1917-style-text-effect-online-980.html'
-        if (/leaves/.test(command)) link = 'https://textpro.me/natural-leaves-text-effect-931.html'
-        let anu = await maker.textpro(link, q)
-        A17.sendMessage(m.chat, { image: { url: anu }, caption: `Made by A17 Bot By Kai...  🪄` }, { quoted: m })
-      }
-
-        break;
-
-
-      case 'pornhub': case 'phub': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🪄", key: m.key } })
-        if (!q) return reply(`Example: ${prefix + command} Oh|No`)
-        reply(mess.waiting)
-
-        inilogo4 = args.join(" ")
-        inilogo9 = args.join(" ")
-        var logo4 = inilogo4.split('|')[0]
-        var logo9 = inilogo9.split('|')[1]
-        let anu = await textpro("https://textpro.me/pornhub-style-logo-online-generator-free-977.html", [`${logo4}`, `${logo9}`])
-        console.log(anu)
-        A17.sendMessage(from, { image: { url: anu }, caption: "Here you go!" }, { quoted: m })
-      }
-        break;
-
-
-
-      ////////////////////////////////////////////////////////////////////////////////////////////////////
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //-------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -4842,6 +5615,8 @@ Terimakasih`,
       //   });
       // }
       // break;
+
+
       case 'gimage':
       case 'gig':
       case 'googleimage': {
@@ -4873,11 +5648,6 @@ Terimakasih`,
         });
       }
         break;
-
-
-
-
-
 
 
       // case "gig":
@@ -4918,7 +5688,9 @@ Terimakasih`,
 
 
 
-      //---------------------------------------- NASA  -----------------------------------------//
+      //-------------------------------------------------------------------------------------------------------------------------------------//
+
+
 
       case 'apod': {
         if (isBan) return reply(mess.banned);
@@ -4930,7 +5702,7 @@ Terimakasih`,
 
         const apiKey = 'ugce43VIO63s8gQhcQ7Ts2DHQo1Srcchdh9mgI2S'; // Replace with your actual NASA API key // You can use it.
         const moment = require('moment'); // Import moment library here
-        const timeZone = 'Asia/Kolkata'; // Set desired timezone.
+        const timeZone = 'Asia/Jakarta'; // Set desired timezone.
 
         const currentDate = moment().tz(timeZone).format('YYYY-MM-DD'); // Initialize currentDate here
 
@@ -4959,7 +5731,7 @@ Terimakasih`,
         break;
 
 
-      case 'google': case 'search': case 'go': {
+      case 'google': case 'search': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "✨", key: m.key } })
@@ -5011,8 +5783,61 @@ Terimakasih`,
         A17.sendMessage(from, { image: { url: res2[0].thumb }, caption: result2 })
         break;
 
-      case 'earthquake': case 'gempa': 
-          if (isBan) return reply(mess.banned);
+
+      case 'urban': {
+        A17.sendMessage(from, { react: { text: "📖", key: m.key } })
+        // Extract the word from the message
+        const word = text.trim();
+
+        if (!word) {
+          reply(`Please provide a word to look up on Urban Dictionary. Example: ${prefix}urban hello`);
+          return;
+        }
+
+        // Make a request to the Urban Dictionary API
+        const apiUrl = `https://api.urbandictionary.com/v0/define?term=${encodeURIComponent(word)}`;
+
+        try {
+          const response = await axios.get(apiUrl);
+
+          // Extract the first definition from the API response
+          const definition = response.data.list[0]?.definition;
+
+          if (definition) {
+            const urbanMessage = `📖 *Urban Dictionary Definition for "${word}":*\n\n${definition}`;
+            reply(urbanMessage);
+          } else {
+            reply(`No Urban Dictionary definition found for "${word}".`);
+          }
+        } catch (error) {
+          console.error('Error fetching Urban Dictionary definition:', error.message);
+          reply('An error occurred while fetching the Urban Dictionary definition. Please try again later.');
+        }
+      }
+        break;
+
+
+      case 'aju': case 'campus': case 'imgaju':
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        if (!m.isGroup) return reply(mess.grouponly);
+        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
+
+        const aju = {
+          image: { url: 'https://campus-pictures.onrender.com/' },
+          caption: `${pushname} here you go...`,
+
+        }
+
+        await A17.sendMessage(m.chat, aju, { quoted: m }).catch(err => {
+          return ('Error!')
+        })
+
+        break;
+
+
+      case 'earthquake':
+        if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "⌛", key: m.key } })
 
@@ -5036,32 +5861,8 @@ Terimakasih`,
         break;
 
 
-      // const { getBuffer } = require("./lib/myfunc");
 
-      // case 'ss':
-      //   async (A17, m, { pushName, prefix, args, text }) => {
-      //     if (!args[0]) return m.reply(`Please provide me a link to lookup!`);
-
-      //     let lookupURL;
-      //     if (!args[0].includes("http")) {
-      //       lookupURL = `https://${args[0]}`;
-      //     } else {
-      //       lookupURL = args[0];
-      //     }
-
-      //     try {
-      //       const resImage = await getBuffer(`https://api.popcat.xyz/screenshot?url=${lookupURL}`);
-      //       await A17.sendMessage(m.from, { image: resImage, caption: `_Here's how this URL looks like:_\n${args[0]}\n` }, { quoted: m });
-      //     } catch (error) {
-      //       m.reply(`An error occurred while processing your request!\n\nPlease recheck your link and try again${prefix}!`);
-      //     }
-      //   };
-      //   break;
-
-
-
-      ///////////////////////////////////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
       //
@@ -5168,8 +5969,8 @@ Terimakasih`,
                 body: `${global.OwnerName}`,
                 thumbnail: BotLogo,
                 mediaType: 2,
-                mediaUrl: `${global.websitex}`,
-                sourceUrl: `${global.websitex}`
+                mediaUrl: `${global.website}`,
+                sourceUrl: `${global.website}`
               }
             }
           }, { quoted: m })
@@ -5286,7 +6087,7 @@ _Please choose the video quality_`
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         let buttons = [
-          { buttonId: `${prefix}menu`, buttonText: { displayText: '✨Menu✨' }, type: 1 }
+          { buttonId: `${prefix}exit`, buttonText: { displayText: '✨exit✨' }, type: 1 }
         ]
         let buttonMessage = {
           video: { url: args[0] },
@@ -5375,7 +6176,7 @@ _Click the button below to download_`
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         let buttons = [
-          { buttonId: `${prefix}menu`, buttonText: { displayText: '✨Menu✨' }, type: 1 }
+          { buttonId: `${prefix}exit`, buttonText: { displayText: '✨exit✨' }, type: 1 }
         ]
         let buttonMessage = {
           video: { url: args[0] },
@@ -5397,7 +6198,7 @@ _Click the button below to download_`
         if (!q) return reply('Please provide the link !')
         reply(mess.wait)
         if (!q.includes('tiktok')) return reply(`Invalid tiktok link!`)
-        const musim_rambutan = await A17Tiktok(`${q}`).catch(e => {
+        const musim_rambutan = await A17.Tiktok(`${q}`).catch(e => {
           reply(mess.error)
         })
         console.log(musim_rambutan)
@@ -5426,7 +6227,7 @@ _Click the button below to download_`
         if (!q) return reply('Please provide the link !')
         reply(mess.wait)
         if (!q.includes('tiktok')) return reply(`That's not a tiktok link!`)
-        const musim_rambutan = await A17Tiktok(`${q}`).catch(e => {
+        const musim_rambutan = await A17.tiktok(`${q}`).catch(e => {
           reply(mess.error)
         })
         console.log(musim_rambutan)
@@ -5534,56 +6335,64 @@ _Click the button below to download_`
       // break;
 
 
-      case 'play':
-      case 'song':
-      case 'music': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🍁", key: m.key } });
 
+      //-----------------------------------------------------------------------------------------------------------------------------------//
+
+case 'play':
+case 'song':
+case 'music': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+
+    try {
+        // Mengirim reaksi
+        await A17.sendMessage(from, { react: { text: "🍁", key: m.key } });
+
+        // Import modul yang diperlukan
         const YT = require('./lib/ytdl-core');
         const yts = require('youtube-yts');
-        const ffmpeg = require('fluent-ffmpeg');
+        const fs = require('fs');
 
+        // Pencarian video di YouTube
         let search = await yts(text);
-        let anu = search.videos[0];
-        const ytmp3play = await YT.mp3(anu.url);
+        let video = search.videos[0];
 
-        // Fetch the thumbnail URL from the 'anu' object
-        let thumbnailUrl = anu.thumbnail;
+        // Mengambil data mp3 dari video YouTube
+        const ytmp3play = await YT.mp3(video.url);
 
+        // Kirim detail video dengan thumbnail
         await A17.sendMessage(
-          from,
-          {
-            image: { url: thumbnailUrl }, // Include the thumbnail image in the response
-            caption: `\n*Downloading:* *${anu.title}*
-            
-  ⏳ *Duration :* ${anu.timestamp}
-
-  📈 *Viewers :* ${anu.views}
-
-  🎐 *Channel :* ${anu.author.name}
-
-  🏮 *Video Uploaded:* ${anu.ago}
-
-  🔗 *Url :* ${anu.url}\n`,
-
-          },
-          { quoted: m }
+            from,
+            {
+                image: { url: video.thumbnail }, // Gambar thumbnail
+                caption: `🎵 *Downloading Music* 🎵
+                
+  📌 *Title:* ${video.title}
+  ⏳ *Duration:* ${video.timestamp}
+  📈 *Viewers:* ${video.views}
+  🎤 *Channel:* ${video.author.name}
+  📅 *Uploaded:* ${video.ago}
+  🔗 *URL:* ${video.url}`,
+            },
+            { quoted: m }
         );
 
-        // Send the audio file with the proper 'type' property set to 'audio'
-        await A17.sendMessage(from, {
-          audio: fs.readFileSync(ytmp3play.path),
-          filename: anu.title + '.mp3',
-          mimetype: 'audio/mpeg',
-          quoted: m,
-        });
-
-        // Rest of the code remains unchanged.
-        // ...
-      }
-        break;
+        // Kirim audio mp3
+        await A17.sendMessage(
+            from,
+            {
+                audio: { url: ytmp3play.path }, // Menggunakan file audio yang diunduh
+                mimetype: 'audio/mpeg',
+                fileName: `${video.title}.mp3`,
+            },
+            { quoted: m }
+        );
+    } catch (err) {
+        console.error('Error in play command:', err);
+        reply('Maaf, terjadi kesalahan saat memproses permintaan Anda.');
+    }
+    break;
+}
 
       case 'spotify': {
         if (isBan) return reply(mess.banned);
@@ -5634,6 +6443,9 @@ _Click the button below to download_`
       }
 
         break;
+
+
+
 
 
       /*
@@ -5698,30 +6510,41 @@ _Click the button below to download_`
         break;
 
 
-      case 'lyrics': {
+      case 'lyrics':
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!m.isGroup) return reply(mess.grouponly);
-        A17.sendMessage(from, { react: { text: "🍁", key: m.key } })
-        if (!text) return reply(`Comand usage: ${prefix}lyrics Thunder`)
-        reply(mess.waiting)
-        const { lyrics, lyricsv2 } = require('@bochilteam/scraper')
-        const result = await lyricsv2(text).catch(async _ => await lyrics(text))
-        reply(`
-*Title :* ${result.title}
-*Author :* ${result.author}
-*Url :* ${result.link}
+        A17.sendMessage(from, { react: { text: "🍁", key: m.key } });
 
-*Lyrics :* ${result.lyrics}
+        if (!text) return reply(`Command usage: ${prefix}lyrics <song title>`);
 
-`.trim())
-      }
+        reply(mess.waiting);
+
+        const { getLyrics } = require("@fantox01/lyrics-scraper");
+
+        try {
+          const data = await getLyrics(text);
+
+          const message = `
+        *Title:* ${text}
+        *Artist:* ${data.artist}
+        *Album:* ${data.album}
+        *Release Date:* ${data.release_date}
+        
+        *Lyrics:*\n${data.lyrics}
+            `.trim();
+
+          A17.sendMessage(from, { text: message, quoted: m });
+        } catch (error) {
+          console.error('Error fetching lyrics:', error);
+          const errorMessage = 'Failed to fetch lyrics. Please try again later.';
+          A17.sendMessage(from, { text: errorMessage, quoted: m });
+        }
         break;
 
 
 
-      //////////////////////////////////////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -5749,7 +6572,7 @@ _Click the button below to download_`
         A17.sendMessage(from, { react: { text: "🙀", key: m.key } });
         reply(mess.waiting);
 
-        let anu = await fetchJson('https://raw.githubusercontent.com/iamriz7/kopel_/main/kopel.json');
+        let anu = await fetchJson('https://www.exenoz.tech/couple');
 
         for (let i = 0; i < 3; i++) {  // the set of picures.
           let random = anu[Math.floor(Math.random() * anu.length)];
@@ -5814,48 +6637,7 @@ _Click the button below to download_`
       // break;
 
 
-
-      ////// Hehe ////// 
-
-      // case 'pinterest': case'pin' : {
-      //   if (isBan) return reply(mess.banned);
-      //   if (isBanChat) return reply(mess.bangc);
-      //   if (!args.join(" ")) return reply(`${pushname} Pls provide a search term!`)
-      // let { pinterest } = require('./lib/scraper')
-      // anutrest = await pinterest(text)
-      // result = anutrest[Math.floor(Math.random() * anutrest.length)]
-      // A17.sendMessage(m.chat, { image: { url: result }, caption: '⭔ Media Url : '+result }, { quoted: m })
-      // }
-      // break;
-
-
-      //
-      case 'pinterest':
-      case 'pin': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🐦", key: m.key } });
-
-        if (!args.join(" ")) return reply(`${pushname} Please provide a search term!`);
-        reply(mess.waiting)
-        let { pinterest } = require('./lib/scraper');
-        let anutrest = await pinterest(text);
-        let results = [];
-
-        // Get multiple random images (let's say 5 images)
-        const numImages = 5;
-        for (let i = 0; i < numImages && i < anutrest.length; i++) {
-          results.push(anutrest[Math.floor(Math.random() * anutrest.length)]);
-        }
-
-        // Send each image without any caption
-        for (let i = 0; i < results.length; i++) {
-          A17.sendMessage(m.chat, { image: { url: results[i] } }, { quoted: m });
-        }
-      }
-        break;
-
-
+      // //
       // case 'pinterest':
       // case 'pin': {
       //   if (isBan) return reply(mess.banned);
@@ -5863,7 +6645,7 @@ _Click the button below to download_`
       //   A17.sendMessage(from, { react: { text: "🐦", key: m.key } });
 
       //   if (!args.join(" ")) return reply(`${pushname} Please provide a search term!`);
-      //   reply(mess.waiting);
+      //   reply(mess.waiting)
       //   let { pinterest } = require('./lib/scraper');
       //   let anutrest = await pinterest(text);
       //   let results = [];
@@ -5874,18 +6656,46 @@ _Click the button below to download_`
       //     results.push(anutrest[Math.floor(Math.random() * anutrest.length)]);
       //   }
 
-      //   // Send each image with a common caption
-      //   const commonCaption = 'Check out this image from Pinterest By A17';
+      //   // Send each image without any caption
       //   for (let i = 0; i < results.length; i++) {
-      //     A17.sendMessage(m.chat, { image: { url: results[i] }, caption: commonCaption }, { quoted: m });
+      //     A17.sendMessage(m.chat, { image: { url: results[i] } }, { quoted: m });
       //   }
       // }
-      // break;
+      //   break;
+
+
+      case 'pinterest':
+      case 'pin': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        A17.sendMessage(from, { react: { text: "🐦", key: m.key } });
+
+        const searchTerm = args.join(" ");
+        if (!searchTerm) return reply(`${pushname} Please provide a search term!`);
+        reply(mess.waiting);
+
+        const url = `https://www.exenoz.tech/api/pinterest?q=${encodeURIComponent(searchTerm)}`;
+
+        try {
+          const response = await axios.get(url);
+          const pins = response.data;
+
+          const numImages = 5;
+          const randomPins = pins.sort(() => 0.5 - Math.random()).slice(0, numImages);
+
+          randomPins.forEach(pin => {
+            A17.sendMessage(m.chat, { image: { url: pin.url } }, { quoted: m });
+          });
+        } catch (error) {
+          console.error('Error fetching data from Pinterest API:', error);
+          reply('Error fetching data from Pinterest API. Please try again later.');
+        }
+      }
+        break;
 
 
 
-      /////////////////////////////////////////////////////////////////////////////////////////////////////
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -5958,8 +6768,7 @@ _Click the button below to download_`
 
 
 
-      ///////////////////////////////////////////////////////////////////////////////////////////////////
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -6170,6 +6979,8 @@ _Click the button below to download_`
         break;
 
 
+
+
       case 'truth':
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
@@ -6277,32 +7088,6 @@ _Click the button below to download_`
       /* ████ ✪ ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ [ NSFW ] ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███ ✪ ███ */
 
 
-
-      case 'nsfwA17':
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        reply(mess.wait)
-        nye = `http://api.lolhuman.xyz/api/gimage?apikey=${lolkey}&query=${command}`
-        A17.sendMessage(from, { image: { url: nye }, caption: "Master..." }, { quoted: m })
-        break;
-
-      case 'mediafire': case 'mediafiredl': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!text) return reply(mess.linkm)
-        if (!isUrl(args[0]) && !args[0].includes('mediafire.com')) return reply(`The link you provided is invalid`)
-        const baby1 = await mediafireDl(text)
-        if (baby1[0].size.split('MB')[0] >= 999) return reply('*File Over Limit* ' + util.format(baby1))
-        const result4 = `「  *Mediafire Downloader*  」
-      
-*Name* : ${baby1[0].nama}
-*Size* : ${baby1[0].size}
-*Mime* : ${baby1[0].mime}
-*Link* : ${baby1[0].link}`
-        reply(`${result4}`)
-        A17.sendMessage(m.chat, { document: { url: baby1[0].link }, fileName: baby1[0].nama, mimetype: baby1[0].mime }, { quoted: m }).catch((err) => reply(mess.error))
-      }
-        break;
 
 
       // case 'masturbation': case 'jahy': case 'hentai': case 'glasses': case 'gangbang': case 'foot': 
@@ -6465,9 +7250,7 @@ _Click the button below to download_`
       // /* ████ ✪ ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ [ Anime Mode ] ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███ ✪ ███ */
 
 
-      ///////////////////////////////////////////////////////////////////////////////////////////////////
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
       //
@@ -6634,8 +7417,7 @@ _Click the button below to download_`
 
 
 
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -7159,33 +7941,7 @@ _Click the button below to download_`
         break;
 
 
-      case "quotes":
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!m.isGroup) return reply(mess.grouponly);
-        var res = await fetch('https://animechan.vercel.app/api/random')
-        teks = `\n*Anime:* ${res.anime}\n`
-        teks += `\n*Quotes:*\n`
-        teks += `${res.json}\n`
-
-        reply(teks)
-        break;
-
-
-      case "darkjoke":
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!m.isGroup) return reply(mess.grouponly);
-        var res = await Darkjokes()
-        teks = "\nDarkjokes"
-        A17.sendMessage(m.chat, { image: { url: res }, caption: teks }, { quoted: m })
-        break;
-
-
-
-      ////////////////////////////////////////////////////////////////////////////
-      ////////////////////////////////////////////////////////////////////////////
-
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
       // case 'remove': {
@@ -7200,9 +7956,36 @@ _Click the button below to download_`
 
 
 
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
-      ///////////////////////////////////////////////////
 
+
+      // case 'bc': case 'broadcast': case 'bcall': {
+      //   if (isBan) return reply(mess.banned);
+      //   if (isBanChat) return reply(mess.bangc);
+      //   if (!isCreator) return reply(mess.botowner)
+      //   if (!args.join(" ")) return reply(`Please enter some text to broadcast! \n\nExample : ${prefix + command} ${global.OwnerName}`)
+      //   let anu = await store.chats.all().map(v => v.id)
+      //   reply(`Send Broadcast To ${anu.length} Chat\nTime's up ${anu.length * 1.5} second`)
+      //   for (let yoi of anu) {
+      //     await sleep(1500)
+      //     let btn = [{
+      //       quickreplyButton: {
+      //         displayText: '💡 exit 💡',
+      //         id: `${}exit`
+      //       }
+      //     }, {
+      //       quickreplyButton: {
+      //         displayText: 'Bot Owner',
+      //         id: '-owner'
+      //       }
+      //     }]
+      //     let txt = `「 *${global.OwnerName}'s Broadcast* 」\n\n${text}`
+      //     A17.send5ButImg(yoi, txt, `${global.BotName}`, BotLogo, btn, Thumb)
+      //   }
+      //   reply('Broadcast Sent !')
+      // }
+      //   break;
 
       case 'bc': case 'broadcast': case 'bcall': {
         if (isBan) return reply(mess.banned);
@@ -7224,912 +8007,1408 @@ _Click the button below to download_`
               id: '-owner'
             }
           }]
-          let txt = `「 *${global.OwnerName}'s Broadcast* 」\n\n${text}`
+          let txt = `「 *${global.OwnerName}'s Notice* 」\n\n${text}`
           A17.send5ButImg(yoi, txt, `${global.BotName}`, BotLogo, btn, Thumb)
         }
         reply('Broadcast Sent !')
       }
         break;
 
+case 'promosi':
+case 'bcgroup': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
 
-      case 'help': case 'h': case 'menu': case 'allmenu': case 'listmenu': {
+    // Ambil semua grup
+    let getGroups = await A17.groupFetchAllParticipating();
+    let groups = Object.entries(getGroups).slice(0).map(entry => entry[1]);
+    let anu = groups.map(v => v.id);
+
+    // Fungsi untuk membaca file JSON
+    function readJSON(filePath) {
+        try {
+            const data = fs.readFileSync(filePath, 'utf8');
+            const parsed = JSON.parse(data);
+            return parsed.text && parsed.text.trim() ? parsed.text : null;
+        } catch (err) {
+            console.error(`Error reading ${filePath}:`, err);
+            return null;
+        }
+    }
+
+    // Membaca pesan dari file JSON
+    const promoText = readJSON('./database/promo.json');
+    const autoscriptText = readJSON('./database/autoscript.json');
+    const recodeText = readJSON('./database/recode.json');
+    const vpsText = readJSON('./database/VPs.json');
+
+    // Periksa apakah ada pesan yang tersedia
+    if (!promoText && !autoscriptText && !recodeText && !vpsText) {
+        return reply('❌ Semua pesan kosong! Harap atur pesan dengan perintah terkait.');
+    }
+
+    reply(`Starting broadcast to ${anu.length} Group Chat(s).`);
+
+    // Fungsi untuk membuat jeda random
+    const randomDelay = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    // Fungsi untuk mengirim pesan ke grup dengan delay
+    const sendBatchMessages = async (groupBatch) => {
+        for (let groupId of groupBatch) {
+            try {
+                const groupMembers = await A17.groupMetadata(groupId);
+
+                // Kirim pesan Promo
+                if (promoText) {
+                    await A17.sendMessage(groupId, {
+                        text: promoText,
+                        contextInfo: {
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: `${nowtime}`,
+                                body: 'Promo Terbaru dari Newbie Store',
+                                thumbnail: global.Thumb,
+                                sourceUrl: global.website,
+                                mediaType: 1,
+                                renderLargerThumbnail: true,
+                            },
+                        },
+                    });
+                }
+
+                // Kirim pesan Autoscript
+                if (autoscriptText) {
+                    await A17.sendMessage(groupId, {
+                        text: autoscriptText,
+                        contextInfo: {
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: `${nowtime}`,
+                                body: 'Autoscript Tunneling by Newbie Store',
+                                thumbnail: global.Thumb,
+                                sourceUrl: global.website,
+                                mediaType: 1,
+                                renderLargerThumbnail: true,
+                            },
+                        },
+                    });
+                }
+
+                // Kirim pesan Jasa Recode
+                if (recodeText) {
+                    await A17.sendMessage(groupId, {
+                        text: recodeText,
+                        contextInfo: {
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: `${nowtime}`,
+                                body: 'Jasa Recode Newbie Store',
+                                thumbnail: global.Thumb,
+                                sourceUrl: global.website,
+                                mediaType: 1,
+                                renderLargerThumbnail: true,
+                            },
+                        },
+                    });
+                }
+
+                // Kirim pesan VPS
+                if (vpsText) {
+                    await A17.sendMessage(groupId, {
+                        text: vpsText,
+                        contextInfo: {
+                            externalAdReply: {
+                                showAdAttribution: true,
+                                title: `${nowtime}`,
+                                thumbnail: global.Thumb,
+                                sourceUrl: global.website,
+                                mediaType: 1,
+                                renderLargerThumbnail: true,
+                            },
+                        },
+                    });
+                }
+
+                // Jeda random antara 2 hingga 5 detik
+                await new Promise((resolve) => setTimeout(resolve, randomDelay(2000, 5000)));
+            } catch (err) {
+                console.error(`Error sending to group ${groupId}:`, err);
+            }
+        }
+    };
+
+    // Membagi grup menjadi batch
+    const batchSize = 5; // Kirim ke 5 grup per batch
+    for (let i = 0; i < anu.length; i += batchSize) {
+        const groupBatch = anu.slice(i, i + batchSize);
+        await sendBatchMessages(groupBatch);
+
+        // Jeda random antar batch (10 hingga 15 detik)
+        await new Promise((resolve) => setTimeout(resolve, randomDelay(10000, 15000)));
+    }
+
+    reply(`Promosi successfully sent to ${anu.length} Group Chat(s).`);
+    break;
+}
+
+case 'promosibot': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    // Ambil semua grup
+    let getGroups = await A17.groupFetchAllParticipating();
+    let groups = Object.entries(getGroups).map(entry => entry[1]);
+    let anu = groups.map(v => v.id);
+
+    // Fungsi untuk membaca file JSON
+    function readJSON(filePath) {
+        try {
+            const data = fs.readFileSync(filePath, 'utf8');
+            const parsed = JSON.parse(data);
+            return parsed.text && parsed.text.trim() ? parsed.text : null;
+        } catch (err) {
+            console.error(`Error reading ${filePath}:`, err);
+            return null;
+        }
+    }
+
+    // Membaca pesan dari file JSON
+    const promoText = readJSON('./database/promo.json');
+    const autoscriptText = readJSON('./database/autoscript.json');
+    const recodeText = readJSON('./database/recode.json');
+
+    // Periksa apakah ada pesan yang tersedia
+    if (!promoText && !autoscriptText && !recodeText) {
+        return reply('❌ Semua pesan kosong! Harap atur pesan dengan perintah terkait.');
+    }
+
+    reply(`📢 Memulai promosi ke ${anu.length} grup.`);
+
+    // Fungsi untuk membuat jeda random
+    const randomDelay = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    // Fungsi untuk mengirim pesan ke grup dengan delay
+    const sendBatchMessages = async (groupBatch) => {
+        for (let groupId of groupBatch) {
+            try {
+                await slideButton(groupId);
+            } catch (error) {
+                console.error(`❌ Gagal mengirim ke grup ${groupId}:`, error);
+            }
+            await new Promise(resolve => setTimeout(resolve, randomDelay(2000, 5000))); // Jeda antar pesan dalam batch
+        }
+    };
+
+    // Membagi grup menjadi batch
+    const batchSize = 5; // Kirim ke 5 grup per batch
+    for (let i = 0; i < anu.length; i += batchSize) {
+        const groupBatch = anu.slice(i, i + batchSize);
+        await sendBatchMessages(groupBatch);
+
+        // Jeda random antar batch (10 hingga 15 detik)
+        await new Promise(resolve => setTimeout(resolve, randomDelay(10000, 15000)));
+    }
+
+    reply(`✅ Promosi berhasil dikirim ke ${anu.length} grup.`);
+    break;
+}
+
+		
+case 'send': {
+  try {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    // Memastikan bahwa args ada
+    if (!args.join("")) return reply(`Contoh perintah: send +62 851-6571-8519`);
+
+    // Gabungkan args menjadi satu string
+    const swn = args.join(" ");
+    
+    // Mengambil nomor target dan memisahkan pesan
+    const target = swn.split(".")[0];  // Ambil bagian pertama (nomor)
+
+    // Memastikan nomor telepon valid
+    const targetNumber = target.replace(/[^0-9]/g, ''); // Hapus karakter non-digit
+
+    // Mengecek apakah nomor valid (memiliki panjang minimal 10 digit)
+    if (targetNumber.length < 10) {
+      return reply(`Nomor telepon ${targetNumber} tidak valid. Pastikan nomor telepon lengkap dan benar.`);
+    }
+
+    // Format nomor WhatsApp yang benar
+    var org = targetNumber + '@s.whatsapp.net'; 
+
+    // Fungsi untuk membaca file JSON
+    const readJson = (filePath) => {
+      try {
+        const data = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(data).text || "";
+      } catch (err) {
+        console.error(`Error membaca file ${filePath}:`, err);
+        return ""; // Mengembalikan string kosong jika file error
+      }
+    };
+
+    // Membaca file JSON
+    const promoText = readJson('./database/promo.json');
+    const autoscriptText = readJson('./database/autoscript.json');
+    const recodeText = readJson('./database/recode.json');
+    const vpsText = readJson('./database/VPs.json');
+
+    // Fungsi untuk mengirim pesan dengan format terpisah
+    const sendFormattedMessage = async (title, body) => {
+      if (body) {
+        let message = {
+          text: `📢 ${body}`,
+          contextInfo: {
+            externalAdReply: {
+              showAdAttribution: true,
+              title: `${nowtime}`,
+              body: title,
+              thumbnail: global.Thumb,
+              sourceUrl: global.website,
+              mediaType: 1,
+              renderLargerThumbnail: true
+            }
+          }
+        };
+        await A17.sendMessage(org, message);
+        await sleep(1500); // Delay antar pesan
+      }
+    };
+
+    // Kirim pesan Promo jika ada
+    await sendFormattedMessage(
+      "Promo Terbaru",
+      promoText,
+      'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg'
+    );
+
+    // Kirim pesan Autoscript jika ada
+    await sendFormattedMessage(
+      "Autoscript Tunneling",
+      autoscriptText,
+      'https://telegra.ph/file/d7c3d152d9fff8f85ee62.jpg'
+    );
+
+    // Kirim pesan Jasa Recode jika ada
+    await sendFormattedMessage(
+      "Jasa Recode",
+      recodeText,
+      'https://telegra.ph/file/a9398dd23261b48b5b5c2.jpg'
+    );
+
+    // Kirim pesan VPS jika ada
+    await sendFormattedMessage(
+      "VPS Newbie",
+      vpsText,
+      'https://telegra.ph/file/5dcae7a3d0b3c4d3f60c4.jpg'
+    );
+
+    // Cek apakah semua file kosong
+    if (!promoText && !autoscriptText && !recodeText && !vpsText) {
+      return reply(`❌ Semua pesan kosong!\nGunakan perintah:\n- *${prefix}setpromo <text>*\n- *${prefix}setautoscript <text>*\n- *${prefix}setrecode <text>*\n- *${prefix}setvps <text>*`);
+    }
+
+    reply('✅ *Preview Pesan Berhasil Dikirim!*');
+
+  } catch (error) {
+    console.error("Error saat membaca file promo/autoscript/recode/vps:", error);
+    reply('❌ Terjadi kesalahan saat menampilkan preview pesan. Pastikan format file JSON sudah benar.');
+  }
+  break;
+}
+
+
+
+      case 'help':
+      case 'h':
+      case 'listmenu': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
-        const helpmenu = `Hemlo *${pushname}* Dear...!! ${nowtime} ,
+
+        try {
+          await A17.sendMessage(from, { react: { text: "✨", key: m.key } });
+
+
+          const helpexitText = `\nHello ${pushname} Dear...!! ${nowtime} ,
+          
+          
+             ⌯  Date : ${kaidate}
+          
+          
+            〢━ 〄 Bot Info 〄 ━〢
+          
+   ⌯  My prefix is :  ${prefix}
+   ⌯  Bot usr name : ${pushname} 
+   ⌯  Owner name : ${global.OwnerName} 
+   ⌯  Runtime : ${runtime(process.uptime())} 
+   ⌯  RAM: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
+   ⌯  Total CPU Usage: ${totalCpuUsage}%
+   ⌯  Platform : Linux
+          
+          
+            〢━ 〄 Core 〄 ━〢
+          
+          
+            ⌯   ${prefix}repo
+            ⌯   ${prefix}script
+            ⌯   ${prefix}speak
+            ⌯   ${prefix}support
+            ⌯   ${prefix}stalk
+            ⌯   ${prefix}setprefix
+            ⌯   ${prefix}auto-status
+            ⌯   ${prefix}auto-typing
+            ⌯   ${prefix}auto-recoding
+          
+          
+      〢━ ⌬ Owner Only ⌬ ━〢
+          
+          
+            ⌯   ${prefix}join
+            ⌯   ${prefix}self
+            ⌯   ${prefix}public
+            ⌯   ${prefix}restart
+            ⌯   ${prefix}sleep
+            ⌯   ${prefix}setbotpp
+            ⌯   ${prefix}post
+            ⌯   ${prefix}listonline
+            ⌯   ${prefix}listgc
+            ⌯   ${prefix}listpc
+            ⌯   ${prefix}getcase
+            ⌯   ${prefix}bangroup
+            ⌯   ${prefix}broadcast
+            ⌯   ${prefix}bye
+            ⌯   ${prefix}block
+            ⌯   ${prefix}unblock
+            ⌯   ${prefix}ban add
+            ⌯   ${prefix}ban del
+          
+           
+      〢━❅ Group Moderation ❅━〢
+          
+          
+            ⌯   ${prefix}add
+            ⌯   ${prefix}invite
+            ⌯   ${prefix}remove
+            ⌯   ${prefix}promote
+            ⌯   ${prefix}demote
+            ⌯   ${prefix}grouplink
+            ⌯   ${prefix}group-event
+            ⌯   ${prefix}groupsetting
+            ⌯   ${prefix}setname
+            ⌯   ${prefix}setgcpp
+            ⌯   ${prefix}setdesc
+            ⌯   ${prefix}revoke
+            ⌯   ${prefix}tagall
+            ⌯   ${prefix}hidetag
+            ⌯   ${prefix}nsfw
+            ⌯   ${prefix}nsnfwexit
+          
+          
+        〢━❗ Anti Link ❗ ━〢
+          
+            
+            ⌯   ${prefix}antilinkgc
+            ⌯   ${prefix}antilinktt
+            ⌯   ${prefix}antilinkytch
+            ⌯   ${prefix}antilinkytch
+            ⌯   ${prefix}antilinkig
+            ⌯   ${prefix}antilinkfb
+            ⌯   ${prefix}antilinktwit
+            ⌯   ${prefix}antiwame
+            ⌯   ${prefix}antilinkall
+            
+          
+        〢━ 🔍 Search 🔎 ━〢
+            
+           
+            ⌯   ${prefix}play
+            ⌯   ${prefix}song
+            ⌯   ${prefix}video
+            ⌯   ${prefix}ytmp3
+            ⌯   ${prefix}ytmp4 
+            ⌯   ${prefix}yts
+            ⌯   ${prefix}lyrics
+            ⌯   ${prefix}movie
+            ⌯   ${prefix}google
+            ⌯   ${prefix}gimage
+            ⌯   ${prefix}pinterest
+            ⌯   ${prefix}wallpaper
+            ⌯   ${prefix}image
+            ⌯   ${prefix}searchgc
+            ⌯   ${prefix}wikimedia          
+          
+      〢━ 🌌 Downloader 🌌 ━〢
+           
+          
+            ⌯   ${prefix}ytvideo
+            ⌯   ${prefix}mediafire
+            ⌯   ${prefix}instagram
+            ⌯   ${prefix}igtv
+            ⌯   ${prefix}facebook
+            ⌯   ${prefix}fbmp3
+            ⌯   ${prefix}twitter
+            ⌯   ${prefix}twittermp3
+            ⌯   ${prefix}tiktok
+            ⌯   ${prefix}tiktokaudio
+            ⌯   ${prefix}happymod
+            ⌯   ${prefix}tiktoknowm
+          
+           
+           〢━ 🎐 Fun 🎐 ━〢
+            
+          
+            ⌯   ${prefix}reaction
+            ⌯   ${prefix}cutecheck
+            ⌯   ${prefix}couple
+            ⌯   ${prefix}soulmate
+            ⌯   ${prefix}handsomecheck
+            ⌯   ${prefix}beautifulcheck
+            ⌯   ${prefix}awesomecheck
+            ⌯   ${prefix}greatcheck
+            ⌯   ${prefix}gaycheck
+            ⌯   ${prefix}uglycheck
+            ⌯   ${prefix}charactercheck
+            ⌯   ${prefix}lesbiancheck
+            ⌯   ${prefix}hornychec
+            ⌯   ${prefix}prettycheck
+            ⌯   ${prefix}lovelycheck
+          
+          
+          〢━ 🈴 Weeb 🈴 ━〢
+          
+            
+            ⌯   ${prefix}anime
+            ⌯   ${prefix}animestory
+            ⌯   ${prefix}awoo
+            ⌯   ${prefix}manga
+            ⌯   ${prefix}animewall
+            ⌯   ${prefix}animewallpaper2
+            ⌯   ${prefix}crosplay
+            ⌯   ${prefix}animenom
+            ⌯   ${prefix}feed
+            ⌯   ${prefix}foxgirl
+            ⌯   ${prefix}waifu
+            ⌯   ${prefix}waifu2
+            ⌯   ${prefix}waifu3
+            ⌯   ${prefix}loli
+            ⌯   ${prefix}coffee
+            ⌯   ${prefix}tickle
+            ⌯   ${prefix}meow
+            ⌯   ${prefix}neko
+            ⌯   ${prefix}neko2
+            ⌯   ${prefix}migumin
+            ⌯   ${prefix}wallpaper
+            ⌯   ${prefix}animequote
+           
+          
+      〢━ ♨ Informative ♨ ━〢
+            
+          
+            ⌯   ${prefix}quote
+            ⌯   ${prefix}weather
+            ⌯   ${prefix}covid
+            ⌯   ${prefix}earthquake
+            ⌯   ${prefix}wiki
+            ⌯   ${prefix}stalknumber
+          
+          
+        〢━ 🪁 Essentials 🪁 ━〢
+           
+            
+            ⌯   ${prefix}qr
+            ⌯   ${prefix}say
+            ⌯   ${prefix}fliptext
+            ⌯   ${prefix}toletter
+            ⌯   ${prefix}translate, 
+            
+           
+        〢━ 🎗 Others 🎗 ━〢
+          
+          
+            ⌯   ${prefix}stickermeme
+            ⌯   ${prefix}quotes
+            ⌯   ${prefix}report
+            ⌯   ${prefix}afk
+            ⌯   ${prefix}darkjoke
+            
+          
+            〢━━━━━━━━━━━━━━〢
+            ⌯   ${prefix}<Command name>.
+            ⌯  
+            ⌯  type ${prefix}support.
+            ⌯   for group support.
+            ⌯  
+            ⌯  
+            ⌯   🍁 Type ${prefix}help to get
+            ⌯     full command list.
+            ┬│▸
+            ╰────────────···▸`;
+
+A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: `Follow Saluran Kami`,
+                    thumbnail: global.Thumb,
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderLargerThumbnail: true
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Error sending help menu:', err);
+        reply('Oops, terjadi kesalahan saat mengirim menu bantuan.');
+    }
+    break;
+}
+
+
+      case 'menu':
+      case 'allmenu': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+
+        try {
+          await A17.sendMessage(from, { react: { text: "✨", key: m.key } });
+
+
+          const helpexitText = `\nHello ${pushname} Dear...!! ${nowtime} ,
+          
+          
+             ⌯  Date : ${kaidate}
+          
+          
+            〢━ 〄 Bot Info 〄 ━〢
+          
+   ⌯  My prefix is :  ${prefix}
+   ⌯  Bot usr name : ${pushname} 
+   ⌯  Owner name : ${global.OwnerName} 
+   ⌯  Runtime : ${runtime(process.uptime())} 
+   ⌯  RAM: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
+   ⌯  Total CPU Usage: ${totalCpuUsage}%
+   ⌯  Platform : Linux
+          
+          
+┏ ┅ ━━〔〄 *MENU UTAMA* 〄 〕━ ┅ 
+┃           
+┃  ⌯   ${prefix}tutor
+┃  ⌯   ${prefix}bug (config)
+┃  ⌯   ${prefix}menuserver
+┃  ⌯   ${prefix}setpromo
+┃  ⌯   ${prefix}setrecode
+┃  ⌯   ${prefix}setautoscript
+┃  ⌯   ${prefix}setvps
+┃  ⌯   ${prefix}promosi
+┃  
+┏ ┅ ━━〔 ♨ *Info* ♨ 〕━ ┅
+┃                    
+┃  ⌯   ${prefix}list
+┃  ⌯   ${prefix}qr
+┃  ⌯   dana           
+┃           
+┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ 〕━ ┅
+┃⌯ALLAH SWT
+┃⌯NEWBIE STORE
+┃⌯MY BROTHER :)
+┗ ┅ ━━━━━━━━━━━ ┅ ━`;
+
+A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: `Follow Saluran Kami`,
+                    thumbnail: global.Thumb,
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderLargerThumbnail: true
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Error sending help menu:', err);
+        reply('Oops, terjadi kesalahan saat mengirim menu bantuan.');
+    }
+    break;
+}
+
+      case 'support': case 'supportgc': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+
+        A17.sendMessage(from, { react: { text: "💫", key: m.key } })
+        reply(`⚙ *My developer's group:* ⚙ https://chat.whatsapp.com/LXNFSIMP3wD4mMq2jZAx3v`)
+      }
+        break;
+
+
+case 'tutor':
+case 'tutorial': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+
+const list_tutorial = `_Berikut Tutorial Yang Disesdiakan!!_
+
+_*⭔ Tutorial Lengkap*_
+https://www.youtube.com/playlist?list=PLTDz6Tj-46qMZMS299iOlAvMpjmxV0Nlr
+
+_*⭔ Tutorial Versi Textnya Kamu Bisa Ketik list di bawah*_
+
+.pasangconfighcv2ray
+.pasangconfigdrak
+.pasangconfigv2box
+.carabeli`
+
+A17.sendMessage(m.chat, {
+    text: list_tutorial,
+    contextInfo: {
+        externalAdReply: {
+            showAdAttribution: true,
+            title: `${nowtime} ${pushname}`,
+            body: global.BotName,
+            thumbnailUrl: 'https://i.ytimg.com/vi/cfIi2pvMffo/hqdefault.jpg', // Thumbnail harus berupa URL gambar
+            sourceUrl: 'https://www.youtube.com/playlist?list=PLTDz6Tj-46qMZMS299iOlAvMpjmxV0Nlr', // URL video atau playlist
+            mediaType: 1, // Untuk media seperti video atau gambar
+			renderLargerThumbnail: true
+        }
+    }
+});
+}
+break
+
+
+case 'pasangconfighcv2ray': {
+
+const gantisound = `_*⭔ Cara Memasang Config V2ray HC*_
+
+_*⭔ Langkah 1*
+Copy Akun Yang Diberikan Oleh Admin Biasanya Diawali dengan VMESS:// atau VLESS:// atau Trojan://
+
+_*⭔ Langkah 2*_
+Masuk Apk Http Custom Dan Pilih Gambar Potongan Pasel 🧩 Sebelah Tulisan HTTP Custom
+
+_*⭔ Langkah 3*_
+Pilih V2ray Setting Dan Pastekan text yang Sudah dicopy Sebelumnya
+(Anda Juga Bisa melakukan Paste dengan gambar papan 📋 Pada Pojok Kanan Atas)
+
+_*⭔ Langkah 4*_
+Kemudian Kembali dengan Panah back Atau Tombol kembali, Ceklist V2ray dan Klik Connect`;
+reply(gantisound)
+
+}
+break
+
+
+
+case 'pasangconfigdrak': {
+
+const gantifotomenu = `_*⭔ Cara Memasang Config DrakTunnel*_
+
+_*⭔ Langkah 1*_
+Copy Akun Yang Diberikan Oleh Admin Biasanya Diawali dengan VMESS:// atau VLESS:// atau Trojan:// atau draktunnel://
+
+_*⭔ Langkah 2*_
+Buka Apk DrakTunnel Kemudian Pilih Titik Tiga Pada Pijok Kanan Atas
+
+_*⭔ Langkah 3*_
+pilih Config Kemudian Pilih Import Config Kemudian Pilih Clipboard
+
+_*⭔ Langkah 4*_
+Muncul Konfirmasi Dengan Nama Akun, Pilih OK
+
+_*⭔ Langkah 5*_
+Kemudian Klik Connect pada halaman DrakTunnel`;
+reply(gantifotomenu)
+
+}
+break
+
+
+
+
+case 'pasangconfigv2box': {
+
+const gantiowner = `_*⭔ Cara Memasang Config V2BOX*_
+
+_*⭔ Langkah 1*_
+Copy Akun Yang Diberikan Oleh Admin Biasanya Diawali dengan VMESS:// atau VLESS:// atau Trojan://
+
+_*⭔ Langkah 2*_
+Buka Apk *V2box* Dan Pilih Tab *Config* Pada Halaman Awal 
+(Biasaya ada di bagian bawah tengah)
+
+_*⭔ Langkah 3*_
+Pilih Tombol Plus ➕ Pada Bagian Pojok Atas Layar, Pilih Paste Uri Urutan Pertama sendiri,
+
+_*⭔ Langkah 4*_
+Config akan Masuk Ke dalam List, pilih Config yang baru saja Masuk Dan Klik Connect`;
+reply(gantiowner)
+
+}
+break
+
+
+case 'carabeli': {
+
+    const gantisuperowner = `_*⭔ Cara Membeli Config Premium*_
+    
+    _*⭔ Langkah 1*_
+    Silahkan Hubungin Whatasapp Admin di Whatsapp.nevpn.site / Nomor Bot ini
+    
+    _*⭔ Langkah 2*_
+    Infokan Kepada Admin [contoh]
+	Nama anda : Abdul Putra [Abdul]
+    Config : sesuai Paket aktif [XL Edukasi]
+	Lokasi : Posisi Anda Saat ini [Jabar]
+	Harga : Harga Yang anda Inginkan [10 K]
+	
+    _*⭔ Langkah 3*_
+    Lakukan Pembayaran Dan Kirimkan Bukti pembayaran Kepada Admin
+	Biasanya Admin Akan Mengirim Nomer Dana Namun Jika Anda Ingin Melaui Qriss Mintalah
+	Foto Qris Kepada Admin,
+    
+    _*⭔ Langkah 4*_
+    Tunggulah Sebentar Admin akan Sesegera Mungkin Membuatkan Config Pesanan Anda`;
+    reply(gantisuperowner)
+    
+    }
+    break
+
+      case 'bugmenu': case 'bug': case '`info bug config`': {
+		if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        const helpexit = `Hey kak *${pushname}* ${nowtime} ,
   
-Halo , Kenalin Saya *${global.BotName}* Saya Adalah Bot Whatsapp Yang dibuat oleh *${global.author}* Gunakan dengan bijak yak ,jangan merintah yang aneh aneh oke:).
 
-
-┏ ┅ ━━〔〄 Bot Info 〄 〕━ ┅ ━
-┃ ⌯    *Time* : ${kaitime}
-┃ ⌯    *Date* : ${kaidate}
-┃ ⌯    *Bot usr name :* ${pushname} 
-┃ ⌯    *My prefix is :*  ${prefix}
-┃ ⌯    *Owner name :* ${global.OwnerName} 
-┃ ⌯    *Bot runtime :* ${runtime(process.uptime())} 
-┃ ⌯    *Platform :* Linux
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━━〔〄 Core 〄 〕━ ┅ ━
+┏ ┅ ━━〔〄 *INFO BUG* 〄 〕━ ┅ 
 ┃
+┃   ⌯  ${prefix}tselopok
+┃   ⌯  ${prefix}tselilped
+┃   ⌯  ${prefix}tselruangguru
+┃   ⌯  ${prefix}isatfun
+┃   ⌯  ${prefix}byuggwp
+┃   ⌯  ${prefix}xlsosmed
+┃   ⌯  ${prefix}xlflex
+┃   ⌯  ${prefix}xlfb
+┃   ⌯  ${prefix}xledu
+┃   ⌯  ${prefix}xlcon
+┃   ⌯  ${prefix}xlff
+┃   ⌯  ${prefix}xlvision
+┃   ⌯  ${prefix}xlvideo
+┃   ⌯  ${prefix}axiscon
+┃   ⌯  ${prefix}axisedu
+┃   ⌯  ${prefix}axisgame
+┃   ⌯  ${prefix}axissosmed
+┃   ⌯  ${prefix}axissushiroll
 ┃
-┃   ⌯     ${prefix}repo
-┃   ⌯     ${prefix}script
-┃   ⌯     ${prefix}speak
-┃   ⌯     ${prefix}support
-┃   ⌯     ${prefix}stalk
-┃   ⌯     ${prefix}setprefix
-┃   ⌯     ${prefix}auto-status
-┃   ⌯     ${prefix}auto-typing
-┃   ⌯     ${prefix}auto-recoding
-┃
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━━〔⌬ Owner Only ⌬ 〕━ ┅ ━
-┃
-┃
-┃  ⌯     ${prefix}join
-┃  ⌯     ${prefix}self
-┃  ⌯     ${prefix}public
-┃  ⌯     ${prefix}restart
-┃  ⌯     ${prefix}sleep
-┃  ⌯     ${prefix}setbotpp
-┃  ⌯     ${prefix}post
-┃  ⌯     ${prefix}listonline
-┃  ⌯     ${prefix}listgc
-┃  ⌯     ${prefix}listpc
-┃  ⌯     ${prefix}getcase
-┃  ⌯     ${prefix}bangroup
-┃  ⌯     ${prefix}broadcast
-┃  ⌯     ${prefix}bye
-┃  ⌯     ${prefix}block
-┃  ⌯     ${prefix}unblock
-┃  ⌯     ${prefix}ban add
-┃  ⌯     ${prefix}ban del
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
- 
-┏ ┅ ━〔❅ Group Moderation ❅〕━ ┅ ━
-┃
-┃
-┃ ⌯     ${prefix}add
-┃ ⌯     ${prefix}invite
-┃ ⌯     ${prefix}remove
-┃ ⌯     ${prefix}promote
-┃ ⌯     ${prefix}demote
-┃ ⌯     ${prefix}grouplink
-┃ ⌯     ${prefix}group-event
-┃ ⌯     ${prefix}groupsetting
-┃ ⌯     ${prefix}setname
-┃ ⌯     ${prefix}setgcpp
-┃ ⌯     ${prefix}setdesc
-┃ ⌯     ${prefix}revoke
-┃ ⌯     ${prefix}tagall
-┃ ⌯     ${prefix}hidetag
-┃ ⌯     ${prefix}nsfw
-┃ ⌯     ${prefix}nsnfwmenu
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━━〔〄 MENU BUG〄 〕━ ┅ ━
-┃
-┃
-┃   ⌯     ${prefix}bugmenu
-┃   ⌯     ${prefix}!tselilped
-┃   ⌯     ${prefix}!xlfb
-┃   ⌯     ${prefix}!xledu
-┃   ⌯     ${prefix}!xlcon
-┃   ⌯     ${prefix}!xlvision
-┃   ⌯     ${prefix}!axiscon
-┃   ⌯     ${prefix}!axisedu
-┃   ⌯     ${prefix}!axisgame
-┃
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-  〢━━━❗ *Anti Link ❗* ━━━〢
-
-  
-  ⌯     ${prefix}antilinkgc
-  ⌯     ${prefix}antilinktt
-  ⌯     ${prefix}antilinkytch
-  ⌯     ${prefix}antilinkytch
-  ⌯     ${prefix}antilinkig
-  ⌯     ${prefix}antilinkfb
-  ⌯     ${prefix}antilinktwit
-  ⌯     ${prefix}antiwame
-  ⌯     ${prefix}antilinkall
-  ┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-  〢━━━ 🔍 *Search* 🔎 ━━━〢
-  
- 
-  ⌯     ${prefix}play
-  ⌯     ${prefix}song
-  ⌯     ${prefix}video
-  ⌯     ${prefix}ytmp3
-  ⌯     ${prefix}ytmp4 
-  ⌯     ${prefix}yts
-  ⌯     ${prefix}lyrics
-  ⌯     ${prefix}movie
-  ⌯     ${prefix}google
-  ⌯     ${prefix}gimage
-  ⌯     ${prefix}pinterest
-  ⌯     ${prefix}wallpaper
-  ⌯     ${prefix}image
-  ⌯     ${prefix}searchgc
-  ⌯     ${prefix}wikimedia
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-  〢━━━ 📈 *Economy* 📈 ━━━〢
-
-
-  ⌯     ${prefix}daily 
-  ⌯     ${prefix}wallet
-  ⌯     ${prefix}bank
-  ⌯     ${prefix}bankupgrade
-  ⌯     ${prefix}deposit
-  ⌯     ${prefix}withdraw 
-  ⌯     ${prefix}rob / attack
-  ⌯     ${prefix}transfer / give
-  ⌯     ${prefix}wealth / ritual
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-  〢━━━ 🎮 *Games* 🎮 ━━━〢
-
-
-  ⌯     ${prefix}ttt / tictactoe
-  ⌯     ${prefix}truth
-  ⌯     ${prefix}dare
-  ⌯     ${prefix}spin / slot
-  ⌯     ${prefix}gamble / lottery
- ┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-  〢━━━ 🛠️ *Convert* 🛠️ ━━━〢
- 
-
-  ⌯     ${prefix}sticker
-  ⌯     ${prefix}toimg
-  ⌯     ${prefix}tovideo
-  ⌯     ${prefix}togif
-  ⌯     ${prefix}tourl
-  ⌯     ${prefix}tomp3
-  ⌯     ${prefix}toaudio
-  ⌯     ${prefix}steal
-  ⌯     ${prefix}stickermeme
-  ⌯     ${prefix}emojimix
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-  〢━━━ ◈ Sound Edit ◈ ━━━〢
-
-
-  ⌯     ${prefix}ringtone
-  ⌯     ${prefix}bass
-  ⌯     ${prefix}tempo
-  ⌯     ${prefix}blown
-  ⌯     ${prefix}robot
-  ⌯     ${prefix}slow
-  ⌯     ${prefix}squirrel
-  ⌯     ${prefix}deep
-  ⌯     ${prefix}earrape
-  ⌯     ${prefix}fast
-  ⌯     ${prefix}fat
-  ⌯     ${prefix}nightcore
-  ⌯     ${prefix}reverse
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-  〢━━━ 📍 *Reactions* 📍 ━━━〢
- 
-
-  ⌯     ${prefix}cuddle
-  ⌯     ${prefix}hug
-  ⌯     ${prefix}kiss
-  ⌯     ${prefix}bonk
-  ⌯     ${prefix}cry
-  ⌯     ${prefix}bully
-  ⌯     ${prefix}slap
-  ⌯     ${prefix}kill
-  ⌯     ${prefix}happy
-  ⌯     ${prefix}lick
-  ⌯     ${prefix}pat
-  ⌯     ${prefix}smug
-  ⌯     ${prefix}nom
-  ⌯     ${prefix}glomp
-  ⌯     ${prefix}bite
-  ⌯     ${prefix}yeet
-  ⌯     ${prefix}blush
-  ⌯     ${prefix}smile
-  ⌯     ${prefix}wave
-  ⌯     ${prefix}highfive
-  ⌯     ${prefix}handhold
-  ⌯     ${prefix}poke
-  ⌯     ${prefix}wink
-  ⌯     ${prefix}dance
-  ⌯     ${prefix}cringe
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-  〢━━ 🌌 *Downloader* 🌌 ━━〢
- 
-
-  ⌯     ${prefix}ytvideo
-  ⌯     ${prefix}mediafire
-  ⌯     ${prefix}instagram
-  ⌯     ${prefix}igtv
-  ⌯     ${prefix}facebook
-  ⌯     ${prefix}fbmp3
-  ⌯     ${prefix}twitter
-┃ ⌯     ${prefix}twittermp3
-┃ ⌯     ${prefix}tiktok
-┃ ⌯     ${prefix}tiktokaudio
-┃ ⌯     ${prefix}happymod
-┃ ⌯     ${prefix}tiktoknowm
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
- 
-┏ ┅ ━〔🎐 *Fun* 🎐 ━━━〢
-┃
-┃
-┃ ⌯     ${prefix}reaction
-┃ ⌯     ${prefix}cutecheck
-┃ ⌯     ${prefix}couple
-┃ ⌯     ${prefix}soulmate
-┃ ⌯     ${prefix}handsomecheck
-┃ ⌯     ${prefix}beautifulcheck
-┃ ⌯     ${prefix}awesomecheck
-┃ ⌯     ${prefix}greatcheck
-┃ ⌯     ${prefix}gaycheck
-┃ ⌯     ${prefix}uglycheck
-┃ ⌯     ${prefix}charactercheck
-┃ ⌯     ${prefix}lesbiancheck
-┃ ⌯     ${prefix}hornychec
-┃ ⌯     ${prefix}prettycheck
-┃ ⌯     ${prefix}lovelycheck
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━〔 🈴 *Weeb* 🈴 ━━━〢
-┃
-┃
-┃ ⌯     ${prefix}anime
-┃ ⌯     ${prefix}animestory
-┃ ⌯     ${prefix}awoo
-┃ ⌯     ${prefix}manga
-┃ ⌯     ${prefix}animewall
-┃ ⌯     ${prefix}animewallpaper2
-┃ ⌯     ${prefix}crosplay
-┃ ⌯     ${prefix}animenom
-┃ ⌯     ${prefix}feed
-┃ ⌯     ${prefix}foxgirl
-┃ ⌯     ${prefix}waifu
-┃ ⌯     ${prefix}waifu2
-┃ ⌯     ${prefix}waifu3
-┃ ⌯     ${prefix}loli
-┃ ⌯     ${prefix}coffee
-┃ ⌯     ${prefix}tickle
-┃ ⌯     ${prefix}meow
-┃ ⌯     ${prefix}neko
-┃ ⌯     ${prefix}neko2
-┃ ⌯     ${prefix}migumin
-┃ ⌯     ${prefix}wallpaper
-┃ ⌯     ${prefix}animequote
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━〔♨️ *Informative* ♨️ ━━━〢
-┃ 
-┃
-┃ ⌯     ${prefix}quote
-┃ ⌯     ${prefix}weather
-┃ ⌯     ${prefix}covid
-┃ ⌯     ${prefix}earthquake
-┃ ⌯     ${prefix}wiki
-┃ ⌯     ${prefix}stalknumber
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━〔🪁 *Essentials* 🪁 ━━━〢
-┃
-┃
-┃ ⌯     ${prefix}qr
-┃ ⌯     ${prefix}say
-┃ ⌯     ${prefix}fliptext
-┃ ⌯     ${prefix}toletter
-┃ ⌯     ${prefix}translate, 
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
- 
-┏ ┅ ━〔🎗 *Others* 🎗 ━━━〢
-┃
-┃
-┃  ⌯     ${prefix}stickermeme
-┃  ⌯     ${prefix}quotes
-┃  ⌯     ${prefix}report
-┃  ⌯     ${prefix}afk
-┃  ⌯     ${prefix}darkjoke
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
+┗ ┅ ━━━━━━━━━━━ ┅ ━
 
 ┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ ━━━〢
 ┃⌯ALLAH SWT
 ┃⌯NEWBIE STORE
 ┃⌯MY BROTHER :)
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ`
-        let buttonMessage = {
-          video: fs.readFileSync('./system/A17_3.mp4'), gifPlayback: true,
-          caption: helpmenu,
+┗ ┅ ━━━━━━━━━━━ ┅ ━`
 
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+A17.sendMessage(m.chat, {
+    text : helpexit,
+    contextInfo: {
+    externalAdReply: {
+        showAdAttribution: true, 
+        title: `${nowtime} ${pushname}`,
+        body: global.BotName,
+        thumbnail: global.Thumb,
+        sourceUrl: global.website,
+        mediaType: 1,
+        renderLargerThumbnail: true
+    }
+    }
+}
+)
+	  }
         break;
 
-      case 'bugmenu': case 'bug': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
-        const helpmenu = `Hemlo *${pushname}* Dear...!! ${nowtime} ,
-  
-Halo , Kenalin Saya *${global.BotName}* Saya Adalah Bot Whatsapp Yang dibuat oleh *${global.author}* Gunakan Bug dengan bijak yak, :).
-
-
-┏ ┅ ━━〔〄 Bot Info 〄 〕━ ┅ ━
-┃ ⌯    *Time* : ${kaitime}
-┃ ⌯    *Date* : ${kaidate}
-┃ ⌯    *Bot usr name :* ${pushname} 
-┃ ⌯    *My prefix is :*  ${prefix}
-┃ ⌯    *Owner name :* ${global.OwnerName} 
-┃ ⌯    *Bot runtime :* ${runtime(process.uptime())} 
-┃ ⌯    *Platform :* Linux
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━━〔〄 *MENU BUG* 〄 〕━ ┅ 
-┃
-┃   ⌯     ${prefix}!tselilped
-┃   ⌯     ${prefix}!tselruangguru
-┃   ⌯     ${prefix}!isatfun
-┃   ⌯     ${prefix}!byuggwp
-┃   ⌯     ${prefix}!xlsosmed
-┃   ⌯     ${prefix}!xlflex
-┃   ⌯     ${prefix}!xlfb
-┃   ⌯     ${prefix}!xledu
-┃   ⌯     ${prefix}!xlcon
-┃   ⌯     ${prefix}!xlff
-┃   ⌯     ${prefix}!xlvision
-┃   ⌯     ${prefix}!xlvideo
-┃   ⌯     ${prefix}!axiscon
-┃   ⌯     ${prefix}!axisedu
-┃   ⌯     ${prefix}!axisgame
-┃   ⌯     ${prefix}!axissosmed
-┃   ⌯     ${prefix}!axissushiroll
-┃   ⌯     ${prefix}sshprem
-┃   ⌯     sshws
-┃   ⌯     ${prefix}donasi
-┃
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ ━━━〢
-┃⌯ALLAH SWT
-┃⌯NEWBIE STORE
-┃⌯MY BROTHER :)
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-      case 'sshmenu': case 'ssh': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
-        const helpmenu = `Hemlo *${pushname}* Dear...!! ${nowtime} ,
-  
-Halo , Kenalin Saya *${global.BotName}* Saya Adalah Bot Whatsapp Yang dibuat oleh *${global.author}* Gunakan Bug dengan bijak yak, :).
-
-
-┏ ┅ ━━〔〄 Bot Info 〄 〕━ ┅ ━
-┃ ⌯    *Time* : ${kaitime}
-┃ ⌯    *Date* : ${kaidate}
-┃ ⌯    *Bot usr name :* ${pushname} 
-┃ ⌯    *My prefix is :*  ${prefix}
-┃ ⌯    *Owner name :* ${global.OwnerName} 
-┃ ⌯    *Bot runtime :* ${runtime(process.uptime())} 
-┃ ⌯    *Platform :* Linux
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━━〔〄 *MENU SSH* 〄 〕━ ┅ 
-┃
-┃ ━━〔〄 *FASTSSH.COM* 〄 〕━ 
-┃
-┃   ⌯     sshws
-┃   ⌯     sshws1
-┃   ⌯     sshws2
-┃   ⌯     sshws3
-┃   ⌯     sshws4
-┃
-┃ ━━〔〄 *SSHOCEAN.COM* 〄 〕━ 
-┃
-┃   ⌯     sshoce
-┃   ⌯     sshoce1
-┃   ⌯     sshoce2
-┃   ⌯     sshoce3
-┃   ⌯     sshoce4
-┃   ⌯     sshoce5
-┃   ⌯     sshoce6
-┃   ⌯     sshoce7
-┃
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ
-
-┏ ┅ ━〔 ⚠️ *THX TO..* ⚠️ ━━━〢
-┃⌯ALLAH SWT
-┃⌯NEWBIE STORE
-┃⌯MY BROTHER :)
-┗ ┅ ━━━━━━━━━━━ ┅ ━★᭄ꦿ᭄ꦿ`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-
-      case 'buy': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
-        if (!args.join("")) return reply(`MOHON INPUT *PRODUK|CONFIG|NAMA|IP|HARGA|HARI*`)
-        const swn = args.join(" ")
-        const pcknm = swn.split("|")[0];
-        const conm = swn.split("|")[1];
-        const nm = swn.split("|")[2];
-        const ip = swn.split("|")[3];
-        const hrg = swn.split("|")[4];
-        const hr = swn.split("|")[5];
-        const tglxp = swn.split("|")[6];
-        const helpmenu = `*___________________________*
-*_PEMBELIAN BERHASIL_*
-*___________________________*
--» PRODUK : ${pcknm}
--» REGION : SG ( SINGAPURA 🇸🇬 )
--» CONFIG : ${conm}
--» NAMA : ${nm}
--» DEVICE : ${ip} IP
--» HARGA : ${hrg}
--» AKTIF : ${hr} HARI
--» TGL EXP : ${tglxp}
-*___________________________*
-*_NewbieStore_*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-      case 'donasi': case 'dukung': case 'support': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
-        const helpmenu = `*Donasi Lewat Dana dan Qris*
-        
-Dana : 087863446310 An Diah Fitri Liani
-
-*Terimakasih atas Donasi dan Dukungannya*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/pic10.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-      case 'sshtrial': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        if (!isCreator) return reply(mess.botowner)
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        const helpmenu = `sg.vpnnewbie.my.id:80@Trial:1`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-      case 'sshsg': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        const helpmenu = `http://sg.vpnnewbie.my.id:81/ssh-${(q)}.txt
-        
-        *_SILAHKAN KLIK LINK UNTUK MELIHAT DETAIL AKUN SSH ${(q)}_*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-        
-
-      case 'cekssh': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        const helpmenu = `http://syarif.vpnnewbie.my.id:81/ssh-${(q)}.txt
-
-*_SILAHKAN KLIK LINK UNTUK MELIHAT DETAIL AKUN SSH ${(q)}_*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/syarif.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-      case 'cekvmes': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        const helpmenu = `http://syarif.vpnnewbie.my.id:81/vmess-${(q)}.txt
-
-*_SILAHKAN KLIK LINK UNTUK MELIHAT DETAIL AKUN VMESS ${(q)}_*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/syarif.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-
-
-      case 'sshsg1': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        const helpmenu = `http://sg1.vpnnewbie.my.id:81/ssh-${(q)}.txt
-        
-        *_SILAHKAN KLIK LINK UNTUK MELIHAT DETAIL AKUN SSH ${(q)}_*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-        
-        
-      case 'vmessg': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        const helpmenu = `http://sg.vpnnewbie.my.id:81/vmess-${(q)}.txt
-        
-        *_SILAHKAN KLIK LINK UNTUK MELIHAT DETAIL AKUN VMESS ${(q)}_*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-
-
-      case 'vmessg1': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "🫡", key: m.key } })
-        const helpmenu = `http://sg1.vpnnewbie.my.id:81/vmess-${(q)}.txt
-        
-        *_SILAHKAN KLIK LINK UNTUK MELIHAT DETAIL AKUN SSH ${(q)}_*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-        break;
-
-
-      case 'sshprem': case 'order': {
-        if (isBan) return reply(mess.banned);
-        if (isBanChat) return reply(mess.bangc);
-        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
-        const helpmenu = `*SILAHKAN HUBUNGI OWNER UNTUK MINTA SSH TRIAL GRATIS / ORDER SSH PREMIUM*`
-        let buttonMessage = {
-          image: fs.readFileSync('./Assets/Ne.jpg'), gifPlayback: false,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-        A17.sendContact(m.chat, global.Owner, m)
-      }
-        break;
-
-
-      case '!tselilped': case '!tselruangguru': {
+      case 'tselopok': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
-        const helpmenu = `*◇━━━ILPED/RGURU TSEL━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: edu.ruangguru.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.26.6.171\n104.22.20.245\n104.18.24.139`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
+        const helpexit = `*◇━━━ILPED OPOK KALSEL & SUMSEL UNLI━━━◇*
+Payload :
+		
+GET /cdn-cgi/trace HTTP/1.1[crlf]Host: [rotate=tsel.me;loop.co.id][crlf]Expect: 200-continue[crlf][crlf][split][crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]
 
-          headerType: 4
+Proxy : 172.67.175.171:80`
 
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+      })
+	}
+        break;
+		
+      case 'tselilped': case 'tselruangguru': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
+        const helpexit = `*◇━━━ILPED/RGURU TSEL━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: edu.ruangguru.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.26.6.171\n104.22.20.245\n104.18.24.139`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
 
 
-      case '!liveon': {
+      case 'liveon': {
           if (isBan) return reply(mess.banned);
-          if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
           A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
 
-          const helpmenu = `*◇━━━━LIVE ON OPOK━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: beacon.liveon.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy:\nbeacon.liveon.id\nnapi.zendesk.com\nsupport.liveon.id`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
+          const helpexit = `*◇━━━━LIVE ON OPOK━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: beacon.liveon.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy:\nbeacon.liveon.id\nnapi.zendesk.com\nsupport.liveon.id`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+      })
+	}
         break;
         
 
-      case '!byuggwp': {
+      case 'byuggwp': {
           if (isBan) return reply(mess.banned);
-          if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
           A17.sendMessage(from, { react: { text: "🚀", key: m.key } })
 
-          const helpmenu = `*◇━━━━BYU GGWP━━━━◇*\nPayload  \nGET /cdn-cgi/trace HTTP/1.1[crlf]Host: 104.19.143.108[crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.19.143.108`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
+          const helpexit = `*◇━━━━BYU GGWP━━━━◇*\nPayload  \nGET /cdn-cgi/trace HTTP/1.1[crlf]Host: 104.19.143.108[crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.19.143.108`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+      })
+	}
         break;
 
 
-      case '!axissushiroll': {
+      case 'axissushiroll': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
-           const helpmenu = `*◇━━━━AXIS SUSHIROLL━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: sushiroll.co.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\nwww.sushiroll.co.id\nblog.sushiroll.co.id`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
+           const helpexit = `*◇━━━━AXIS SUSHIROLL━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: sushiroll.co.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\nwww.sushiroll.co.id\nblog.sushiroll.co.id`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+      })
+	}
         break;
 
-      case '!xledu': case '!axisedu': {
+      case 'xledu': case 'axisedu': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
-           const helpmenu = `*◇━━━━XL/AXIS EDU━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: edu.ruangguru.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\n104.18.107.64\n104.17.70.206\n104.17.3.81\nchat.sociomile.com`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
+           const helpexit = `*◇━━━━XL/AXIS EDU━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nHEAD / HTTP/1.1[crlf]Host: io.ruangguru.com[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf][crlf]BMOVE / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.17.70.206\n104.17.3.81\nchat.sociomile.com`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
-        break;
-        
-
-      case '!isatfun': {
-           if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
-           A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
-
-           const helpmenu = `*◇━━━━ISAT FUN━━━━◇*\nPayload 1\nGET / HTTP/1.1[crlf]Host: [Host][crlf]Upgrade: websocket [crlf][crlf]\n\nPlayload2\nGET /cdn-cgi/trace HTTP/1.1[crlf]Host: creativeservices.netflix.com[crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.17.241.25\ncreativeservices.netflix.com\n`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
-        break;
-        
-        
-      case '!xlflex': {
-           if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
-           A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
-
-           const helpmenu = `*◇━━━━XL/ FLEX━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH /ssh-ws HTTP/1.1[crlf]Host: [host][crlf]Host: tr.line.me[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf][crlf]\n\nProxy\nsogood.linefriends.com\ndf.game.naver.com\n172.67.26.118`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
-        break;
-        
-        
-      case '!xlsosmed': case '!xlfb': case '!axissosmed': {
-           if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
-           A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
-
-           const helpmenu = `*◇━━━━XL /AXIS SOSMED━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: www.help.tinder.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\nwww.help.tinder.com\ninvestor.fb.com\n\n*SNI METOD*\ngraph.instagram.com`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
-        }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+      })
+	}
         break;
         
 
-      case '!xlvision': case '!xlvis':  {
+      case 'isatfun': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
-           const helpmenu = `*◇━━━━XL VISION +━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: partners-mplay.visionplus.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\n104.18.225.52\nakademiaforex.onesignal.com\napi.visionplus.id`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
+           const helpexit = `*◇━━━━ISAT FUN━━━━◇*\nPayload 1\nGET / HTTP/1.1[crlf]Host: [Host][crlf]Upgrade: websocket [crlf][crlf]\n\nPlayload2\nGET /cdn-cgi/trace HTTP/1.1[crlf]Host: creativeservices.netflix.com[crlf][crlf]CF-RAY / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: Websocket[crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.17.241.25\ncreativeservices.netflix.com\n`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+      })
+	}
         break;
         
         
-      case '!xlvidio': case '!axisvidio': {
+      case 'xlflex': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
-           const helpmenu = `*◇━━━━XL /AXIS VIDIO━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: vidio.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.22.4.240\nquiz.int.vidio.com\nquiz.vidio.com`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
+           const helpexit = `*◇━━━━XL/ FLEX━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH /ssh-ws HTTP/1.1[crlf]Host: [host][crlf]Host: tr.line.me[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf][crlf]\n\nProxy\nsogood.linefriends.com\ndf.game.naver.com\n172.67.26.118`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
-
+      })
+	}
         break;
         
         
-      case '!xlcon': case '!axiscon': {
+      case 'xlsosmed': case 'xlfb': case 'axissosmed': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
-           const helpmenu = `*◇━━━━XL /AXIS CONFRENCE━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH /ssh-ws HTTP/1.1[crlf]Host: [host][crlf]Host: partner.zoom.us[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf][crlf]\n\nProxy\n170.114.45.0\ngomarketplacefront-cf.zoom.us\ngomarketplacecontent-cf.zoom.us`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
+           const helpexit = `*◇━━━━XL /AXIS SOSMED━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: www.help.tinder.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\nwww.help.tinder.com\ninvestor.fb.com\n\n*SNI METOD*\ngraph.instagram.com`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+      })
+	}
+        break;
+        
 
+      case 'xlvision': case 'xlvis':  {
+           if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+           A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
+
+           const helpexit = `*◇━━━━XL VISION +━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agsent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: partners-mplay.visionplus.id[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Upgrade: websocket[crlf][crlf][split]HTTP/ 1[crlf][crlf]\n\nProxy\n104.18.225.52\nakademiaforex.onesignal.com\napi.visionplus.id`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
         
         
-      case '!xlff': case '!axisgame': {
+      case 'xlvidio': case 'axisvidio': {
            if (isBan) return reply(mess.banned);
-           if (isBanChat) return reply(mess.bangc);
+        if (isBanChat) return reply(mess.bangc);
            A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
-           const helpmenu = `*◇━━━━XL /AXIS GAME━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH / HTTP/1.1[crlf]Host: [host][crlf]Host: cdn.appsflyer.com[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\ncdn.appsflyer.com\n104.16.108.96`
-        let buttonMessage = {
-          video: fs.readFileSync('./Assets/T2.mp4'), gifPlayback: true,
-          caption: helpmenu,
-
-          headerType: 4
-
+           const helpexit = `*◇━━━━XL /AXIS VIDIO━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nGET / HTTP/1.1[crlf]Host: vidio.com[crlf][crlf]PATCH / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\n104.22.4.240\nquiz.int.vidio.com\nquiz.vidio.com`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
         }
-        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
+      })
+	}
+        break;
+        
+        
+      case 'xlcon': case 'axiscon': {
+           if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+           A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
 
+           const helpexit = `*◇━━━━XL /AXIS CONFRENCE━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH /ssh-ws HTTP/1.1[crlf]Host: [host][crlf]Host: partner.zoom.us[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf][crlf]\n\nProxy\n170.114.45.0\ngomarketplacefront-cf.zoom.us\ngomarketplacecontent-cf.zoom.us`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
+        break;
+        
+        
+      case 'xlff': case 'axisgame': {
+           if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+           A17.sendMessage(from, { react: {text: "🚀", key: m.key } })
+
+           const helpexit = `*◇━━━━XL /AXIS GAME━━━━◇*\nPayload Non Jabar\nGET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nPlayload Jabar\nPATCH / HTTP/1.1[crlf]Host: [host][crlf]Host: cdn.appsflyer.com[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]\n\nProxy\npoe.garena.com\n104.16.108.96`
+        await A17.sendMessage(m.chat, {
+              text : helpexit,
+              contextInfo: {
+              externalAdReply: {
+                showAdAttribution: true, 
+                title: `${nowtime} ${pushname}`,
+                body: global.BotName,
+                thumbnail: global.Thumb,
+                sourceUrl: global.website,
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+      })
+	}
         break;
 
 
       //qr
-        case 'qr': case 'scanner': case 'qrcode':
+      case 'qr': case 'qris': case 'qrcode': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
-        if (!m.isGroup) return reply(mess.grouponly);
-        A17.sendMessage(from, { react: { text: "🍁", key: m.key } })
+        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
+        const helpexit = `*Pembayaran Lewat Dana dan Qris*
+        
+Dana : 085135314992 An Diah Fitri Liani
 
-        reply(`Running repl....Please wait until repl.it responds...`)
-        var replqr = await getBuffer(`https://a17-qr-scanner.broken0007.repl.co/`)
-        /*        var qrbutton = [
-{buttonId: `${prefix}qr`, buttonText: {displayText: `Tap to Re-run Repl`}, type: 1}
-] */
-        let bmffg = {
-          image: replqr,
-          caption: `Scan the qr within 10-15 seconds...`,
-          /*    footer: `${global.BotName}`,
-              buttons: qrbutton,
-              headerType: 4 */
+*Jangan Lupa Kirim Bukti TF Yah.*
+Terimakasih`
+        let buttonMessage = {
+          image: fs.readFileSync('./Assets/pic10.jpg'), gifPlayback: false,
+          caption: helpexit,
+
+          headerType: 4
+
         }
-        await A17.sendMessage(m.chat, bmffg, { quoted: m }).catch(err => {
-          return ('Error!')
-        })
+        A17.sendMessage(m.chat, buttonMessage, { quoted: m })
+      }
         break;
 
+      case 'sendpay': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+		if (!args.join("")) return reply(`6282326xxxx`)
+		const swn = args.join(" ")
+        var target = swn.split(".")[0];
+		if (isNaN(target)) return m.reply("Target Tidak Valid!")
+		var org = target.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+        A17.sendMessage(from, { react: { text: "✨", key: m.key } })
+        const helpexit = `*Pembayaran Lewat Dana dan Qris*
+        
+Dana : 085135314992 An Diah Fitri Liani
+
+*Jangan Lupa Kirim Bukti TF Yah.*
+Terimakasih`
+        let buttonMessage = {
+          image: fs.readFileSync('./Assets/pic10.jpg'), gifPlayback: false,
+          caption: helpexit,
+
+          headerType: 4
+
+        }
+        A17.sendMessage(org, buttonMessage, { quoted: m })
+		reply(`Tagihan Pembayaran Terkirim`)
+      }
+        break;
+		
+		//HARGA VPS
+      case 'vps': case 'cekvps': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        try {
+          const helpexitText = `◇━━━━━━━━━━━━━━◇
+       🌐 *_VPS BY_* 🌐
+🌐 *_NEWBIE STORE_* 🌐
+◇━━━━━━━━━━━━━━◇
+✓ ISP DigitalOcean 🚀
+✓ Install script by NEWBIE STORE
+✓ Garansi Selama Masa Aktif❗❗❗
+◇━━━━━━━━━━━━━━◇
+*_Operating System_*
+• Ubuntu
+• Debian
+◇━━━━━━━━━━━━━━◇
+*_Harga_*
+◇━━━━━━━━━━━━━━◇
+- SERVER SG :
+✓ 1GB RAM, BW 1 TB : 35 IDR
+✓ 2GB RAM, BW 3 TB : 45 IDR
+✓ 4GB RAM, BW 4 TB : 80 IDR
+✓ 8GB RAM, BW 6 TB : 120 IDR
+✓ 3 Unit Ram 8 : 250 IDR
+◇━━━━━━━━━━━━━━◇
+- SERVER INDO :
+✓ 1GB RAM, BW Unli : 90  IDR
+✓ 2GB RAM, BW Unli : 200 IDR
+✓ 4GB RAM, BW Unli : 350 IDR
+✓ 8GB RAM, BW Unli : 570 IDR
+◇━━━━━━━━━━━━━━◇`
+A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: `Follow Saluran Kami`,
+                    thumbnailUrl: 'https://telegra.ph/file/6e82e31535233cfe7c0c7.png',
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderMediumThumbnail: true
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Error sending help menu:', err);
+        reply('Oops, terjadi kesalahan saat mengirim menu bantuan.');
+    }
+    break;
+} 
+	//harga autosc	 
+      case 'autosc': case 'cekautosc': {
+        if (isBan) return reply(mess.banned);
+        if (isBanChat) return reply(mess.bangc);
+        try {
+          const helpexitText = `◇━━━━━━━━━━━━━━◇
+      AUTOSCRIPT TUNNELING
+◇━━━━━━━━━━━━━━◇
+🔰 Script Premium V1.6.9 N By NEWBIE 🔰
+◇━━━━━━━━━━━━━━◇
+SEWA :
+1 IP/Bulan : 10k
+UNLI IP Lifetime : 200k
+LICENSI OPEN SOUCE : 
+500 K (Recode Harga Terpisah)
+◇━━━━━━━━━━━━━━◇
+> FEATURE :
+1. Backup & Restore
+2. Auto backup via bot telegram
+4. Bisa atur Limit ip per user 
+5. Multi Path 
+6. Simple bot Telegram Panel
+7. Simple bot Whatsaap Panel
+8. Bisa atur Bandwidth per user
+9. Support Noobzvpns ✓
+10. Multilogin Akun otomatis ke Kunci
+11. Support Slowdns ✓
+12. Bisa Rename Scritp ✓
+13. Support lock Unlock Xray(vmess. Vless. Trojan)
+14. Support auto pointing jika tidak memiliki domain sendiri!
+15. Recovery akun Xray Expaired! (Memungkinkan mengembalikan akun X-ray yang sudah melewati masa aktif)
+16. Scritp ringan bahkan di ram 1 GB
+◇━━━━━━━━━━━━━━◇
+> SUPPORT OS :
+✓ Ubuntu 20.04 LTS - 24.04
+✓ Debian 10 - 12 
+> Support Enhacend 
+◇━━━━━━━━━━━━━━◇`
+A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: `Follow Saluran Kami`,
+                    thumbnail: global.Thumb,
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderMediumThumbnail: true
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Error sending help menu:', err);
+        reply('Oops, terjadi kesalahan saat mengirim menu bantuan.');
+    }
+    break;
+}  
+	 //JASA RECODE
+case 'jasarecode': 
+case 'cekjasarecode': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+
+    try {
+        const helpexitText = `◇━━━━━━━━━━━━━━◇
+🌐 *_NEWBIE STORE_* 🌐
+◇━━━━━━━━━━━━━━◇
+✓ Aman ❗❗❗
+✓ Terpercaya ❗❗❗
+✓ Selalu Melayani Sepenuh Hati ❗❗❗
+◇━━━━━━━━━━━━━━◇
+_Jasa Recode_
+- Pembuatan Fitur Baru Auto Script
+- Penambahan Fitur SC
+- Perbaikan Fitur SC
+◇━━━━━━━━━━━━━━◇
+⏳ *Estimasi Waktu Pengerjaan*:
+- Perbaikan Fitur: 30 menit - 1 Jam (tergantung kendala)
+- Penambahan Fitur: 1 - 5 Jam (tergantung fitur terkait)
+- Pembuatan Fitur: 1 - 3 Hari (tergantung kesulitan)
+◇━━━━━━━━━━━━━━◇
+💲 *Harga Jasa*: 
+10K - 150K (tergantung tingkat kesulitan dan kompleksitas)
+◇━━━━━━━━━━━━━━◇`;
+
+        // Kirim pesan dengan `externalAdReply`
+        A17.sendMessage(m.chat, {
+            text: helpexitText,
+            contextInfo: {
+                externalAdReply: {
+                    showAdAttribution: true,
+                    title: BotName,
+                    body: 'Follow Saluran Kami',
+                    thumbnail: global.Thumb,
+                    sourceUrl: global.website,
+                    mediaType: 1,
+                    renderMediumThumbnail: true
+                }
+            }
+        });
+
+    } catch (err) {
+        console.error('Error sending jasa recode menu:', err);
+        reply('Maaf, terjadi kesalahan saat mengirim informasi jasa recode.');
+    }
+    break;
+}
+		//HARGA SSH
+		
+case 'cekharga': {
+    if (isBan) return reply(mess.banned); // Cek jika user diblokir
+    if (isBanChat) return reply(mess.bangc); // Cek jika grup diblokir
+
+    try {
+        // Memberikan reaksi pada pesan pengguna
+        A17.sendMessage(from, { react: { text: "✨", key: m.key } });
+
+        // Teks informasi harga
+        const helpexit = `
+*NEWBIE STORE VPN PREMIUM*
+*_SERVER SGDO & INDO_* 🇸🇬 🇮🇩
+◇━━━━━━━━━━━━━━━◇
+*List Harga*
+◇━━━━━━━━━━━━━━━◇
+*_PREMIUM_*
+◇━━━━━━━━━━━━━━━◇
+😀 *_5K  | 15 Hari | 1HP |_*
+🤩 *_10K | 30 Hari | 2HP |_*
+🔥 *_15K | 30 Hari | 4HP |_*
+◇━━━━━━━━━━━━━━━◇
+*Membeli artinya Setuju 👍 Jadilah Pembeli Yang Bijak* 🙂
+◇━━━━━━━━━━━━━━━◇
+*Pembayaran*
+- DANA
+- QRIS ALLPAYMENT
+◇━━━━━━━━━━━━━━━◇
+Ketik:
+*pay* untuk informasi pembayaran.
+◇━━━━━━━━━━━━━━━◇`;
+
+        // Membuat pesan dengan gambar lokal
+        let buttonMessage = {
+            image: fs.readFileSync('./Assets/Promo.jpg'), // Path lokal ke file Promo.jpg
+            caption: helpexit,
+            headerType: 4
+        };
+
+        // Mengirim pesan dengan gambar
+        A17.sendMessage(m.chat, buttonMessage, { quoted: m });
+    } catch (err) {
+        console.error('Error sending price list:', err); // Menangkap error
+        reply('Maaf, terjadi kesalahan saat mengirim informasi harga.');
+    }
+
+    break;
+}
 
       //////search
       case 'weather':
@@ -8178,9 +9457,8 @@ Dana : 087863446310 An Diah Fitri Liani
       // //  "parse-ms": "^1.1.0",
 
 
-
-      ///////////////////////////////////////////////////
-      ///funmenu
+      //-----------------------------------------------------------------------------------------------------------------------------------//
+      ///funexit
 
       case 'stupidcheck': case 'uncleancheck':
       case 'hotcheck': case 'smartcheck':
@@ -8196,22 +9474,12 @@ Dana : 087863446310 An Diah Fitri Liani
 
 
 
-      ///////////////////////////////////////////////////
-      ///////////////////////////////////////////////////
+      //-----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
       default:
-
-        if (isCmd) {
-          if (isBan) return reply(mess.banned);
-          if (isBanChat) return reply(mess.bangc);
-          A17.sendMessage(from, { react: { text: "❌", key: m.key } })
-          reply(`Hey *${pushname}* senpai! this command are not programmed! Type *${prefix}help* to get my full command list!`)
-
-        }
-
-
+      
         if (budy.startsWith('=>')) {
           if (!isCreator) return reply(mess.botowner)
           function Return(sul) {
@@ -8239,6 +9507,13 @@ Dana : 087863446310 An Diah Fitri Liani
           }
         }
 
+        if (budy.startsWith('$')) {
+          if (!isCreator) return reply(mess.botowner)
+          exec(budy.slice(2), (err, stdout) => {
+            if (err) return A17.sendMessage(from, { image: ErrorPic, caption: String(err) }, { quoted: m })
+            if (stdout) return reply(stdout)
+          })
+        }
 
 
         if (isCmd && budy.toLowerCase() != undefined) {
@@ -8252,6 +9527,14 @@ Dana : 087863446310 An Diah Fitri Liani
   } catch (err) {
     A17.sendMessage(`${ownertag}@s.whatsapp.net`, util.format(err), { quoted: m })
     console.log(err)
+    let e = String(err)
+    if (e.includes("not-authorized")) return
+    if (e.includes("already-exists")) return
+    if (e.includes("rate-overlimit")) return
+    if (e.includes("Connection Closed")) return
+    if (e.includes("Timed Out")) return
+    if (e.includes("Value not found")) return
+    if (e.includes("Socket connection timeout")) return
   }
 }
 
@@ -8263,4 +9546,3 @@ fs.watchFile(file, () => {
   delete require.cache[file]
   require(file)
 })
-
