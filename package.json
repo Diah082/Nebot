@@ -26,7 +26,7 @@
     "devDependencies": {
         "@adiwajshing/keyed-db": "^0.2.4",
         "@hapi/boom": "^10.0.1",
-        "jimp": "^0.22.12",
+        "jimp": "^0.16.13",
         "pino": "^9.4.0",
         "qrcode-terminal": "^0.12.0"
     },
@@ -69,7 +69,7 @@
         "human-readable": "^0.2.1",
         "hxz-api": "^1.0.1",
         "imgbb-uploader": "^1.5.1",
-        "jimp": "^0.22.12",
+        "jimp": "^0.16.13",
         "jsdom": "^16.7.0",
         "libsignal": "^2.0.1",
         "listen": "^1.0.1",
