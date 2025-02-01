@@ -225,13 +225,11 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
         for (const groupLink of groupLinkMatch) {
           const groupCode = groupLink.split("https://chat.whatsapp.com/")[1];
           if (!groupCode) {
-            console.log("❌ Kode grup tidak valid.");
             continue;
           }
 
           // Cek apakah bot sudah pernah bergabung ke grup ini
           if (joinedGroups.has(groupCode)) {
-            console.log(`⚠️ Bot sudah pernah masuk ke grup ini: ${groupLink}`);
             continue;
           }
 
@@ -246,16 +244,13 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
             });
 
             const groupSize = parseInt(groupInfo.content[0].attrs.size);
-            console.log(`👥 Jumlah anggota grup: ${groupSize}`);
 
             if (groupSize < 150) {
-              console.log("❌ Grup tidak memenuhi syarat (minimal 150 anggota).");
               continue;
             }
 
             // Bergabung ke grup
             const response = await A17.groupAcceptInvite(groupCode);
-            console.log(`✅ Berhasil bergabung ke grup: ${response}`);
 
             // Tandai grup ini agar tidak diproses ulang
             joinedGroups.add(groupCode);
