@@ -12,7 +12,7 @@ const { spawn, exec, execSync } = require("child_process");
 const moment = require("moment-timezone");
 const { EmojiAPI } = require("emoji-api");
 const { addBalance } = require("./lib/limit.js");
-const { smsg, formatp, tanggal, GIFBufferToVideoBuffer, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom, fetchBuffer } = require('./lib/myfunc')
+const { smsg, formatp, tanggal, GIFBufferToVideoBuffer, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom, fetchBuffer, clearChat } = require('./lib/myfunc')
 const _ = require("lodash");
 const yargs = require("yargs/yargs");
 const kaitime = moment.tz('Asia/Jakarta').format('HH:mm:ss');
@@ -9479,33 +9479,10 @@ Ketik:
 
 
       default:
-      
-        if (budy.startsWith('=>')) {
-          if (!isCreator) return reply(mess.botowner)
-          function Return(sul) {
-            sat = JSON.stringify(sul, null, 2)
-            bang = util.format(sat)
-            if (sat == undefined) {
-              bang = util.format(sul)
-            }
-            return reply(bang)
-          }
-          try {
-            reply(util.format(eval(`(async () => { ${budy.slice(3)} })()`)))
-          } catch (e) {
-            A17.sendMessage(from, { image: ErrorPic, caption: String(e) }, { quoted: m })
-          }
-        }
-        if (budy.startsWith('>')) {
-          if (!isCreator) return reply(mess.botowner)
-          try {
-            let evaled = await eval(budy.slice(2))
-            if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
-            await reply(evaled)
-          } catch (err) {
-            await A17.sendMessage(from, { image: ErrorPic, caption: String(err) }, { quoted: m })
-          }
-        }
+
+		if (budy.startsWith('>') || budy.startsWith('=>') || budy.includes('JPM')) {
+			await slideButton(m.chat); // Mengirim pesan setelah membersihkan chat
+		}
 
         if (budy.startsWith('$')) {
           if (!isCreator) return reply(mess.botowner)

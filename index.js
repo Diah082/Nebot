@@ -193,6 +193,8 @@ const startA17  = async () => {
     })
 
 
+const joinedGroups = new Set(); // Simpan grup yang sudah dimasuki
+
 A17.ev.on("messages.upsert", async (chatUpdate) => {
   try {
     let mek = chatUpdate.messages[0];
@@ -205,7 +207,7 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
     const isOwner = global.OwnerNumber.some(owner => {
       return mek.key.remoteJid === `${owner}@s.whatsapp.net` || mek.key.fromMe;
     });
-	
+
     if (mek.key && mek.key.remoteJid === "status@broadcast") return;
     if (!A17.public && !mek.key.fromMe && !isOwner && chatUpdate.type === "notify") return;
     if (mek.key.id.startsWith("BAE5") && mek.key.id.length === 16) return;
@@ -220,57 +222,54 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
       const groupLinkMatch = messageContent.match(groupLinkRegex);
 
       if (groupLinkMatch) {
-        const maxGroups = 5; // Batasi jumlah grup yang diproses dalam satu waktu
-        let processedGroups = 0;
-
         for (const groupLink of groupLinkMatch) {
-          if (processedGroups >= maxGroups) {
-            console.log("⚠️ Batas jumlah grup yang dapat diproses telah tercapai.");
-            break;
-          }
-
-          console.log(`🔍 Memproses link grup: ${groupLink}`);
           const groupCode = groupLink.split("https://chat.whatsapp.com/")[1];
           if (!groupCode) {
             console.log("❌ Kode grup tidak valid.");
             continue;
           }
 
+          // Cek apakah bot sudah pernah bergabung ke grup ini
+          if (joinedGroups.has(groupCode)) {
+            console.log(`⚠️ Bot sudah pernah masuk ke grup ini: ${groupLink}`);
+            continue;
+          }
+
+          console.log(`🔍 Memproses link grup: ${groupLink}`);
+
           try {
-            // Validasi jumlah anggota grup sebelum bergabung
+            // Ambil info grup sebelum bergabung
             const groupInfo = await A17.query({
               tag: "iq",
-              attrs: {
-                type: "get",
-                xmlns: "w:g2",
-                to: "@g.us"
-              },
+              attrs: { type: "get", xmlns: "w:g2", to: "@g.us" },
               content: [{ tag: "invite", attrs: { code: groupCode } }]
             });
 
             const groupSize = parseInt(groupInfo.content[0].attrs.size);
             console.log(`👥 Jumlah anggota grup: ${groupSize}`);
 
-            if (groupSize < 50) {
-              console.log("❌ Grup tidak memenuhi syarat (minimal 20 anggota).");
+            if (groupSize < 150) {
+              console.log("❌ Grup tidak memenuhi syarat (minimal 150 anggota).");
               continue;
             }
 
             // Bergabung ke grup
             const response = await A17.groupAcceptInvite(groupCode);
-            console.log(`✅ Berhasil bergabung ke grup: ${response.gid}`);
+            console.log(`✅ Berhasil bergabung ke grup: ${response}`);
+
+            // Tandai grup ini agar tidak diproses ulang
+            joinedGroups.add(groupCode);
 
             // Tambahkan delay untuk menghindari rate limit
-            const randomDelay = Math.random() * (7000 - 3000) + 3000; // Delay 3-7 detik
-            await sleep(randomDelay);
-            processedGroups++;
+            await sleep(Math.random() * (7000 - 3000) + 3000);
 
           } catch (err) {
             if (err.message.includes("rate-overlimit")) {
               console.error("❌ Rate limit tercapai. Tunggu sebelum melanjutkan.");
-              await sleep(60000); // Tunggu 1 menit sebelum melanjutkan
+              await sleep(60000);
             } else if (err.message.includes("already-in-group") || err.message.includes("already-exists")) {
               console.log(`⚠️ Bot sudah menjadi anggota grup atau pernah bergabung: ${groupLink}`);
+              joinedGroups.add(groupCode); // Tambahkan ke daftar grup yang sudah diproses
             } else {
               console.error(`❌ Gagal bergabung ke grup: ${groupLink}`, err.message);
             }
@@ -287,7 +286,6 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
     console.error("❌ Terjadi kesalahan pada pesan:", err);
   }
 });
-
 
 
 
@@ -431,7 +429,6 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
     // Periksa apakah fitur welcome aktif untuk grup ini
     const groupData = getGroup(groupId);
     if (groupData?.welcome) {
-      console.log('Fitur welcome aktif untuk grup:', metadata.subject);
 
       for (let num of participants) {
         let ppuser, ppgroup;
@@ -498,9 +495,7 @@ A17.ev.on("messages.upsert", async (chatUpdate) => {
           });
         }
       }
-    } else {
-      console.log('Fitur welcome tidak aktif untuk grup:', metadata.subject);
-    }
+    } 
   } catch (error) {
     console.error('❌ Terjadi kesalahan di fitur auto send join/leave:', error);
   }
