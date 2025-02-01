@@ -3383,7 +3383,7 @@ case 'loginssh': {
 
     try {
         await A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
-        m.reply(`Plz Wait ${pushname}, Show All Member XRAY... ⚙️`);
+        m.reply(`Plz Wait ${pushname}, Show All Member SSH... ⚙️`);
 
         const cp = require('child_process');
         const { promisify } = require('util');
@@ -3420,7 +3420,7 @@ case 'loginxray': {
 }
 
 case 'addssh': {
-    if (!isCreator) return reply(mess.botowner)
+    if (!isCreator) return reply(mess.botowner);
     if (!args.join("")) return reply(`MOHON INPUT *NAMA.PASSWORD.LIMITIP.MASAAKTIF*`);
     
     // Parsing input menjadi array berdasarkan delimiter '.'
@@ -3429,10 +3429,12 @@ case 'addssh': {
 
     // Validasi jika salah satu input kosong
     if (!pcknm || !pckpw || !pckip || !pckex) {
-        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.PASSWORD.LIMITIP.MASAAKTIF*.\n\nContoh: *john.doe.2.30*`);
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.PASSWORD.LIMITIP.MASAAKTIF*.
+
+Contoh: *john.doe.2.30*`);
     }
 
-    // Memproses data jika validasi terpenuhi
+    // Memberikan respon awal kepada pengguna
     A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
     m.reply(`Mohon tunggu ${pushname}, sedang membuat akun SSH... ⚙️`);
 
@@ -3442,16 +3444,23 @@ case 'addssh': {
     let o;
 
     try {
-        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-ssh-wa`);
+        // Mengalihkan stderr ke stdout agar warning tidak menjadi output tersendiri
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-ssh-wa 2>&1`);
     } catch (e) {
         o = e;
     } finally {
         let { stdout, stderr } = o;
-        if (stdout.trim()) m.reply(stdout);
-        if (stderr.trim()) m.reply(stderr);
+        // Membersihkan output dari pesan warning jika ada
+        let cleanOutput = stdout.replace(/.*WARNING:.*/g, '').trim();
+        
+        // Mengirimkan output utama ke pengguna jika tersedia
+        if (cleanOutput) {
+            m.reply(cleanOutput);
+        } 
     }
 }
 break;
+
 
       case 'delssh': {
 		if (!isCreator) return reply(mess.botowner)
@@ -3558,16 +3567,16 @@ break;
         break;
 		//ADD XRAY
 case 'addvmess': {
-    if (!isCreator) return reply(mess.botowner)
+    if (!isCreator) return reply(mess.botowner);
     if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
-
-    // Parsing input menjadi array berdasarkan delimiter '.'
+    
     const swn = args.join(" ");
     const [pcknm, pckpw, pckip, pckex] = swn.split(".");
 
-    // Validasi jika salah satu input kosong
     if (!pcknm || !pckpw || !pckip || !pckex) {
-        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.
+
+Contoh: *john.50.2.30*`);
     }
 
     A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
@@ -3579,26 +3588,30 @@ case 'addvmess': {
     let o;
 
     try {
-        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vme-wa`);
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vme-wa 2>&1`);
     } catch (e) {
         o = e;
     } finally {
         let { stdout, stderr } = o;
-        if (stdout.trim()) m.reply(stdout);
-        if (stderr.trim()) m.reply(stderr);
+        let cleanOutput = stdout.replace(/.*WARNING:.*/g, '').trim();
+        if (cleanOutput) {
+            m.reply(cleanOutput);
+        } 
     }
 }
 break;
 
 case 'addvless': {
-    if (!isCreator) return reply(mess.botowner)
+    if (!isCreator) return reply(mess.botowner);
     if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
-
+    
     const swn = args.join(" ");
     const [pcknm, pckpw, pckip, pckex] = swn.split(".");
 
     if (!pcknm || !pckpw || !pckip || !pckex) {
-        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.
+
+Contoh: *john.50.2.30*`);
     }
 
     A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
@@ -3610,26 +3623,30 @@ case 'addvless': {
     let o;
 
     try {
-        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vle-wa`);
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-vle-wa 2>&1`);
     } catch (e) {
         o = e;
     } finally {
         let { stdout, stderr } = o;
-        if (stdout.trim()) m.reply(stdout);
-        if (stderr.trim()) m.reply(stderr);
+        let cleanOutput = stdout.replace(/.*WARNING:.*/g, '').trim();
+        if (cleanOutput) {
+            m.reply(cleanOutput);
+        } 
     }
 }
 break;
 
 case 'addtrojan': {
-    if (!isCreator) return reply(mess.botowner)
+    if (!isCreator) return reply(mess.botowner);
     if (!args.join("")) return reply(`MOHON INPUT *NAMA.LIMITBW.LIMITIP.MASAAKTIF*`);
-
+    
     const swn = args.join(" ");
     const [pcknm, pckpw, pckip, pckex] = swn.split(".");
 
     if (!pcknm || !pckpw || !pckip || !pckex) {
-        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.\n\nContoh: *john.50.2.30*`);
+        return reply(`Mohon pastikan semua data terisi dengan format: *NAMA.LIMITBW.LIMITIP.MASAAKTIF*.
+
+Contoh: *john.50.2.30*`);
     }
 
     A17.sendMessage(from, { react: { text: "🫡", key: m.key } });
@@ -3641,13 +3658,15 @@ case 'addtrojan': {
     let o;
 
     try {
-        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-tro-wa`);
+        o = await exec(`printf "%s\n" "${pcknm}" "${pckpw}" "${pckip}" "${pckex}" | add-tro-wa 2>&1`);
     } catch (e) {
         o = e;
     } finally {
         let { stdout, stderr } = o;
-        if (stdout.trim()) m.reply(stdout);
-        if (stderr.trim()) m.reply(stderr);
+        let cleanOutput = stdout.replace(/.*WARNING:.*/g, '').trim();
+        if (cleanOutput) {
+            m.reply(cleanOutput);
+        } 
     }
 }
 break;
