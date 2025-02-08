@@ -805,7 +805,7 @@ hasMediaAttachment: true,
 nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
 buttons: [{                  
 name: "cta_url",
-buttonParamsJson: `{"display_text":"JOIN GRUP","url":"https://gcwa.nevpn.site","merchant_url":"https://wa.me/c/6285929880376"}`
+buttonParamsJson: `{"display_text":"JOIN GRUP","url":"https://gcwa.nevpn.site","merchant_url":"https://gcwa.nevpn.site"}`
 }]
 })
 }, 
@@ -818,7 +818,7 @@ hasMediaAttachment: true,
 nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
 buttons: [{                  
 name: "cta_url",
-buttonParamsJson: `{"display_text":"LIHAT SALURAN","url":"https://saluran.nevpn.site","merchant_url":"https://wa.me/c/6285929880376"}`
+buttonParamsJson: `{"display_text":"LIHAT SALURAN","url":"https://saluran.nevpn.site","merchant_url":"https://saluran.nevpn.site"}`
 }]
 })
 }]
