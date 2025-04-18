@@ -172,6 +172,24 @@ const startA17  = async () => {
         console.log(chalk.cyan(`- Name     : ${userName}`));
         console.log(chalk.cyan(`- Number   : ${A17.user.id.split(':')[0]}`));
         console.log(chalk.cyan(`- Status   : Connected`));
+		
+		const autoPromosi = require('./lib/autoPromosi');
+
+		function getBroadcastInterval() {
+		  try {
+			const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'database/config.json'), 'utf8'));
+			const hours = parseInt(config.broadcastIntervalHours);
+			return isNaN(hours) ? 6 * 60 * 60 * 1000 : hours * 60 * 60 * 1000;
+		  } catch (err) {
+			console.error('❌ Gagal membaca config. Pakai default 6 jam.');
+			return 6 * 60 * 60 * 1000;
+		  }
+		}
+
+		const interval = getBroadcastInterval();
+		console.log(`🕒 Autopromosi aktif, akan dijalankan setiap ${interval / 3600000} jam`);
+		setInterval(() => autoPromosi(A17, global), interval);
+
       }
     });
 

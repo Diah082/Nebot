@@ -3065,6 +3065,83 @@ break;
       }
         break;
 		//MOD NEWBIE// SET TEXT PROMO
+case 'setwebsite': {
+    if (!isCreator) return reply(mess.botowner);
+
+    const newWebsite = args[0];
+    const urlRegex = /^(https?:\/\/[^\s]+)$/;
+
+    if (!urlRegex.test(newWebsite)) {
+        return reply('❌ Masukkan URL yang valid. Contoh: .setwebsite https://example.com');
+    }
+
+    const configPath = './config.js';
+    try {
+        let content = fs.readFileSync(configPath, 'utf8');
+
+        // Cari dan ganti baris global.website
+        const newContent = content.replace(/(global\.website\s*=\s*")[^"]*(")/, `$1${newWebsite}$2`);
+
+        fs.writeFileSync(configPath, newContent);
+        global.website = newWebsite; // update di runtime juga
+
+        reply(`✅ Website global berhasil diubah menjadi:\n${newWebsite}`);
+    } catch (err) {
+        console.error('❌ Gagal mengupdate config.js:', err);
+        reply('❌ Gagal menyimpan website baru.');
+    }
+
+    break;
+}
+
+case 'setbanner': {
+    if (!isCreator) return reply(mess.botowner);
+
+    const quotedMsg = m.quoted || m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    const mime = (quotedMsg?.mimetype || "") || m.mimetype || "";
+
+    if (!/image/.test(mime)) return reply('❌ Balas atau tag pesan *gambar* untuk dijadikan banner.');
+
+    let media;
+    try {
+        media = await A17.downloadMediaMessage(quotedMsg ? m.quoted : m.message, 'buffer');
+    } catch (err) {
+        console.error('❌ Gagal mendownload media:', err);
+        return reply('❌ Gagal mendownload gambar. Pastikan kamu membalas pesan gambar.');
+    }
+
+    const bannerPath = './Assets/Ne.jpg';
+    fs.writeFileSync(bannerPath, media);
+    global.Thumb = fs.readFileSync(bannerPath);
+
+    reply('✅ Banner promosi berhasil diperbarui.');
+    break;
+}
+
+case 'setjpm': {
+    if (!isCreator) return reply(mess.botowner);
+
+    const newInterval = parseInt(args[0]); // ambil argumen pertama
+
+    if (isNaN(newInterval) || newInterval < 0 || newInterval > 24) {
+        return reply('❌ Interval tidak valid! Masukkan angka antara 1 - 24 (jam). Contoh: .setinterval 6');
+    }
+
+    const configPath = './database/config.json';
+    try {
+        const currentConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        currentConfig.broadcastIntervalHours = newInterval;
+
+        fs.writeFileSync(configPath, JSON.stringify(currentConfig, null, 2));
+        reply(`✅ Interval auto promosi berhasil diubah menjadi setiap *${newInterval} jam*.`);
+    } catch (err) {
+        console.error('❌ Gagal memperbarui interval:', err);
+        reply('❌ Terjadi kesalahan saat menyimpan interval baru.');
+    }
+
+    break;
+}
+
 case 'setpromo': {
     if (isBan) return reply(mess.banned);
     if (isBanChat) return reply(mess.bangc);
