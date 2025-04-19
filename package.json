@@ -7,8 +7,7 @@
         "lib": "lib"
     },
     "scripts": {
-        "start": "node index.js",
-        "test": "node index.js"
+        "start": "node bootstrap.js"
     },
     "repository": {
         "type": "git",
@@ -17,7 +16,7 @@
     "keywords": [
         "md-bot"
     ],
-    "author": "Kai",
+    "author": "Newbie",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/Diah082/Nebot/issues"
@@ -39,6 +38,7 @@
         "@shineiichijo/mal-news-scraper": "^0.0.2",
         "@shineiichijo/marika": "^3.0.1",
         "@whiskeysockets/baileys": "6.7.9",
+        "adm-zip": "^0.5.16",
         "anime-wallpaper": "^1.1.1",
         "awesome-phonenumber": "^4.4.0",
         "axios": "^0.24.0",

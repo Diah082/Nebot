@@ -1,4 +1,19 @@
 const config = require("./config.js");
+const originalLog = console.log;
+console.log = (...args) => {
+  const skipPhrases = [
+    'Closing stale open session',
+    'Opening new session for incoming prekey',
+    'Creating new session for',
+    'Using existing session for'
+  ];
+  const skip = args.some(arg =>
+    typeof arg === 'string' && skipPhrases.some(phrase => arg.includes(phrase))
+  );
+  if (!skip) originalLog(...args);
+};
+
+const pino = require("pino");
 const {
 
   default:
@@ -17,8 +32,6 @@ const {
   useMultiFileAuthState,
 
 } = require("@whiskeysockets/baileys");
-
-const pino = require("pino");
 const fs = require("fs");
 const chalk = require("chalk");
 const FileType = require("file-type");
@@ -165,32 +178,54 @@ const startA17  = async () => {
         }
       }
       //console.log('Connected...', update)
-      else if (connection === 'open') {
-        const userName = A17.user.name ? A17.user.name : global.BotName;
+else if (connection === 'open') {
+    const userName = A17.user.name ? A17.user.name : global.BotName;
 
-        console.log(chalk.bold(chalk.cyan.blue('• User Info')));
-        console.log(chalk.cyan(`- Name     : ${userName}`));
-        console.log(chalk.cyan(`- Number   : ${A17.user.id.split(':')[0]}`));
-        console.log(chalk.cyan(`- Status   : Connected`));
-		
-		const autoPromosi = require('./lib/autoPromosi');
+    console.log(chalk.bold(chalk.cyan.blue('• User Info')));
+    console.log(chalk.cyan(`- Name     : ${userName}`));
+    console.log(chalk.cyan(`- Number   : ${A17.user.id.split(':')[0]}`));
+    console.log(chalk.cyan(`- Status   : Connected`));
+    const autoPromosi = require('./lib/autoPromosi');
 
-		function getBroadcastInterval() {
-		  try {
-			const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'database/config.json'), 'utf8'));
-			const hours = parseInt(config.broadcastIntervalHours);
-			return isNaN(hours) ? 6 * 60 * 60 * 1000 : hours * 60 * 60 * 1000;
-		  } catch (err) {
-			console.error('❌ Gagal membaca config. Pakai default 6 jam.');
-			return 6 * 60 * 60 * 1000;
-		  }
-		}
+    function scheduleAutoPromosi() {
+        let hours = 6; // default
+        try {
+            const intervalConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'database/config.json'), 'utf8'));
+            const parsed = parseFloat(intervalConfig.broadcastIntervalHours);
+            if (!isNaN(parsed) && parsed > 0) hours = parsed;
+        } catch (err) {
+            console.error('❌ Gagal membaca config.json, pakai default 6 jam');
+        }
 
-		const interval = getBroadcastInterval();
-		console.log(`🕒 Autopromosi aktif, akan dijalankan setiap ${interval / 3600000} jam`);
-		setInterval(() => autoPromosi(A17, global), interval);
+        const now = new Date();
+        const nextRun = new Date(now);
+        const intervalMs = hours * 60 * 60 * 1000;
 
-      }
+        // Bulatkan ke jam berikutnya sesuai kelipatan interval
+        nextRun.setMinutes(0);
+        nextRun.setSeconds(0);
+        nextRun.setMilliseconds(0);
+        while (nextRun <= now) {
+            nextRun.setTime(nextRun.getTime() + intervalMs);
+        }
+
+        const delay = nextRun - now;
+        const nextTimeStr = nextRun.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+
+        console.log(`🕒 AutoPromosi pertama akan jalan pada: ${nextTimeStr} (dalam ${Math.floor(delay / 60000)} menit)`);
+
+        setTimeout(() => {
+            autoPromosi(A17, global); // jalankan pertama kali
+
+            // lalu setiap X jam
+            setInterval(() => {
+                autoPromosi(A17, global);
+            }, intervalMs);
+        }, delay);
+    }
+
+    scheduleAutoPromosi(); // jalankan
+}
     });
 
 

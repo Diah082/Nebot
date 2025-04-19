@@ -1,7 +1,24 @@
-process.on("uncaughtException", console.error);
+process.on("uncaughtException", (err) => {
+  console.error("❌ [Uncaught Exception]", err);
+});
+
 require("./config");
+const originalLog = console.log;
+console.log = (...args) => {
+  const skipPhrases = [
+    'Closing stale open session',
+    'Opening new session for incoming prekey',
+    'Creating new session for',
+    'Using existing session for'
+  ];
+  const skip = args.some(arg =>
+    typeof arg === 'string' && skipPhrases.some(phrase => arg.includes(phrase))
+  );
+  if (!skip) originalLog(...args);
+};
 
 const fs = require('fs');
+const path = require('path'); // ⬅️ INI WAJIB ADA
 const pm2 = require('pm2');
 const util = require("util");
 const { promisify } = require('util');
@@ -67,9 +84,9 @@ if (time2 < "05:00:00") {
 } else if (time2 < "15:00:00") {
   nowtime = 'Selamat siang 🏞';
 } else if (time2 < "18:00:00") {
-  nowtime = 'Selamat sore 🌇';
+  nowtime = 'Selamat Petang 🌇';
 } else if (time2 < "19:00:00") {
-  nowtime = 'Selamat sore 🌆';
+  nowtime = 'Selamat malam 🌆';
 } else {
   nowtime = 'Selamat malam 🌌';
 }
@@ -272,19 +289,22 @@ module.exports = A17 = async (A17, m, chatUpdate, store) => {
       return Math.floor(Math.random() * angka) + 1;
     }
 
-    if (m.message) {
-      addBalance(m.sender, randomNomor(574), balance);
-      console.log(
-        chalk.black(chalk.bgWhite("[ MESSAGE ]")),
-        chalk.black(chalk.bgGreen(new Date())),
-        chalk.black(chalk.bgBlue(budy || m.mtype)) +
-        "\n" +
-        chalk.magenta("=> From"),
-        chalk.green(pushname),
-        chalk.yellow(m.sender) + "\n" + chalk.blueBright("=> In"),
-        chalk.green(m.isGroup ? pushname : "Private Chat", m.chat)
-      );
-    }
+	if (m.message) {
+	  addBalance(m.sender, randomNomor(574), balance);
+
+	  const waktuLog = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }).replace(',', '');
+	  const namaPengirim = pushname || 'No Name';
+	  const isGrup = m.isGroup ? `Group: ${groupName || namaPengirim}` : 'Private Chat';
+	  const pesan = budy || m.mtype;
+
+	  console.log(chalk.green.bold('\n📥 Pesan Masuk'));
+	  console.log(chalk.blue('🟢 From   :'), chalk.yellow(namaPengirim), chalk.gray(`(${m.sender.split('@')[0]})`));
+	  console.log(chalk.blue('📨 In     :'), chalk.cyan(`${isGrup} (${m.chat})`));
+	  console.log(chalk.blue('💬 Msg    :'), chalk.white(pesan));
+	  console.log(chalk.blue('🕒 Waktu  :'), chalk.white(`${waktuLog} WIB`));
+	  console.log(chalk.gray('────────────────────────────────────────────'));
+	}
+
 
     if (isCmd && !isUser) {
       pendaftar.push(m.sender);
@@ -3114,7 +3134,7 @@ case 'setbanner': {
     fs.writeFileSync(bannerPath, media);
     global.Thumb = fs.readFileSync(bannerPath);
 
-    reply('✅ Banner promosi berhasil diperbarui.');
+    reply('✅ Banner berhasil diperbarui.');
     break;
 }
 
@@ -8109,6 +8129,293 @@ case 'music': {
         reply('Broadcast Sent !')
       }
         break;
+case 'banpromosi': {
+    if (!isCreator) return reply(mess.botowner);
+
+    const input = args[0]?.toLowerCase();
+    if (!['on', 'off'].includes(input)) {
+        return reply('⚠️ Gunakan format:\n.banpromosi on\n.banpromosi off');
+    }
+
+    const isBan = input === 'on';
+    const groupId = m.chat;
+    const dbPath = './database/group.json';
+
+    let groupDb = {};
+    if (fs.existsSync(dbPath)) {
+        try {
+            groupDb = JSON.parse(fs.readFileSync(dbPath));
+        } catch (e) {
+            console.error('❌ Gagal membaca group.json:', e.message);
+            return reply('❌ Gagal membaca database grup.');
+        }
+    }
+
+    // Gabungkan properti lama dan baru
+    groupDb[groupId] = {
+        ...(groupDb[groupId] || {}),
+        promosi: !isBan ? true : false
+    };
+
+    try {
+        fs.writeFileSync(dbPath, JSON.stringify(groupDb, null, 2));
+        reply(isBan
+            ? '✅ Grup ini telah diblokir dari autopromosi.'
+            : '✅ Grup ini telah diizinkan kembali menerima autopromosi.');
+    } catch (e) {
+        console.error('❌ Gagal menulis ke group.json:', e.message);
+        reply('❌ Gagal menyimpan perubahan.');
+    }
+
+    break;
+}
+case 'listbanpromosi': {
+    if (!isCreator) return reply(mess.botowner);
+
+    const fs = require('fs');
+    const path = require('path');
+
+    const groupDbPath = './database/group.json';
+    let groupDb = {};
+
+    if (fs.existsSync(groupDbPath)) {
+        try {
+            groupDb = JSON.parse(fs.readFileSync(groupDbPath));
+        } catch (e) {
+            console.error('❌ Gagal membaca group.json:', e.message);
+            return reply('❌ Gagal membaca data grup.');
+        }
+    }
+
+    // Ambil semua grup yang promosi-nya false
+    const bannedGroups = Object.entries(groupDb)
+        .filter(([_, data]) => data.promosi === false)
+        .map(([id, _]) => id);
+
+    if (bannedGroups.length === 0) {
+        return reply('✅ Tidak ada grup yang diblokir dari promosi.');
+    }
+
+    let text = `📛 *Daftar Grup yang Diblokir Promosi:*\n\n`;
+
+    for (let i = 0; i < bannedGroups.length; i++) {
+        const groupId = bannedGroups[i];
+        let name = '❓ (Tidak diketahui)';
+
+        try {
+            const metadata = await A17.groupMetadata(groupId);
+            name = metadata.subject;
+        } catch {
+            name = '❌ (Bot bukan member)';
+        }
+
+        text += `*${i + 1}.* ${name}\nID: ${groupId}\n\n`;
+    }
+
+    reply(text.trim());
+    break;
+}
+case 'banallpromosi': {
+    if (!isCreator) return reply(mess.botowner);
+
+    const groupDbPath = './database/group.json';
+    let groupDb = {};
+
+    // Baca data group.json
+    if (fs.existsSync(groupDbPath)) {
+        try {
+            groupDb = JSON.parse(fs.readFileSync(groupDbPath, 'utf8'));
+        } catch (e) {
+            console.error('❌ Gagal membaca group.json:', e.message);
+            return reply('❌ Gagal membaca database grup.');
+        }
+    }
+
+    // Ambil semua grup yang bot tergabung
+    const getGroups = await A17.groupFetchAllParticipating();
+    const groups = Object.entries(getGroups).map(entry => entry[1]);
+    const allGroupIds = groups.map(v => v.id);
+
+    let count = 0;
+
+    for (const groupId of allGroupIds) {
+        groupDb[groupId] = {
+            ...(groupDb[groupId] || {}),
+            promosi: false
+        };
+        count++;
+    }
+
+    try {
+        fs.writeFileSync(groupDbPath, JSON.stringify(groupDb, null, 2));
+        reply(`⛔ Semua *${count} grup* telah diblokir dari promosi.`);
+    } catch (e) {
+        console.error('❌ Gagal menulis ke group.json:', e.message);
+        reply('❌ Gagal menyimpan perubahan.');
+    }
+
+    break;
+}
+
+case 'unbanallpromosi': {
+    if (!isCreator) return reply(mess.botowner);
+
+    const fs = require('fs');
+    const path = require('path');
+
+    const groupDbPath = './database/group.json';
+    let groupDb = {};
+
+    if (fs.existsSync(groupDbPath)) {
+        try {
+            groupDb = JSON.parse(fs.readFileSync(groupDbPath));
+        } catch (e) {
+            console.error('❌ Gagal membaca group.json:', e.message);
+            return reply('❌ Gagal membaca data grup.');
+        }
+    }
+
+    let count = 0;
+
+    for (let groupId in groupDb) {
+        if (groupDb[groupId]?.promosi === false) {
+            // Kamu bisa hapus field promosi, atau set ke true
+            delete groupDb[groupId].promosi;
+            count++;
+        }
+    }
+
+    try {
+        fs.writeFileSync(groupDbPath, JSON.stringify(groupDb, null, 2));
+        reply(`✅ Berhasil membuka blokir promosi dari *${count} grup*.`);
+    } catch (e) {
+        console.error('❌ Gagal menulis group.json:', e.message);
+        reply('❌ Gagal menyimpan perubahan.');
+    }
+
+    break;
+}
+case 'updatehczip': {
+    if (!isCreator) return reply(mess.botowner);
+	if (!m.quoted || !m.quoted.mtype || m.quoted.mtype !== 'documentMessage') {
+		return reply('❌ Balas file dokumen .zip yang ingin diupdate.');
+	}
+
+	const mime = m.quoted.mimetype || '';
+	const fileName = m.quoted.filename || 'update.zip';
+
+	if (!mime.includes('zip') && !fileName.endsWith('.zip')) {
+		return reply('❌ File bukan .zip');
+	}
+
+
+    reply('📥 Mengunduh dan memproses file zip...');
+    const buffer = await A17.downloadMediaMessage(m.quoted);
+
+    const tmpZipPath = path.resolve('temp_hc.zip');
+    fs.writeFileSync(tmpZipPath, buffer);
+
+    const AdmZip = require('adm-zip'); // pastikan sudah install: npm i adm-zip
+    const zip = new AdmZip(tmpZipPath);
+
+    const extractPath = path.resolve('database/filehc');
+
+    try {
+        // 🧹 Hapus semua isi filehc dulu
+        if (fs.existsSync(extractPath)) {
+            const filesToDelete = fs.readdirSync(extractPath);
+            for (const file of filesToDelete) {
+                fs.unlinkSync(path.join(extractPath, file));
+            }
+            console.log('🧹 Folder filehc dibersihkan.');
+        } else {
+            fs.mkdirSync(extractPath, { recursive: true });
+        }
+
+        // 🧩 Ekstrak zip ke filehc
+        zip.extractAllTo(extractPath, true);
+        fs.unlinkSync(tmpZipPath); // hapus zip sementara
+
+        const extracted = fs.readdirSync(extractPath).filter(f => f.endsWith('.hc'));
+        reply(`✅ File HC berhasil diperbarui!\n📂 Total file: ${extracted.length}`);
+        console.log('📁 File .hc saat ini:', extracted);
+    } catch (err) {
+        console.error('❌ Gagal update filehc:', err.message);
+        reply('❌ Gagal memproses file zip.');
+    }
+    break;
+}
+
+case 'filepromosi': {
+    if (isBan) return reply(mess.banned);
+    if (isBanChat) return reply(mess.bangc);
+    if (!isCreator) return reply(mess.botowner);
+
+    const groupDbPath = path.resolve('database/group.json');
+    const folderPath = path.resolve('database/filehc');
+
+    let groupDb = {};
+    if (fs.existsSync(groupDbPath)) {
+        try {
+            groupDb = JSON.parse(fs.readFileSync(groupDbPath, 'utf8'));
+        } catch (e) {
+            console.error('❌ Gagal membaca group.json:', e.message);
+        }
+    }
+
+    if (!fs.existsSync(folderPath)) {
+        return reply('🚫 Folder filehc tidak ditemukan!');
+    }
+
+    const allFiles = fs.readdirSync(folderPath);
+    const hcFiles = allFiles.filter(f => /\.hc['"]?$/.test(f.toLowerCase()));
+
+    if (hcFiles.length === 0) {
+        return reply('📭 Tidak ada file .hc yang tersedia untuk dikirim.');
+    }
+
+    let getGroups = await A17.groupFetchAllParticipating();
+    let groups = Object.entries(getGroups).map(entry => entry[1]);
+    let anu = groups.map(v => v.id);
+
+    reply(`📁 Mengirim file .hc ke ${anu.length} grup...`);
+
+    let grupDikirim = 0;
+    let grupDilewati = 0;
+
+    const randomDelay = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    for (let i = 0; i < anu.length; i++) {
+        const groupId = anu[i];
+
+        if (groupDb[groupId]?.promosi === false) {
+            console.log(`⏩ Lewati grup ${groupId} (promosi: false)`);
+            grupDilewati++;
+            continue;
+        }
+
+        try {
+            for (const fileName of hcFiles) {
+                const filePath = path.join(folderPath, fileName);
+                const fileBuffer = fs.readFileSync(filePath);
+                await A17.sendMessage(groupId, {
+                    document: fileBuffer,
+                    fileName: fileName.replace(/['"]+$/, ''),
+                    mimetype: 'application/octet-stream'
+                });
+                console.log(`📁 Kirim file ${fileName} ke grup ${groupId}`);
+            }
+
+            grupDikirim++;
+            await new Promise(res => setTimeout(res, randomDelay(3000, 5000)));
+        } catch (err) {
+            console.error(`❌ Gagal kirim file ke grup ${groupId}:`, err.message);
+        }
+    }
+
+    reply(`✅ Selesai mengirim file .hc\n\n✅ Dikirim ke: ${grupDikirim} grup\n⏩ Dilewati: ${grupDilewati} grup`);
+    break;
+}
 
 case 'promosi':
 case 'bcgroup': {
@@ -8116,147 +8423,155 @@ case 'bcgroup': {
     if (isBanChat) return reply(mess.bangc);
     if (!isCreator) return reply(mess.botowner);
 
-    // Ambil semua grup
-    let getGroups = await A17.groupFetchAllParticipating();
-    let groups = Object.entries(getGroups).slice(0).map(entry => entry[1]);
-    let anu = groups.map(v => v.id);
+    const groupDbPath = path.resolve('database/group.json');
+    const folderPath = path.resolve('database/filehc'); // aman di semua lokasi
 
-    // Fungsi untuk membaca file JSON
-    function readJSON(filePath) {
+    let groupDb = {};
+    if (fs.existsSync(groupDbPath)) {
         try {
-            const data = fs.readFileSync(filePath, 'utf8');
-            const parsed = JSON.parse(data);
-            return parsed.text && parsed.text.trim() ? parsed.text : null;
-        } catch (err) {
-            console.error(`Error reading ${filePath}:`, err);
-            return null;
+            groupDb = JSON.parse(fs.readFileSync(groupDbPath, 'utf8'));
+        } catch (e) {
+            console.error('❌ Gagal membaca group.json:', e.message);
         }
     }
 
-    // Membaca pesan dari file JSON
-    const promoText = readJSON('./database/promo.json');
-    const autoscriptText = readJSON('./database/autoscript.json');
-    const recodeText = readJSON('./database/recode.json');
-    const vpsText = readJSON('./database/VPs.json');
+    let getGroups = await A17.groupFetchAllParticipating();
+    let groups = Object.entries(getGroups).map(entry => entry[1]);
+    let anu = groups.map(v => v.id);
 
-    // Periksa apakah ada pesan yang tersedia
+    const readJSON = (filePath) => {
+        try {
+            const data = fs.readFileSync(path.resolve(filePath), 'utf8');
+            const parsed = JSON.parse(data);
+            return parsed.text && parsed.text.trim() ? parsed.text : null;
+        } catch {
+            return null;
+        }
+    };
+
+    const promoText = readJSON('database/promo.json');
+    const autoscriptText = readJSON('database/autoscript.json');
+    const recodeText = readJSON('database/recode.json');
+    const vpsText = readJSON('database/VPs.json');
+
     if (!promoText && !autoscriptText && !recodeText && !vpsText) {
         return reply('❌ Semua pesan kosong! Harap atur pesan dengan perintah terkait.');
     }
 
-    reply(`Starting broadcast to ${anu.length} Group Chat(s).`);
+    reply(`📢 Mulai mengirim promosi ke ${anu.length} grup...`);
 
-    // Fungsi untuk membuat jeda random
     const randomDelay = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    let grupDikirim = 0;
+    let grupDilewati = 0;
 
-    // Fungsi untuk mengirim pesan ke grup dengan delay
-    const sendBatchMessages = async (groupBatch) => {
-        for (let groupId of groupBatch) {
-            try {
-                const groupMembers = await A17.groupMetadata(groupId);
+    for (let i = 0; i < anu.length; i++) {
+        const groupId = anu[i];
 
-                // Kirim pesan Promo
-                if (promoText) {
-                    await A17.sendMessage(groupId, {
-                        text: promoText,
-                        contextInfo: {
-                            externalAdReply: {
-                                showAdAttribution: true,
-                                title: `${nowtime}`,
-                                body: 'Promo Terbaru dari Newbie Store',
-                                thumbnail: global.Thumb,
-                                sourceUrl: global.website,
-                                mediaType: 1,
-                                renderLargerThumbnail: true,
-                            },
-                        },
-                    });
-                }
-
-                // Kirim pesan Autoscript
-                if (autoscriptText) {
-                    await A17.sendMessage(groupId, {
-                        text: autoscriptText,
-                        contextInfo: {
-                            externalAdReply: {
-                                showAdAttribution: true,
-                                title: `${nowtime}`,
-                                body: 'Autoscript Tunneling by Newbie Store',
-                                thumbnail: global.Thumb,
-                                sourceUrl: global.website,
-                                mediaType: 1,
-                                renderLargerThumbnail: true,
-                            },
-                        },
-                    });
-                }
-
-                // Kirim pesan Jasa Recode
-                if (recodeText) {
-                    await A17.sendMessage(groupId, {
-                        text: recodeText,
-                        contextInfo: {
-                            externalAdReply: {
-                                showAdAttribution: true,
-                                title: `${nowtime}`,
-                                body: 'Jasa Recode Newbie Store',
-                                thumbnail: global.Thumb,
-                                sourceUrl: global.website,
-                                mediaType: 1,
-                                renderLargerThumbnail: true,
-                            },
-                        },
-                    });
-                }
-
-                // Kirim pesan VPS
-                if (vpsText) {
-                    await A17.sendMessage(groupId, {
-                        text: vpsText,
-                        contextInfo: {
-                            externalAdReply: {
-                                showAdAttribution: true,
-                                title: `${nowtime}`,
-                                thumbnail: global.Thumb,
-                                sourceUrl: global.website,
-                                mediaType: 1,
-                                renderLargerThumbnail: true,
-                            },
-                        },
-                    });
-                }
-
-                // Jeda random antara 2 hingga 5 detik
-                await new Promise((resolve) => setTimeout(resolve, randomDelay(2000, 5000)));
-            } catch (err) {
-                console.error(`Error sending to group ${groupId}:`, err);
-            }
+        if (groupDb[groupId]?.promosi === false) {
+            console.log(`⏩ Lewati grup ${groupId} (promosi: false)`);
+            grupDilewati++;
+            continue;
         }
-    };
 
-    // Membagi grup menjadi batch
-    const batchSize = 5; // Kirim ke 5 grup per batch
-    for (let i = 0; i < anu.length; i += batchSize) {
-        const groupBatch = anu.slice(i, i + batchSize);
-        await sendBatchMessages(groupBatch);
+        try {
+            const sendWithContext = async (text, body) => {
+                await A17.sendMessage(groupId, {
+                    text,
+                    contextInfo: {
+                        externalAdReply: {
+                            showAdAttribution: true,
+                            title: nowtime,
+                            body,
+                            thumbnail: global.Thumb,
+                            sourceUrl: global.website,
+                            mediaType: 1,
+                            renderLargerThumbnail: true,
+                        },
+                    },
+                });
+            };
 
-        // Jeda random antar batch (10 hingga 15 detik)
-        await new Promise((resolve) => setTimeout(resolve, randomDelay(10000, 15000)));
+				if (promoText) {
+					await sendWithContext(groupId, promoText, 'Promo Terbaru dari Newbie Store');
+					await new Promise(res => setTimeout(res, randomDelay(2000, 3000)));
+				}
+				if (autoscriptText) {
+					await sendWithContext(groupId, autoscriptText, 'Autoscript Tunneling by Newbie Store');
+					await new Promise(res => setTimeout(res, randomDelay(2000, 3000)));
+				}
+				if (recodeText) {
+					await sendWithContext(groupId, recodeText, 'Jasa Recode Newbie Store');
+					await new Promise(res => setTimeout(res, randomDelay(2000, 3000)));
+				}
+				if (vpsText) {
+					await sendWithContext(groupId, vpsText, 'VPS Newbie Store');
+					await new Promise(res => setTimeout(res, randomDelay(2000, 3000)));
+				}
+
+            if (fs.existsSync(folderPath)) {
+                const allFiles = fs.readdirSync(folderPath);
+                const hcFiles = allFiles.filter(f => /\.hc['"]?$/.test(f.toLowerCase()));
+                if (hcFiles.length > 0) {
+					for (const fileName of hcFiles) {
+						const filePath = path.join(folderPath, fileName);
+						try {
+							const fileBuffer = fs.readFileSync(filePath);
+							await A17.sendMessage(groupId, {
+								document: fileBuffer,
+								fileName: fileName.replace(/['"]+$/, ''),
+								mimetype: 'application/octet-stream'
+							});
+							console.log(`📁 Kirim file ${fileName} ke grup ${groupId} (${i + 1}/${anu.length})`);
+							await new Promise(res => setTimeout(res, randomDelay(2000, 3000))); // ⏱️ Delay antar file
+						} catch (e) {
+							console.error(`❌ Gagal kirim file ${fileName} ke ${groupId}:`, e.message);
+						}
+                    }
+                } else {
+                    console.log('📭 Tidak ada file .hc ditemukan di folder.');
+                }
+            } else {
+                console.log('🚫 Folder filehc tidak ditemukan!');
+            }
+
+            grupDikirim++;
+            console.log(`✅ Berhasil kirim ke grup ${groupId}`);
+            await new Promise(resolve => setTimeout(resolve, randomDelay(3000, 5000)));
+        } catch (err) {
+            console.error(`❌ Gagal kirim ke grup ${groupId}:`, err.message);
+        }
     }
 
-    reply(`Promosi successfully sent to ${anu.length} Group Chat(s).`);
+    reply(`✅ Promosi selesai!\n\n✅ Dikirim ke: ${grupDikirim} grup\n⏩ Dilewati: ${grupDilewati} grup`);
     break;
 }
+
+
+
 
 case 'promosibot': {
     if (isBan) return reply(mess.banned);
     if (isBanChat) return reply(mess.bangc);
     if (!isCreator) return reply(mess.botowner);
 
+    const fs = require('fs');
+    const path = require('path');
+
     // Ambil semua grup
     let getGroups = await A17.groupFetchAllParticipating();
     let groups = Object.entries(getGroups).map(entry => entry[1]);
     let anu = groups.map(v => v.id);
+
+    // Baca group.json
+    const groupDbPath = path.join(__dirname, '../database/group.json');
+    let groupDb = {};
+    if (fs.existsSync(groupDbPath)) {
+        try {
+            groupDb = JSON.parse(fs.readFileSync(groupDbPath, 'utf8'));
+        } catch (e) {
+            console.error('❌ Gagal membaca group.json:', e.message);
+        }
+    }
 
     // Fungsi untuk membaca file JSON
     function readJSON(filePath) {
@@ -8270,40 +8585,40 @@ case 'promosibot': {
         }
     }
 
-    // Membaca pesan dari file JSON
     const promoText = readJSON('./database/promo.json');
     const autoscriptText = readJSON('./database/autoscript.json');
     const recodeText = readJSON('./database/recode.json');
 
-    // Periksa apakah ada pesan yang tersedia
     if (!promoText && !autoscriptText && !recodeText) {
         return reply('❌ Semua pesan kosong! Harap atur pesan dengan perintah terkait.');
     }
 
     reply(`📢 Memulai promosi ke ${anu.length} grup.`);
 
-    // Fungsi untuk membuat jeda random
     const randomDelay = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-    // Fungsi untuk mengirim pesan ke grup dengan delay
     const sendBatchMessages = async (groupBatch) => {
         for (let groupId of groupBatch) {
+            // ⛔ Lewati jika grup diban dari promosi
+            if (groupDb[groupId]?.promosi === false) {
+                console.log(`⏩ Lewati grup ${groupId} (promosi: false)`);
+                continue;
+            }
+
             try {
                 await slideButton(groupId);
             } catch (error) {
                 console.error(`❌ Gagal mengirim ke grup ${groupId}:`, error);
             }
-            await new Promise(resolve => setTimeout(resolve, randomDelay(2000, 5000))); // Jeda antar pesan dalam batch
+
+            await new Promise(resolve => setTimeout(resolve, randomDelay(2000, 5000)));
         }
     };
 
-    // Membagi grup menjadi batch
-    const batchSize = 5; // Kirim ke 5 grup per batch
+    const batchSize = 5;
     for (let i = 0; i < anu.length; i += batchSize) {
         const groupBatch = anu.slice(i, i + batchSize);
         await sendBatchMessages(groupBatch);
-
-        // Jeda random antar batch (10 hingga 15 detik)
         await new Promise(resolve => setTimeout(resolve, randomDelay(10000, 15000)));
     }
 
@@ -9576,9 +9891,49 @@ Ketik:
 
       default:
 
-		if (budy.startsWith('>') || budy.startsWith('=>') || budy.includes('JPM')) {
-			await slideButton(m.chat); // Mengirim pesan setelah membersihkan chat
+		if (budy.startsWith('>')) {
+			const fs = require('fs');
+			const path = require('path'); // ⬅️ INI WAJIB ADA
+
+			const keyword = budy.slice(1).trim().toLowerCase();
+			if (!keyword) return ;
+
+			const folderPath = path.join(__dirname, './database/filehc');
+			if (!fs.existsSync(folderPath)) return reply('🚫 Folder filehc tidak ditemukan!');
+
+			const allFiles = fs.readdirSync(folderPath);
+			const matchedFiles = allFiles.filter(f => f.toLowerCase().includes(keyword) && f.endsWith('.hc'));
+
+			if (matchedFiles.length === 0) {
+				let available = allFiles.filter(f => f.endsWith('.hc')).map(f => `- ${f}`).join('\n');
+				if (!available) available = '_Tidak ada file .hc tersedia di folder._';
+
+				return reply(
+					`❌ Tidak ditemukan file .hc yang cocok dengan keyword: *${keyword}*\n\n📁 *Daftar file tersedia:*\n${available}`
+				);
+
+			}
+
+			reply(`📂 Ditemukan *${matchedFiles.length} file* cocok dengan keyword: *${keyword}*`);
+
+			for (const fileName of matchedFiles) {
+				const filePath = path.join(folderPath, fileName);
+				try {
+					const fileBuffer = fs.readFileSync(filePath);
+					await A17.sendMessage(m.chat, {
+						document: fileBuffer,
+						fileName: fileName,
+						mimetype: 'application/octet-stream'
+					});
+					console.log(`📁 Kirim file ${fileName} ke ${m.chat}`);
+					await new Promise(res => setTimeout(res, 1000));
+				} catch (err) {
+					console.error(`❌ Gagal kirim file ${fileName}:`, err.message);
+					await A17.sendMessage(m.chat, { text: `❌ Gagal kirim file: ${fileName}` });
+				}
+			}
 		}
+
 
         if (budy.startsWith('$')) {
           if (!isCreator) return reply(mess.botowner)
